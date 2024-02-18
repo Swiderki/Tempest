@@ -9,7 +9,7 @@ if (!canvas) throw new Error("unable to find canvas");
 class MyGame extends Engine {
   player: Player;
   level: Level;
-  currentLevelSide: number = 0.5;
+  currentLevelSide: number = 0.3;
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
@@ -54,10 +54,26 @@ class MyGame extends Engine {
     console.log(this.currentLevelSide);
 
     console.log(this.player.vertecies);
+    const levelShift = Math.floor((this.currentLevelSide % 1) * 50) / 50;
+    console.log(levelShift);
+
+    this.player.vertecies[0].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.2 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 1.2 * (1 - levelShift);
+    this.player.vertecies[0].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.2 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 1.2 * (1 - levelShift);
+    this.player.vertecies[0].z = 0;
+    this.player.vertecies[1].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.1 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 1.1 * (1 - levelShift);
+    this.player.vertecies[1].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.1 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 1.1 * (1 - levelShift);
+    this.player.vertecies[1].z = 0;
     this.player.vertecies[2] = this.level.vertecies[Math.floor(this.currentLevelSide)];
     this.player.vertecies[2].z = 0;
     this.player.vertecies[3] = this.level.vertecies[Math.floor(this.currentLevelSide) + 1];
     this.player.vertecies[3].z = 0;
+    // punkty 4 i 5 nie działają poprawnie jeszcze
+    this.player.vertecies[4].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 2 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * (1 - 0.5 * levelShift)) * 0.7;
+    this.player.vertecies[4].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 2 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * (1 - 0.5 * levelShift)) * 0.7;
+    this.player.vertecies[4].z = 0;
+    this.player.vertecies[5].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.5 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * (1 - 2 * levelShift)) * 0.7;
+    this.player.vertecies[5].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.5 * levelShift + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * (1 - 2 * levelShift)) * 0.7;
+    this.player.vertecies[5].z = 0;
   }
 }
 
