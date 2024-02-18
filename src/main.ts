@@ -9,6 +9,7 @@ if (!canvas) throw new Error("unable to find canvas");
 class MyGame extends Engine {
   player: Player;
   level: Level;
+  currentLevelSide: number = 0.5;
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
@@ -18,15 +19,22 @@ class MyGame extends Engine {
 
   handleCameraMove(e: KeyboardEvent) {
     if (!this.mainCamera) return;
-    if (e.key === "w") this.mainCamera.move(0, 1, 0);
-    if (e.key === "s") this.mainCamera.move(0, -1, 0);
-    if (e.key === "a") this.mainCamera.move(-1, 0, 0);
-    if (e.key === "d") this.mainCamera.move(1, 0, 0);
+    if (e.key === "d") {
+      this.currentLevelSide = this.currentLevelSide + 1;
+      this.currentLevelSide = this.currentLevelSide % (this.level.vertecies.length / 2);
+      this.setPlayerPosition();
+    }
+    if (e.key === "a") {
+      // nie działa jechanie w lewo, trzeba matmy użyć aby działało ale mi się nie chce
+      this.currentLevelSide = this.currentLevelSide - 1;
+      this.currentLevelSide = this.currentLevelSide % (this.level.vertecies.length / 2);
+      this.setPlayerPosition();
+    }
   }
 
   override Start(): void {
     this.setResolution(1280, 720);
-    const camera = new Camera(60, 0.1, 1000, [10, 5, -15], [0, 0, 1]);
+    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
     const mainScene = new Scene();
 
     mainScene.setMainCamera(camera, this.width, this.height);
@@ -41,6 +49,16 @@ class MyGame extends Engine {
   }
 
   override Update(): void {}
+
+  setPlayerPosition() {
+    console.log(this.currentLevelSide);
+
+    console.log(this.player.vertecies);
+    this.player.vertecies[2] = this.level.vertecies[Math.floor(this.currentLevelSide)];
+    this.player.vertecies[2].z = 0;
+    this.player.vertecies[3] = this.level.vertecies[Math.floor(this.currentLevelSide) + 1];
+    this.player.vertecies[3].z = 0;
+  }
 }
 
 const game = new MyGame(canvas);
