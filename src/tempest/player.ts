@@ -1,7 +1,7 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 export default class Player extends PhysicalGameObject {
   constructor(options: PhysicalObjectInitialConfig) {
-    super("src/tempest/obj/player.obj", options);
+    super("obj/player.obj", options);
     // Inicjalizacja specyficznych dla Playera właściwości
     this.loadMesh().then(() => {
       console.log(this.vertecies);
