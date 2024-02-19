@@ -15,6 +15,7 @@ class MyGame extends Engine {
     super(canvas);
 
     this.player = new Player({ position: [0, 0, 0], size: [0.1, 0.1, 0.1] });
+    // level object must be at position [0,0,0]
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [0.1, 0.1, 0.1] });
   }
 
