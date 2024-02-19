@@ -11,28 +11,36 @@ class MyGame extends Engine {
   level: Level;
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
-  movementSpeed: number = 0.25;
+  movementSpeed: number = 0.1;
+  numberOfSides: number = 0;
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
     this.player = new Player({ position: [0, 0, 0], size: [0.1, 0.1, 0.1] });
     // level object must be at position [0,0,0]
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [0.1, 0.1, 0.1] });
+    
   }
-
+  countSides(){
+    this.numberOfSides =  this.level.vertecies.length / 2;
+  }
   handleCameraMove(e: KeyboardEvent) {
     if (!this.mainCamera) return;
     if (e.key === "d") {
+      // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
+      this.countSides()
       this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
-      this.currentLevelSide = this.currentLevelSide % (this.level.vertecies.length / 2);
+      this.currentLevelSide = this.currentLevelSide % (this.numberOfSides);
       this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
       this.setPlayerPosition();
     }
     if (e.key === "a") {
+      // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
+      this.countSides()
       this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
       this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
       if (this.currentLevelSide < 0) {
-        this.currentLevelSide += this.level.vertecies.length / 2;
+        this.currentLevelSide += this.numberOfSides;
       }
 
       this.setPlayerPosition();
@@ -64,21 +72,21 @@ class MyGame extends Engine {
     const levelShift = Math.floor((this.currentLevelSide % 1) * 10) / 10;
     console.log(levelShift);
 
-    this.player.vertecies[0].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 1.2 * levelShift;
-    this.player.vertecies[0].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 1.2 * levelShift;
+    this.player.vertecies[0].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].x * 1.2 * levelShift;
+    this.player.vertecies[0].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].y * 1.2 * levelShift;
     this.player.vertecies[0].z = 0;
-    this.player.vertecies[1].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.1 * (1 - levelShift) + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 1.1 * levelShift;
-    this.player.vertecies[1].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.1 * (1 - levelShift) + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 1.1 * levelShift;
+    this.player.vertecies[1].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.1 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].x * 1.1 * levelShift;
+    this.player.vertecies[1].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.1 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].y * 1.1 * levelShift;
     this.player.vertecies[1].z = 0;
     this.player.vertecies[2] = this.level.vertecies[Math.floor(this.currentLevelSide)];
     this.player.vertecies[2].z = 0;
-    this.player.vertecies[3] = this.level.vertecies[Math.floor(this.currentLevelSide) + 1];
+    this.player.vertecies[3] = this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides];
     this.player.vertecies[3].z = 0;
-    this.player.vertecies[4].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.7 + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 0.3) * 0.9;
-    this.player.vertecies[4].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.7 + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 0.3) * 0.9;
+    this.player.vertecies[4].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].x * 0.3) * 0.9;
+    this.player.vertecies[4].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].y * 0.3) * 0.9;
     this.player.vertecies[4].z = 0;
-    this.player.vertecies[5].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.3 + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].x * 0.7) * 0.9;
-    this.player.vertecies[5].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.3 + this.level.vertecies[Math.floor(this.currentLevelSide) + 1].y * 0.7) * 0.9;
+    this.player.vertecies[5].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].x * 0.7) * 0.9;
+    this.player.vertecies[5].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1)%this.numberOfSides].y * 0.7) * 0.9;
     this.player.vertecies[5].z = 0;
     console.log(this.level.vertecies);
   }
