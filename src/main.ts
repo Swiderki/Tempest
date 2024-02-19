@@ -11,6 +11,7 @@ class MyGame extends Engine {
   level: Level;
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
+  movementSpeed: number = 0.25;
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
@@ -22,16 +23,18 @@ class MyGame extends Engine {
   handleCameraMove(e: KeyboardEvent) {
     if (!this.mainCamera) return;
     if (e.key === "d") {
-      this.currentLevelSide = this.currentLevelSide + 0.1;
+      this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
       this.currentLevelSide = this.currentLevelSide % (this.level.vertecies.length / 2);
       this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
       this.setPlayerPosition();
     }
     if (e.key === "a") {
-      // nie działa jechanie w lewo, trzeba matmy użyć aby działało ale mi się nie chce
-      this.currentLevelSide = this.currentLevelSide - 1;
-      this.currentLevelSide = this.currentLevelSide % (this.level.vertecies.length / 2);
-      this.currentLevelSide = Math.floor(this.currentLevelSide * 10) / 10;
+      this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
+      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
+      if (this.currentLevelSide < 0) {
+        this.currentLevelSide += this.level.vertecies.length / 2;
+      }
+
       this.setPlayerPosition();
     }
   }
