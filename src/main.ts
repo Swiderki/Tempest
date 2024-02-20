@@ -4,7 +4,8 @@ import Player from "./tempest/player";
 import Level from "./tempest/level";
 import Bullet from "./tempest/bullet";
 import Flipper from "./tempest/flipper";
-
+import Spiker from "./tempest/spiker";
+import Tanker from "./tempest/tanker";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -15,6 +16,8 @@ export class MyGame extends Engine {
   level: Level;
   bullets: Bullet[] = [];
   flippers: Flipper[] = [];
+  spikers: Spiker[] = [];
+  tankers: Tanker[] = [];
 
   // Scene
   mainScene: Scene = new Scene();
@@ -83,8 +86,11 @@ export class MyGame extends Engine {
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
-      Flipper.initialize(this);
+      Flipper.createFlipper(this);
 
+    }
+    if (this.keysPressed.has("l")) {
+      this.superZapper();
     }
     // zmiana levelów do testów
     if (this.keysPressed.has("q")) {
@@ -126,11 +132,8 @@ export class MyGame extends Engine {
 
   setPlayerPosition() {
     // trzeba przenieść do klasy player żeby tu było czyściej
-    console.log(this.currentLevelSide);
 
-    console.log(this.player.vertecies);
     const levelShift = Math.floor((this.currentLevelSide % 1) * 10) / 10;
-    console.log(levelShift);
 
     this.player.vertecies[0].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 1.2 * levelShift;
     this.player.vertecies[0].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 1.2 * levelShift;
@@ -148,7 +151,6 @@ export class MyGame extends Engine {
     this.player.vertecies[5].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 0.7) * 0.9;
     this.player.vertecies[5].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 0.7) * 0.9;
     this.player.vertecies[5].z = 0;
-    console.log(this.level.vertecies);
   }
 
   shoot() {
@@ -156,7 +158,34 @@ export class MyGame extends Engine {
     const bullet = new Bullet({ position: [(this.player.vertecies[4].x + this.player.vertecies[5].x) / 2, (this.player.vertecies[4].y + this.player.vertecies[5].y) / 2, 0], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
-    console.log(bullet);
+  }
+
+  superZapper() {
+    this.level.vertecies.forEach((vertex) => {
+      for (let i = 0; i < this.level.getMesh().length; i++) {
+        this.level.setLineColor(i, "yellow");
+      }
+    })
+    setTimeout(() => {
+      this.level.vertecies.forEach((vertex) => {
+        for (let i = 0; i < this.level.getMesh().length; i++) {
+          this.level.setLineColor(i, "blue");
+        }
+      })
+      for (const tanker of this.tankers) {
+        this.currentScene.removeGameObject(tanker.id);
+      }
+      this.tankers = [];
+      for (const spiker of this.spikers) {
+        this.currentScene.removeGameObject(spiker.id);
+      }
+      this.spikers = [];
+      console.log(this.flippers)
+      for (const flipper of this.flippers) {
+        this.currentScene.removeGameObject(flipper.id);
+      }
+      this.flippers = [];
+    }, 200);
   }
 }
 
