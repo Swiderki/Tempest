@@ -12,6 +12,7 @@ export class MyGame extends Engine {
   player: Player;
   level: Level;
   bullets: Bullet[] = [];
+  mainScene: Scene = new Scene();
 
   // Level
   currentLevel: number = 1;
@@ -37,15 +38,14 @@ export class MyGame extends Engine {
   override Start(): void {
     this.setResolution(1280, 720);
     const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
-    const mainScene = new Scene();
 
-    mainScene.setMainCamera(camera, this.width, this.height);
-    const mainSceneId = this.addScene(mainScene);
+    this.mainScene.setMainCamera(camera, this.width, this.height);
+    const mainSceneId = this.addScene(this.mainScene);
     this.setCurrentScene(mainSceneId);
 
-    mainScene.addGameObject(this.player);
-    mainScene.addGameObject(this.level);
-    mainScene.started = true;
+    this.mainScene.addGameObject(this.player);
+    this.mainScene.addGameObject(this.level);
+    this.mainScene.started = true;
     this.addEventListeners();
   }
 
@@ -66,7 +66,7 @@ export class MyGame extends Engine {
 
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
-    if (this.keysPressed.has("d")) {
+    if (this.keysPressed.has("a")) {
       // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
       this.countSides();
       this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
@@ -74,7 +74,7 @@ export class MyGame extends Engine {
       this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
       this.setPlayerPosition();
     }
-    if (this.keysPressed.has("a")) {
+    if (this.keysPressed.has("d")) {
       // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
       this.countSides();
       this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
@@ -88,11 +88,27 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("k")) {
       this.shoot();
     }
+    // zmiana levelów do testów
+    if (this.keysPressed.has("q")) {
+      this.currentLevel--;
+      this.currentScene!.removeGameObject(this.level.id);
+      this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
+      this.mainScene.addGameObject(this.level);
+      this.setPlayerPosition();
+    }
+    if (this.keysPressed.has("e")) {
+      this.currentLevel++;
+      this.currentScene!.removeGameObject(this.level.id);
+      this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
+      this.mainScene.addGameObject(this.level);
+      this.setPlayerPosition();
+    }
   }
 
   override Update(): void {}
 
   setPlayerPosition() {
+    // trzeba przenieść do klasy player żeby tu było czyściej
     console.log(this.currentLevelSide);
 
     console.log(this.player.vertecies);
@@ -119,6 +135,7 @@ export class MyGame extends Engine {
   }
 
   shoot() {
+    // to też by trzeb przenieść
     const bullet = new Bullet({ position: [(this.player.vertecies[4].x + this.player.vertecies[5].x) / 2, (this.player.vertecies[4].y + this.player.vertecies[5].y) / 2, 0], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
