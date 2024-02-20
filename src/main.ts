@@ -3,6 +3,8 @@ import _default from "drake-engine";
 import Player from "./tempest/player";
 import Level from "./tempest/level";
 import Bullet from "./tempest/bullet";
+import Flipper from "./tempest/flipper";
+
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -12,6 +14,9 @@ export class MyGame extends Engine {
   player: Player;
   level: Level;
   bullets: Bullet[] = [];
+  flippers: Flipper[] = [];
+
+  // Scene
   mainScene: Scene = new Scene();
 
   // Level
@@ -20,6 +25,10 @@ export class MyGame extends Engine {
 
   //keyboroard events
   keysPressed = new Set();
+
+  // Enemys data
+  flipperLastSpawn: number = 0;
+
 
   movementSpeed: number = 0.1;
   numberOfSides: number = 0;
@@ -35,19 +44,6 @@ export class MyGame extends Engine {
     this.numberOfSides = this.level.vertecies.length / 2;
   }
 
-  override Start(): void {
-    this.setResolution(1280, 720);
-    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
-
-    this.mainScene.setMainCamera(camera, this.width, this.height);
-    const mainSceneId = this.addScene(this.mainScene);
-    this.setCurrentScene(mainSceneId);
-
-    this.mainScene.addGameObject(this.player);
-    this.mainScene.addGameObject(this.level);
-    this.mainScene.started = true;
-    this.addEventListeners();
-  }
 
   addEventListeners() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e));
@@ -87,6 +83,8 @@ export class MyGame extends Engine {
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
+      Flipper.initialize(this);
+
     }
     // zmiana levelów do testów
     if (this.keysPressed.has("q")) {
@@ -95,6 +93,7 @@ export class MyGame extends Engine {
       this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
       this.mainScene.addGameObject(this.level);
       this.setPlayerPosition();
+
     }
     if (this.keysPressed.has("e")) {
       this.currentLevel++;
@@ -104,8 +103,26 @@ export class MyGame extends Engine {
       this.setPlayerPosition();
     }
   }
+  override Start(): void {
+    this.setResolution(1280, 720);
+    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
 
-  override Update(): void {}
+    this.mainScene.setMainCamera(camera, this.width, this.height);
+    const mainSceneId = this.addScene(this.mainScene);
+    this.setCurrentScene(mainSceneId);
+
+    this.mainScene.addGameObject(this.player);
+    this.mainScene.addGameObject(this.level);
+    this.mainScene.started = true;
+    this.addEventListeners();
+  }
+  override Update(): void {
+    const currentTime = Date.now();
+    if(currentTime - this.flipperLastSpawn > 1000){
+      this.flipperLastSpawn = currentTime;
+    }
+
+  }
 
   setPlayerPosition() {
     // trzeba przenieść do klasy player żeby tu było czyściej
@@ -123,7 +140,7 @@ export class MyGame extends Engine {
     this.player.vertecies[1].z = 0;
     this.player.vertecies[2] = this.level.vertecies[Math.floor(this.currentLevelSide)];
     this.player.vertecies[2].z = 0;
-    this.player.vertecies[3] = this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides];
+    this.player.vertecies[3] = this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides] ;
     this.player.vertecies[3].z = 0;
     this.player.vertecies[4].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 0.3) * 0.9;
     this.player.vertecies[4].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 0.3) * 0.9;
