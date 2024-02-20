@@ -168,6 +168,7 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(flipper.id);
       }
       this.flippers = [];
+      this.level.updateColorOnPlayer();
     }, 200);
   }
 }
