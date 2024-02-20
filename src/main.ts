@@ -39,12 +39,25 @@ export class MyGame extends Engine {
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
-    this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] });
+    this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] }, this);
     // level object must be at position [0,0,0]
-    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
+    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
   }
-  countSides() {
-    this.numberOfSides = this.level.vertecies.length / 2;
+
+
+
+  override Start(): void {
+    this.setResolution(1280, 720);
+    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
+
+    this.mainScene.setMainCamera(camera, this.width, this.height);
+    const mainSceneId = this.addScene(this.mainScene);
+    this.setCurrentScene(mainSceneId);
+
+    this.mainScene.addGameObject(this.player);
+    this.mainScene.addGameObject(this.level);
+    this.mainScene.started = true;
+    this.addEventListeners();
   }
 
 
@@ -66,23 +79,10 @@ export class MyGame extends Engine {
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
     if (this.keysPressed.has("a")) {
-      // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
-      this.countSides();
-      this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
-      this.currentLevelSide = this.currentLevelSide % this.numberOfSides;
-      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
-      this.setPlayerPosition();
+      this.moveForward()
     }
     if (this.keysPressed.has("d")) {
-      // countSides ma się wykonywac po wczytaniu levelu, a nie tutaj - usunąć i dać do level.ts
-      this.countSides();
-      this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
-      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
-      if (this.currentLevelSide < 0) {
-        this.currentLevelSide += this.numberOfSides;
-      }
-
-      this.setPlayerPosition();
+      this.moveBackward()
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
@@ -94,63 +94,51 @@ export class MyGame extends Engine {
     }
     // zmiana levelów do testów
     if (this.keysPressed.has("q")) {
-      this.currentLevel--;
-      this.currentScene!.removeGameObject(this.level.id);
-      this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
-      this.mainScene.addGameObject(this.level);
-      this.setPlayerPosition();
-
+      this.previousLevel();
     }
     if (this.keysPressed.has("e")) {
-      this.currentLevel++;
-      this.currentScene!.removeGameObject(this.level.id);
-      this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] });
-      this.mainScene.addGameObject(this.level);
-      this.setPlayerPosition();
+      this.nextLevel();
     }
   }
-  override Start(): void {
-    this.setResolution(1280, 720);
-    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
 
-    this.mainScene.setMainCamera(camera, this.width, this.height);
-    const mainSceneId = this.addScene(this.mainScene);
-    this.setCurrentScene(mainSceneId);
-
-    this.mainScene.addGameObject(this.player);
-    this.mainScene.addGameObject(this.level);
-    this.mainScene.started = true;
-    this.addEventListeners();
+  moveForward() {
+    this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
+    this.currentLevelSide = this.currentLevelSide % this.numberOfSides;
+    this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
+    this.player.setPlayerPosition();
   }
+
+  moveBackward() {
+    this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
+    this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
+    if (this.currentLevelSide < 0) {
+      this.currentLevelSide += this.numberOfSides;
+    }
+    this.player.setPlayerPosition();
+
+  }
+
+  previousLevel() {
+    this.currentLevel--;
+    this.currentScene!.removeGameObject(this.level.id);
+    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+  }
+
+  nextLevel() {
+    this.currentLevel++;
+    this.currentScene!.removeGameObject(this.level.id);
+    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+  }
+
+
   override Update(): void {
     const currentTime = Date.now();
     if(currentTime - this.flipperLastSpawn > 1000){
       this.flipperLastSpawn = currentTime;
     }
 
-  }
-
-  setPlayerPosition() {
-    // trzeba przenieść do klasy player żeby tu było czyściej
-
-    const levelShift = Math.floor((this.currentLevelSide % 1) * 10) / 10;
-
-    this.player.vertecies[0].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 1.2 * levelShift;
-    this.player.vertecies[0].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 1.2 * levelShift;
-    this.player.vertecies[0].z = 0;
-    this.player.vertecies[1].x = this.level.vertecies[Math.floor(this.currentLevelSide)].x * 1.1 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 1.1 * levelShift;
-    this.player.vertecies[1].y = this.level.vertecies[Math.floor(this.currentLevelSide)].y * 1.1 * (1 - levelShift) + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 1.1 * levelShift;
-    this.player.vertecies[1].z = 0;
-    this.player.vertecies[2] = this.level.vertecies[Math.floor(this.currentLevelSide)];
-    this.player.vertecies[2].z = 0;
-    this.player.vertecies[3] = this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides] ;
-    this.player.vertecies[3].z = 0;
-    this.player.vertecies[4].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 0.3) * 0.9;
-    this.player.vertecies[4].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.7 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 0.3) * 0.9;
-    this.player.vertecies[4].z = 0;
-    this.player.vertecies[5].x = (this.level.vertecies[Math.floor(this.currentLevelSide)].x * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].x * 0.7) * 0.9;
-    this.player.vertecies[5].y = (this.level.vertecies[Math.floor(this.currentLevelSide)].y * 0.3 + this.level.vertecies[(Math.floor(this.currentLevelSide) + 1) % this.numberOfSides].y * 0.7) * 0.9;
-    this.player.vertecies[5].z = 0;
   }
 
   shoot() {
@@ -161,13 +149,13 @@ export class MyGame extends Engine {
   }
 
   superZapper() {
-    this.level.vertecies.forEach((vertex) => {
+    this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
       }
     })
     setTimeout(() => {
-      this.level.vertecies.forEach((vertex) => {
+      this.level.vertecies.forEach((_) => {
         for (let i = 0; i < this.level.getMesh().length; i++) {
           this.level.setLineColor(i, "blue");
         }

@@ -1,8 +1,11 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
+import { MyGame } from "../main";
+
 export default class Level extends PhysicalGameObject {
-  constructor(levelId: number, options: PhysicalObjectInitialConfig) {
+  game: MyGame;
+  constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/level${levelId}.obj`, options);
-    // Inicjalizacja specyficznych dla Playera właściwości
+    this.game = game;
     this.loadMesh().then(() => {
 
       for (let i = 0; i < this.getMesh().length; i++) {
@@ -10,5 +13,8 @@ export default class Level extends PhysicalGameObject {
       }
     });
   }
-  override Start(): void {}
+  override Start(): void {
+    this.game.numberOfSides = this.game.level.vertecies.length / 2;
+    this.game.player.setPlayerPosition();
+  }
 }
