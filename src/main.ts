@@ -32,7 +32,6 @@ export class MyGame extends Engine {
   // Enemys data
   flipperLastSpawn: number = 0;
 
-
   movementSpeed: number = 0.1;
   numberOfSides: number = 0;
 
@@ -43,8 +42,6 @@ export class MyGame extends Engine {
     // level object must be at position [0,0,0]
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
   }
-
-
 
   override Start(): void {
     this.setResolution(1280, 720);
@@ -59,7 +56,6 @@ export class MyGame extends Engine {
     this.mainScene.started = true;
     this.addEventListeners();
   }
-
 
   addEventListeners() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e));
@@ -79,15 +75,14 @@ export class MyGame extends Engine {
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
     if (this.keysPressed.has("a")) {
-      this.moveForward()
+      this.moveForward();
     }
     if (this.keysPressed.has("d")) {
-      this.moveBackward()
+      this.moveBackward();
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
       Flipper.createFlipper(this);
-
     }
     if (this.keysPressed.has("l")) {
       this.superZapper();
@@ -100,8 +95,9 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
   }
-
+  // można by to połączyć w jedno funkcję aby kodu było mniej
   moveForward() {
+    this.level.updateColorOnPlayer();
     this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
     this.currentLevelSide = this.currentLevelSide % this.numberOfSides;
     this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
@@ -109,15 +105,16 @@ export class MyGame extends Engine {
   }
 
   moveBackward() {
+    this.level.updateColorOnPlayer();
     this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
     this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
     if (this.currentLevelSide < 0) {
       this.currentLevelSide += this.numberOfSides;
     }
     this.player.setPlayerPosition();
-
   }
 
+  // to też można
   previousLevel() {
     this.currentLevel--;
     this.currentScene!.removeGameObject(this.level.id);
@@ -132,13 +129,11 @@ export class MyGame extends Engine {
     this.mainScene.addGameObject(this.level);
   }
 
-
   override Update(): void {
     const currentTime = Date.now();
-    if(currentTime - this.flipperLastSpawn > 1000){
+    if (currentTime - this.flipperLastSpawn > 1000) {
       this.flipperLastSpawn = currentTime;
     }
-
   }
 
   shoot() {
@@ -153,13 +148,13 @@ export class MyGame extends Engine {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
       }
-    })
+    });
     setTimeout(() => {
       this.level.vertecies.forEach((_) => {
         for (let i = 0; i < this.level.getMesh().length; i++) {
           this.level.setLineColor(i, "blue");
         }
-      })
+      });
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
       }
@@ -168,11 +163,12 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(spiker.id);
       }
       this.spikers = [];
-      console.log(this.flippers)
+      console.log(this.flippers);
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
       }
       this.flippers = [];
+      this.level.updateColorOnPlayer();
     }, 200);
   }
 }
