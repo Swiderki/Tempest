@@ -11,7 +11,7 @@ export default class Level extends PhysicalGameObject {
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
-    if(this.position.z >= 70){
+    if(this.position.z >= 80){
         this.game.currentScene.removeGameObject(this.id);  
         this.game.bullets.pop() 
     } 
