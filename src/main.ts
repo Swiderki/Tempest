@@ -82,9 +82,8 @@ export class MyGame extends Engine {
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
-      Tanker.createTanker(this);
-      console.log(this.tankers);
-
+      // Tanker.createTanker(this);
+      Spiker.createSpiker(this);
     }
     if (this.keysPressed.has("l")) {
       this.superZapper();
