@@ -2,6 +2,7 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { SpikerBulletOverlap } from "../overlaps/spikerBulletOverlap";
 import { SpikerTraceBulletOverlap } from "../overlaps/spikerTraceBulletOverlap";
+import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 
 export default class Bullet extends PhysicalGameObject {
     game: MyGame;
@@ -38,6 +39,11 @@ export default class Bullet extends PhysicalGameObject {
       this.game.currentScene.addOverlap(ov);
     })
 
+
+    this.game.tankers.forEach((tanker) => {
+      const ov = new TankerBulletOverlap(this, tanker, this.game);
+      this.game.currentScene.addOverlap(ov);
+    })
   }
   
 }

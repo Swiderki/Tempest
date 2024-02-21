@@ -12,12 +12,13 @@ export default class Tanker extends PhysicalGameObject {
       this.setPosition(0,0,0)
     }
     this.velocity.z = -40
-
+    this.autoupdateBoxCollider = true
     }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, "#A020F0");
     }
+    this.generateBoxCollider()
     if(this.position.x == 0 && this.position.y == 0 && this.position.z == 0){
       const randomRange = this.game.level.vertecies.length / 2 - 1;
       const randomIndex = Math.floor(Math.random() * randomRange);
