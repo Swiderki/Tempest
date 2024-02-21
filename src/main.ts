@@ -34,7 +34,7 @@ export class MyGame extends Engine {
   // Enemys data
   flipperLastSpawn: number = 0;
 
-  movementSpeed: number = 0.1;
+  movementSpeed: number = 1;
   numberOfSides: number = 0;
 
   constructor(canvas: HTMLCanvasElement) {

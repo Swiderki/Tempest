@@ -29,7 +29,7 @@ export default class Bullet extends PhysicalGameObject {
     this.game.spikers.forEach((spiker) => {
       const ov = new SpikerBulletOverlap(this, spiker, this.game);
       this.game.currentScene.addOverlap(ov);
-  
+      console.log("AS")
     })
 
     // TODO: fix spiker trace overlap

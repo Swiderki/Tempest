@@ -53,7 +53,7 @@ export default class Spiker extends PhysicalGameObject {
 
     }
 
-    if (this.position.z < this.randomRange) {
+    if (this.position.z < 5) {
 
       this.isAddingTrace = false;
       this.velocity.z = 20;
@@ -65,7 +65,7 @@ export default class Spiker extends PhysicalGameObject {
       this.game.tankers.push(tanker);
       this.game.currentScene.addGameObject(tanker);
       this.game.currentScene.removeGameObject(this.id);
-      this.game.spikers.pop();
+      this.game.spikers = this.game.spikers.filter((spiker) => spiker.id !== this.id);
     }
   }
 
