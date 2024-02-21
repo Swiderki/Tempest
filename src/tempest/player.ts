@@ -6,13 +6,16 @@ export default class Player extends PhysicalGameObject {
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super("obj/player.obj", options);
     this.game = game;
-    this.loadMesh().then(() => {
-      for (let i = 0; i < this.getMesh().length; i++) {
-        this.setLineColor(i, "yellow");
-      }
-    });
+    this.autoupdateBoxCollider = true
+
   }
-  override Start(): void {}
+  override Start(): void {
+    for (let i = 0; i < this.getMesh().length; i++) {
+      this.setLineColor(i, "yellow");
+    }
+    this.showBoxcollider = true
+
+  }
 
   setPlayerPosition() {
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;

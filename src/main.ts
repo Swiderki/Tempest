@@ -6,6 +6,7 @@ import Bullet from "./tempest/bullet";
 import Flipper from "./tempest/flipper";
 import Spiker from "./tempest/spiker";
 import Tanker from "./tempest/tanker";
+import SpikerTrace from "./tempest/spikerTrace";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -18,6 +19,7 @@ export class MyGame extends Engine {
   flippers: Flipper[] = [];
   spikers: Spiker[] = [];
   tankers: Tanker[] = [];
+  spikerTraces: SpikerTrace[] = [];
 
   // Scene
   mainScene: Scene = new Scene();
@@ -80,10 +82,13 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("d")) {
       this.moveBackward();
     }
+    if(this.keysPressed.has("w")){
+      Spiker.createSpiker(this);
+
+    }
     if (this.keysPressed.has("k")) {
       this.shoot();
       // Tanker.createTanker(this);
-      Spiker.createSpiker(this);
     }
     if (this.keysPressed.has("l")) {
       this.superZapper();
@@ -139,7 +144,7 @@ export class MyGame extends Engine {
 
   shoot() {
     // to też by trzeb przenieść
-    const bullet = new Bullet({ position: [(this.player.vertecies[4].x + this.player.vertecies[5].x) / 2, (this.player.vertecies[4].y + this.player.vertecies[5].y) / 2, 0], size: [1, 1, 1] }, this);
+    const bullet = new Bullet({ position: [(this.player.vertecies[2].x + this.player.vertecies[3].x) / 2, (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2, 0], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
   }
@@ -164,7 +169,6 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(spiker.id);
       }
       this.spikers = [];
-      console.log(this.flippers);
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
       }
