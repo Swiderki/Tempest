@@ -19,6 +19,9 @@ export class SpikerTraceBulletOverlap extends Overlap {
     if (!this.game.currentScene) return;
 
     // TODO: KOLIZJA SIE PSUJE
-    console.log("asdasd");
+    // console.table([this.bullet.boxCollider![0], this.bullet.boxCollider![1]])
+    // console.table([this.spikerTrace.boxCollider![0], this.spikerTrace.boxCollider![1]])
+
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
   }
 }

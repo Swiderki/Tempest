@@ -11,10 +11,12 @@ export default class Bullet extends PhysicalGameObject {
     this.game = game;
     this.velocity.z = 29
     this.autoupdateBoxCollider = true
-
+    
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
+    // console.table([this.boxCollider![0], this.boxCollider![1]])
+
     if(this.position.z >= 80){
         this.game.currentScene.removeGameObject(this.id);  
         this.game.bullets.pop() 
