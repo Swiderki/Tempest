@@ -1,6 +1,7 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { QuaternionUtils } from "drake-engine";
+import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;
@@ -11,14 +12,15 @@ export default class Tanker extends PhysicalGameObject {
     if(!options.position){
       this.setPosition(0,0,0)
     }
-    this.velocity.z = -40
+    this.velocity.z = -30
     this.autoupdateBoxCollider = true
     }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, "#A020F0");
     }
-    this.generateBoxCollider()
+    this.generateBoxCollider()    
+    this.showBoxcollider = true
     if(this.position.x == 0 && this.position.y == 0 && this.position.z == 0){
       const randomRange = this.game.level.vertecies.length / 2 - 1;
       const randomIndex = Math.floor(Math.random() * randomRange);
@@ -28,11 +30,15 @@ export default class Tanker extends PhysicalGameObject {
       this.move(middle.x, middle.y, 80);
     }
 
+    this.game.bullets.forEach((bullet) => {
+      const ov = new TankerBulletOverlap(bullet, this, this.game)
+      this.game.currentScene.addOverlap(ov);
+    })
   }
 
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
-    if (this.position.z < 0) {
+    if (this.position.z < 3) {
       this.game.currentScene.removeGameObject(this.id);
       this.game.tankers.pop();
     }

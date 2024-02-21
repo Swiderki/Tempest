@@ -11,12 +11,12 @@ export default class Bullet extends PhysicalGameObject {
     super(`obj/bullet.obj`, options);
     this.game = game;
     this.velocity.z = 29
-    this.autoupdateBoxCollider = true
-    
+    this.boxCollider = [{x: this.position.x - 0.5, y: this.position.y - 0.5, z: this.position.z - 0.5}, {x: this.position.x + 0.5, y: this.position.y + 0.5, z: this.position.z + 2}];
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
     // console.table([this.boxCollider![0], this.boxCollider![1]])
+    this.boxCollider = [{x: this.position.x - 0.5, y: this.position.y - 0.5, z: this.position.z - 0.5}, {x: this.position.x + 0.5, y: this.position.y + 0.5, z: this.position.z + 2}];
 
     if(this.position.z >= 80){
         this.game.currentScene.removeGameObject(this.id);  
@@ -25,7 +25,6 @@ export default class Bullet extends PhysicalGameObject {
   }
 
   override Start(): void {
-    this.generateBoxCollider()
     this.showBoxcollider = true
     this.game.spikers.forEach((spiker) => {
       const ov = new SpikerBulletOverlap(this, spiker, this.game);

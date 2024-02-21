@@ -47,7 +47,7 @@ export class MyGame extends Engine {
 
   override Start(): void {
     this.setResolution(1280, 720);
-    const camera = new Camera(60, 0.1, 1000, [0, 0, -35], [0, 0, 1]);
+    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
 
     this.mainScene.setMainCamera(camera, this.width, this.height);
     const mainSceneId = this.addScene(this.mainScene);
