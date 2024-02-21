@@ -17,6 +17,8 @@ export class SpikerTraceBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-    console.log("SpikerBulletOverlap");
+
+    // TODO: KOLIZJA SIE PSUJE
+    console.log("asdasd");
   }
 }

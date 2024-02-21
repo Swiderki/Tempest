@@ -13,7 +13,6 @@ export class SpikerBulletOverlap extends Overlap {
     this.game = game;
     this.bullet = obj1;
     this.spikerTrace = obj2;
-    console.log("added overlap")
   }
 
   override onOverlap(): void {
