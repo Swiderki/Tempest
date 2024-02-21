@@ -7,7 +7,7 @@ export default class Spiker extends PhysicalGameObject {
   constructor( options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/spiker.obj`, options);
     this.game = game;
-    this.setPosition(0,0,1)
+    this.setPosition(0,0,0)
     this.velocity.z = -40
   }
   override Start(): void {

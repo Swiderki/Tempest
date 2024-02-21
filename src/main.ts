@@ -53,7 +53,7 @@ export class MyGame extends Engine {
 
     this.mainScene.addGameObject(this.player);
     this.mainScene.addGameObject(this.level);
-    this.mainScene.started = true;
+    this.mainScene._started = true;
     this.addEventListeners();
   }
 
