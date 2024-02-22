@@ -24,8 +24,6 @@ export default class Player extends PhysicalGameObject {
   }
 
   setPlayerPosition() {
-    console.log(this.game.currentLevelSide);
-
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;
     this.vertecies[0].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 1.2 * levelShift;
     this.vertecies[0].y = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 1.2 * levelShift;

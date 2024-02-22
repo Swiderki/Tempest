@@ -106,16 +106,28 @@ export class MyGame extends Engine {
   }
 
   movePlayer(speed: number) {
-    if (this.level.lopped) {
+    let isEdge = false;
+    if (!this.level.lopped) {
+      if (this.currentLevelSide + speed > this.level.numberOfSides) {
+        console.log("kraniec");
+        isEdge = true;
+      }
+      if (this.currentLevelSide + speed < 0) {
+        console.log("kraniec");
+        isEdge = true;
+      }
     }
-    this.currentLevelSide = this.currentLevelSide + speed;
-    this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
-    if (this.currentLevelSide < 0) {
-      this.currentLevelSide += this.level.numberOfSides;
-    }
+    if (!isEdge) {
+      this.currentLevelSide = this.currentLevelSide + speed;
+      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
+      if (this.currentLevelSide < 0) {
+        this.currentLevelSide += this.level.numberOfSides;
+      }
 
-    this.currentLevelSide = this.currentLevelSide % this.level.numberOfSides;
-    this.player.setPlayerPosition();
+      this.currentLevelSide = this.currentLevelSide % this.level.numberOfSides;
+
+      this.player.setPlayerPosition();
+    }
   }
 
   // to też można
