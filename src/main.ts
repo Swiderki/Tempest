@@ -37,7 +37,6 @@ export class MyGame extends Engine {
   flipperLastSpawn: number = 0;
 
   movementSpeed: number = 1;
-  numberOfSides: number = 0;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -79,10 +78,10 @@ export class MyGame extends Engine {
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
     if (this.keysPressed.has("a")) {
-      this.moveForward();
+      this.movePlayer(this.movementSpeed);
     }
     if (this.keysPressed.has("d")) {
-      this.moveBackward();
+      this.movePlayer(this.movementSpeed * -1);
     }
     if (this.keysPressed.has("w")) {
       Spiker.createSpiker(this);
@@ -102,23 +101,20 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
     if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, {x: 0,y: 0,z: 0});
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 });
     }
-  }
-  // można by to połączyć w jedno funkcję aby kodu było mniej
-  moveForward() {
-    this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
-    this.currentLevelSide = this.currentLevelSide % this.numberOfSides;
-    this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
-    this.player.setPlayerPosition();
   }
 
-  moveBackward() {
-    this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
+  movePlayer(speed: number) {
+    if (this.level.lopped) {
+    }
+    this.currentLevelSide = this.currentLevelSide + speed;
     this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
     if (this.currentLevelSide < 0) {
-      this.currentLevelSide += this.numberOfSides;
+      this.currentLevelSide += this.level.numberOfSides;
     }
+
+    this.currentLevelSide = this.currentLevelSide % this.level.numberOfSides;
     this.player.setPlayerPosition();
   }
 
