@@ -54,9 +54,26 @@ export default class Tanker extends PhysicalGameObject {
       EnemyBullet.createEnemyBullet(this.game, this.position);
     }
     if (this.position.z < 10) {
+
+      let closestVertexId = -1;
+      let minDistance = Infinity; 
+
+      this.game.level.vertecies.forEach((vertex, index) => {
+        const distance = Math.sqrt(
+          (vertex.x - this.position.x) ** 2 +
+          (vertex.y - this.position.y) ** 2 +
+          (vertex.z - this.position.z) ** 2
+        ); 
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestVertexId = index; 
+        }
+      });
+
       this.game.currentScene.removeGameObject(this.id);
       this.game.tankers.pop();
-      Flipper.createFlipper(this.game, this.position);
+      Flipper.createFlipper(this.game, this.position, closestVertexId);
 
     }
 

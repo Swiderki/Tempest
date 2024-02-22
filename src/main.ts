@@ -153,7 +153,7 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
     if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 });
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
     }
   }
 

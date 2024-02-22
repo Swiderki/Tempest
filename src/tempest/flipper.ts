@@ -10,19 +10,24 @@ export default class Fipper extends PhysicalGameObject {
   lastShootTime: number = Date.now();
   animationSpeed: number = 30;
   timeBetweenAnimations: number = 300;
-  constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
+  isMoving: boolean = false;
+  side: number = 0;
+  constructor(options: PhysicalObjectInitialConfig, game: MyGame,closestVertexId?: number) {
     super(`obj/flipper.obj`, options);
     this.game = game;
     this.autoupdateBoxCollider = true;
+    this.side = closestVertexId || -1;
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
         this.setLineColor(i, "red");
       }
       this.currentLevelSide = Math.round(Math.random() * this.game.level.numberOfPoints * 10) / 10;
-      this.depth = Math.round(Math.random() * 80);
-      //this.depth = 0;
+      // this.depth = Math.round(Math.random() * 80);
+      console.log(this.position.z)
+      if(this.position.z == 0) this.depth = 80;
+      else this.depth = this.position.z 
       this.setFlipperPosition();
-      this.moveRight();
+      // this.moveRight();
     });
   }
   override Start(): void {
@@ -48,36 +53,38 @@ export default class Fipper extends PhysicalGameObject {
     }
   }
 
-  static createFlipper(game: MyGame, position: { x: number; y: number; z: number }) {
+  static createFlipper(game: MyGame, position: { x: number; y: number; z: number }, closestVertexId: number) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-    const flipper = new Fipper({ position: [position.x, position.y, position.z], size: [1, 1, 1] }, game);
+    const flipper = new Fipper({ position: [position.x, position.y, position.z], size: [1, 1, 1] }, game, closestVertexId);
     game.currentScene.addGameObject(flipper);
     game.flippers.push(flipper);
   }
   setFlipperPosition() {
-    const side = Math.floor(this.currentLevelSide);
-    this.vertecies[0].x = this.game.level.vertecies[side].x * 0.95 * 0.5 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
-    this.vertecies[0].y = this.game.level.vertecies[side].y * 0.95 * 0.5 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
+    if(this.side == -1){
+    this.side = Math.floor(this.currentLevelSide);
+  }
+    this.vertecies[0].x = this.game.level.vertecies[this.side].x * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
+    this.vertecies[0].y = this.game.level.vertecies[this.side].y * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
     this.vertecies[0].z = this.depth;
-    this.vertecies[5].x = this.game.level.vertecies[side].x;
-    this.vertecies[5].y = this.game.level.vertecies[side].y;
+    this.vertecies[5].x = this.game.level.vertecies[this.side].x;
+    this.vertecies[5].y = this.game.level.vertecies[this.side].y;
     this.vertecies[5].z = this.depth;
-    this.vertecies[6].x = this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x;
-    this.vertecies[6].y = this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y;
+    this.vertecies[6].x = this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x;
+    this.vertecies[6].y = this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y;
     this.vertecies[6].z = this.depth;
-    this.vertecies[1].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
-    this.vertecies[1].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
+    this.vertecies[1].x = (this.game.level.vertecies[this.side].x * 0.9 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
+    this.vertecies[1].y = (this.game.level.vertecies[this.side].y * 0.9 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
     this.vertecies[1].z = this.depth;
-    this.vertecies[2].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
-    this.vertecies[2].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
+    this.vertecies[2].x = (this.game.level.vertecies[this.side].x * 0.1 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
+    this.vertecies[2].y = (this.game.level.vertecies[this.side].y * 0.1 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
     this.vertecies[2].z = this.depth;
-    this.vertecies[3].x = (this.game.level.vertecies[side].x * 0.8 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.2) * 0.95;
-    this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.8 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.2) * 0.95;
+    this.vertecies[3].x = (this.game.level.vertecies[this.side].x * 0.8 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.2) * 0.95;
+    this.vertecies[3].y = (this.game.level.vertecies[this.side].y * 0.8 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.2) * 0.95;
     this.vertecies[3].z = this.depth;
-    this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.2 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.8) * 0.95;
-    this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.2 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.8) * 0.95;
+    this.vertecies[4].x = (this.game.level.vertecies[this.side].x * 0.2 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.8) * 0.95;
+    this.vertecies[4].y = (this.game.level.vertecies[this.side].y * 0.2 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.8) * 0.95;
     this.vertecies[4].z = this.depth;
   }
   moveRight() {
