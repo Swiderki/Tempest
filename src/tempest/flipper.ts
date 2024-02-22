@@ -1,5 +1,6 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
+import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;
@@ -8,6 +9,7 @@ export default class Fipper extends PhysicalGameObject {
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/flipper.obj`, options);
     this.game = game;
+    this.autoupdateBoxCollider = true;
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
         this.setLineColor(i, "red");
@@ -19,7 +21,23 @@ export default class Fipper extends PhysicalGameObject {
       this.moveRight();
     });
   }
-  override Start(): void {}
+  override Start(): void {
+    this.showBoxcollider = true;
+    this.game.bullets.forEach((bullet) => {
+      const ov = new FlipperBulletOverlap(bullet, this, this.game);
+      this.game.currentScene.addOverlap(ov);
+    })
+  }
+
+  override updatePhysics(deltaTime: number): void {
+    this.generateBoxCollider()
+    this.boxCollider![1].z = this.position.z + 2;
+    this.checkOverlap()
+    this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
+    this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
+    this.position.z = this.depth;
+
+  }
 
   static createFlipper(game: MyGame) {
     if (game.currentScene == null) {
@@ -145,6 +163,47 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.4 + this.game.level.vertecies[(side + 1) % this.game.numberOfSides].y * 0.6) * 0.82;
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.numberOfSides].x * 0.1) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.numberOfSides].y * 0.1) * 0.9;
+  }
+  
+  checkOverlap(){
+    this.game.bullets.forEach((bullet) => {
+      const box1 = this.boxCollider!;
+      const box2 = bullet.boxCollider!;
+      const pos1 = this.position;
+      const pos2 = bullet.position;
+  
+      const obj1AABB = [
+        {
+          x: Math.min(pos1.x + box1[0].x, pos1.x + box1[1].x),
+          y: Math.min(pos1.y + box1[0].y, pos1.y + box1[1].y),
+          z: Math.min(pos1.z + box1[0].z, pos1.z + box1[1].z),
+        },
+        {
+          x: Math.max(pos1.x + box1[0].x, pos1.x + box1[1].x),
+          y: Math.max(pos1.y + box1[0].y, pos1.y + box1[1].y),
+          z: Math.max(pos1.z + box1[0].z, pos1.z + box1[1].z),
+        },
+      ];
+  
+      const obj2AABB = [
+        {
+          x: Math.min(pos2.x + box2[0].x, pos2.x + box2[1].x),
+          y: Math.min(pos2.y + box2[0].y, pos2.y + box2[1].y),
+          z: Math.min(pos2.z + box2[0].z, pos2.z + box2[1].z),
+        },
+        {
+          x: Math.max(pos2.x + box2[0].x, pos2.x + box2[1].x),
+          y: Math.max(pos2.y + box2[0].y, pos2.y + box2[1].y),
+          z: Math.max(pos2.z + box2[0].z, pos2.z + box2[1].z),
+        },
+      ];
+  
+      const overlapX = obj1AABB[0].x < obj2AABB[1].x && obj1AABB[1].x > obj2AABB[0].x;
+      const overlapY = obj1AABB[0].y < obj2AABB[1].y && obj1AABB[1].y > obj2AABB[0].y;
+      const overlapZ = obj1AABB[0].z < obj2AABB[1].z && obj1AABB[1].z > obj2AABB[0].z;
+      console.log(overlapX && overlapY && overlapZ)
+      return overlapX && overlapY && overlapZ;
+    })
   }
 }
 ``;

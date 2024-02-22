@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import { SpikerBulletOverlap } from "../overlaps/spikerBulletOverlap";
 import { SpikerTraceBulletOverlap } from "../overlaps/spikerTraceBulletOverlap";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
+import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 
 export default class Bullet extends PhysicalGameObject {
     game: MyGame;
@@ -32,6 +33,10 @@ export default class Bullet extends PhysicalGameObject {
       this.game.currentScene.addOverlap(ov);
     })
 
+    this.game.flippers.forEach((flipper) => {
+      const ov = new FlipperBulletOverlap(this, flipper, this.game);
+      this.game.currentScene.addOverlap(ov);
+    })
     // TODO: fix spiker trace overlap
     this.game.spikerTraces.forEach((trace) => {
       const ov = new SpikerTraceBulletOverlap(this, trace, this.game);
