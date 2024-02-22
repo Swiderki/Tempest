@@ -37,11 +37,11 @@ export default class Player extends PhysicalGameObject {
     this.vertecies[3].x = this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x;
     this.vertecies[3].y = this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y;
     this.vertecies[3].z = 0;
-    this.vertecies[4].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.3) * 0.9;
-    this.vertecies[4].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.3) * 0.9;
+    this.vertecies[4].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.3) * 0.96;
+    this.vertecies[4].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.3) * 0.96;
     this.vertecies[4].z = 0;
-    this.vertecies[5].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.7) * 0.9;
-    this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.9;
+    this.vertecies[5].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.7) * 0.96;
+    this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.96;
     this.vertecies[5].z = 0;
     this.game.level.updateColorOnPlayer();
   }

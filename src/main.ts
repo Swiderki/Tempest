@@ -8,6 +8,7 @@ import Spiker from "./tempest/spiker";
 import Tanker from "./tempest/tanker";
 import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
+import Fuseball from "./tempest/fuseball";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -27,6 +28,7 @@ export class MyGame extends Engine {
   flippers: Flipper[] = [];
   spikers: Spiker[] = [];
   tankers: Tanker[] = [];
+  fuseballs: Fuseball[] = [];
   spikerTraces: SpikerTrace[] = [];
   enemyBullets: EnemyBullet[] = [];
 
@@ -136,7 +138,8 @@ export class MyGame extends Engine {
       this.movePlayer(this.movementSpeed * -1);
     }
     if (this.keysPressed.has("w")) {
-      Spiker.createSpiker(this);
+      // Spiker.createSpiker(this);
+      Fuseball.createFuseball(this);
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
@@ -235,6 +238,10 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(flipper.id);
       }
       this.flippers = [];
+      for (const fuseball of this.fuseballs) {
+        this.currentScene.removeGameObject(fuseball.id);
+      }
+      this.fuseballs = [];
       for (const bullet of this.enemyBullets) {
         this.currentScene.removeGameObject(bullet.id);
       }
