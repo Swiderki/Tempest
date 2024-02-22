@@ -7,6 +7,7 @@ import Flipper from "./tempest/flipper";
 import Spiker from "./tempest/spiker";
 import Tanker from "./tempest/tanker";
 import SpikerTrace from "./tempest/spikerTrace";
+import EnemyBullet from "./tempest/enemyBullet";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -20,6 +21,7 @@ export class MyGame extends Engine {
   spikers: Spiker[] = [];
   tankers: Tanker[] = [];
   spikerTraces: SpikerTrace[] = [];
+  enemyBullets: EnemyBullet[] = [];
 
   // Scene
   mainScene: Scene = new Scene();

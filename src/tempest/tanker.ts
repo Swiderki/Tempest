@@ -2,13 +2,14 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { QuaternionUtils } from "drake-engine";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
+import EnemyBullet from "./enemyBullet";
 
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;
+  lastShootTime: number = 900;
   constructor( options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/tanker.obj`, options);
     this.game = game;
-    // if there is no position set, set it to 0,0,0
     if(!options.position){
       this.setPosition(0,0,0)
     }
@@ -38,6 +39,13 @@ export default class Tanker extends PhysicalGameObject {
 
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
+    this.boxCollider![0].z = this.position.z -2
+
+    const time = Date.now();
+    if(this.lastShootTime < time - 2000){
+      this.lastShootTime = time;
+      EnemyBullet.createEnemyBullet(this.game, this.position);
+    }
     if (this.position.z < 3) {
       this.game.currentScene.removeGameObject(this.id);
       this.game.tankers.pop();

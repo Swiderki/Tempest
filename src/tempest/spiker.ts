@@ -41,6 +41,7 @@ export default class Spiker extends PhysicalGameObject {
 
   override updatePhysics(deltaTime: number): void {
     // console.log("spiker" + this.position.z)
+    this.boxCollider![0].z = this.position.z -2
 
     super.updatePhysics(deltaTime);
     QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, {x: 0, y: 0, z: 1}, Math.PI / 2* deltaTime)

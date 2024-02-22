@@ -7,14 +7,19 @@ export default class Player extends PhysicalGameObject {
     super("obj/player.obj", options);
     this.game = game;
     this.autoupdateBoxCollider = true
-
   }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, "yellow");
     }
+
     this.showBoxcollider = true
 
+  }
+
+  override updatePhysics(deltaTime: number): void {
+    super.updatePhysics(deltaTime);
+    this.boxCollider![0].z = 9
   }
 
   setPlayerPosition() {
