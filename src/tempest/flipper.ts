@@ -8,6 +8,8 @@ export default class Fipper extends PhysicalGameObject {
   currentLevelSide: number = 0.5;
   depth: number = 0;
   lastShootTime: number = Date.now();
+  animationSpeed: number = 30;
+  timeBetweenAnimations: number = 300;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/flipper.obj`, options);
     this.game = game;
@@ -80,7 +82,6 @@ export default class Fipper extends PhysicalGameObject {
   }
   moveRight() {
     const side = Math.floor(this.currentLevelSide);
-    const animationSpeed = 30;
     setTimeout(() => {
       this.setToHalfTheRight();
       setTimeout(() => {
@@ -95,12 +96,12 @@ export default class Fipper extends PhysicalGameObject {
               this.setFlipperPosition();
               setTimeout(() => {
                 this.moveRight();
-              }, 300);
-            }, animationSpeed);
-          }, animationSpeed);
-        }, animationSpeed);
-      }, animationSpeed);
-    }, animationSpeed);
+              }, this.timeBetweenAnimations);
+            }, this.animationSpeed);
+          }, this.animationSpeed);
+        }, this.animationSpeed);
+      }, this.animationSpeed);
+    }, this.animationSpeed);
   }
   setToTheRight() {
     const side = Math.floor(this.currentLevelSide);
