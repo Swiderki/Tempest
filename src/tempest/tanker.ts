@@ -22,6 +22,8 @@ export default class Tanker extends PhysicalGameObject {
     }
     this.generateBoxCollider()    
     this.showBoxcollider = true
+
+    // Random position
     if(this.position.x == 0 && this.position.y == 0 && this.position.z == 0){
       const randomRange = this.game.level.vertecies.length / 2 - 1;
       const randomIndex = Math.floor(Math.random() * randomRange);
@@ -31,6 +33,7 @@ export default class Tanker extends PhysicalGameObject {
       this.move(middle.x, middle.y, 80);
     }
 
+    // Adding overlaps
     this.game.bullets.forEach((bullet) => {
       const ov = new TankerBulletOverlap(bullet, this, this.game)
       this.game.currentScene.addOverlap(ov);
@@ -39,8 +42,11 @@ export default class Tanker extends PhysicalGameObject {
 
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
+
+    // Fixing box collider
     this.boxCollider![0].z = this.position.z -2
 
+    // Creating bullets
     const time = Date.now();
     if(this.lastShootTime < time - 2000){
       this.lastShootTime = time;

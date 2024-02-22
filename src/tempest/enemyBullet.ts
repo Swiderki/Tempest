@@ -11,8 +11,9 @@ export default class EnemyBullet extends PhysicalGameObject {
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
-    // console.table([this.boxCollider![0], this.boxCollider![1]])
+
     this.boxCollider = [{x: this.position.x - 0.5, y: this.position.y - 0.5, z: this.position.z - 0.5}, {x: this.position.x + 0.5, y: this.position.y + 0.5, z: this.position.z + 2}];
+    
     if(this.position.z < -125){
         this.game.currentScene.removeGameObject(this.id);  
         this.game.enemyBullets = this.game.enemyBullets.filter((bullet) => bullet.id !== this.id)
@@ -21,6 +22,7 @@ export default class EnemyBullet extends PhysicalGameObject {
 
   override Start(): void {
     this.showBoxcollider = true
+
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, "white");
     }
@@ -34,6 +36,7 @@ export default class EnemyBullet extends PhysicalGameObject {
     if (!game.currentScene) {
       throw new Error("Main scene must be set first.");
     }
+
     const bullet = new EnemyBullet({ position: [position.x, position.y, position.z], size: [0.7, 0.7, 0.7] }, game);
     game.currentScene.addGameObject(bullet);
     game.enemyBullets.push(bullet);

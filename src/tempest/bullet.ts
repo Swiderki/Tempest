@@ -10,12 +10,11 @@ export default class Bullet extends PhysicalGameObject {
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/bullet.obj`, options);
     this.game = game;
-    this.velocity.z = 29
+    this.velocity.z = 60;
     this.boxCollider = [{x: this.position.x - 0.5, y: this.position.y - 0.5, z: this.position.z - 0.5}, {x: this.position.x + 0.5, y: this.position.y + 0.5, z: this.position.z + 2}];
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);
-    // console.table([this.boxCollider![0], this.boxCollider![1]])
     this.boxCollider = [{x: this.position.x - 0.5, y: this.position.y - 0.5, z: this.position.z - 0.5}, {x: this.position.x + 0.5, y: this.position.y + 0.5, z: this.position.z + 2}];
 
     if(this.position.z >= 80){
@@ -26,10 +25,11 @@ export default class Bullet extends PhysicalGameObject {
 
   override Start(): void {
     this.showBoxcollider = true
+
+    // Adding overlaps
     this.game.spikers.forEach((spiker) => {
       const ov = new SpikerBulletOverlap(this, spiker, this.game);
       this.game.currentScene.addOverlap(ov);
-      console.log("AS")
     })
 
     // TODO: fix spiker trace overlap

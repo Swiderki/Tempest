@@ -28,11 +28,7 @@ export default class Fipper extends PhysicalGameObject {
     const flipper = new Fipper({ position: [0, 0, 0], size: [1, 1, 1] }, game);
     game.currentScene.addGameObject(flipper);
     game.flippers.push(flipper);
-    //console.log(flipper.vertecies);
-    // flipper.vertecies[2] = game.level.vertecies[Math.floor(game.currentLevelSide)];
-    // flipper.vertecies[2].z = 50;
-    // flipper.vertecies[3] = game.level.vertecies[(Math.floor(game.currentLevelSide) + 1) % game.numberOfSides] ;
-    // flipper.vertecies[3].z = 50;
+
   }
   setFlipperPosition() {
     const side = Math.floor(this.currentLevelSide);
