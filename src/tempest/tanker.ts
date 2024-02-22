@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import { QuaternionUtils } from "drake-engine";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import EnemyBullet from "./enemyBullet";
+import Flipper from "./flipper";
 
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;
@@ -52,9 +53,11 @@ export default class Tanker extends PhysicalGameObject {
       this.lastShootTime = time;
       EnemyBullet.createEnemyBullet(this.game, this.position);
     }
-    if (this.position.z < 3) {
+    if (this.position.z < 10) {
       this.game.currentScene.removeGameObject(this.id);
       this.game.tankers.pop();
+      Flipper.createFlipper(this.game, this.position);
+
     }
 
   }

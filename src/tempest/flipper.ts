@@ -1,11 +1,13 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
+import EnemyBullet from "./enemyBullet";
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;
   currentLevelSide: number = 0.5;
   depth: number = 0;
+  lastShootTime: number = Date.now();
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/flipper.obj`, options);
     this.game = game;
@@ -32,18 +34,24 @@ export default class Fipper extends PhysicalGameObject {
   override updatePhysics(deltaTime: number): void {
     this.generateBoxCollider()
     this.boxCollider![1].z = this.position.z + 2;
-    this.checkOverlap()
     this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
     this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
     this.position.z = this.depth;
 
+
+        // Creating bullets
+        const time = Date.now();
+        if(this.lastShootTime < time - 2000){
+          this.lastShootTime = time;
+          EnemyBullet.createEnemyBullet(this.game, this.position);
+        }
   }
 
-  static createFlipper(game: MyGame) {
+  static createFlipper(game: MyGame, position: { x: number; y: number; z: number }) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
     }
-    const flipper = new Fipper({ position: [0, 0, 0], size: [1, 1, 1] }, game);
+    const flipper = new Fipper({ position: [position.x, position.y, position.z], size: [1, 1, 1] }, game);
     game.currentScene.addGameObject(flipper);
     game.flippers.push(flipper);
 

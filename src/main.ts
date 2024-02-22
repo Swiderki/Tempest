@@ -102,7 +102,7 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
     if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this);
+      Flipper.createFlipper(this, {x: 0,y: 0,z: 0});
     }
   }
   // można by to połączyć w jedno funkcję aby kodu było mniej
@@ -175,6 +175,11 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(flipper.id);
       }
       this.flippers = [];
+      for (const bullet of this.enemyBullets) {
+        this.currentScene.removeGameObject(bullet.id);
+      }
+      this.enemyBullets = [];
+
       this.level.updateColorOnPlayer();
     }, 200);
   }
