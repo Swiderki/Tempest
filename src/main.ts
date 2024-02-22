@@ -84,9 +84,8 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("d")) {
       this.moveBackward();
     }
-    if(this.keysPressed.has("w")){
+    if (this.keysPressed.has("w")) {
       Spiker.createSpiker(this);
-
     }
     if (this.keysPressed.has("k")) {
       this.shoot();
@@ -102,10 +101,12 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("e")) {
       this.nextLevel();
     }
+    if (this.keysPressed.has("r")) {
+      Flipper.createFlipper(this);
+    }
   }
   // można by to połączyć w jedno funkcję aby kodu było mniej
   moveForward() {
-    this.level.updateColorOnPlayer();
     this.currentLevelSide = this.currentLevelSide + this.movementSpeed;
     this.currentLevelSide = this.currentLevelSide % this.numberOfSides;
     this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
@@ -113,7 +114,6 @@ export class MyGame extends Engine {
   }
 
   moveBackward() {
-    this.level.updateColorOnPlayer();
     this.currentLevelSide = this.currentLevelSide - this.movementSpeed;
     this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
     if (this.currentLevelSide < 0) {
