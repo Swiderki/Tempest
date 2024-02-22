@@ -14,7 +14,7 @@ export default class Level extends PhysicalGameObject {
   numberOfSides: number = 0;
   numberOfPoints: number = 0;
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
-    const nonLopped = [8];
+    const nonLopped = [8, 9];
     super(`obj/level${levelId}.obj`, options);
     this.game = game;
     if (nonLopped.includes(levelId)) {
