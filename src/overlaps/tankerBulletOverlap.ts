@@ -17,7 +17,6 @@ export class TankerBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-    console.log("ASDASD")
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.tanker.id);

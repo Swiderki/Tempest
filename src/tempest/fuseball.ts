@@ -1,6 +1,6 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
-import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
+import { PlayerFuseballOverlap } from "../overlaps/playerFuseballOverlap";
 import { FuseballBulletOverlap } from "../overlaps/fuseballBulletOverlap";
 import Flipper from "./flipper";
 
@@ -44,6 +44,8 @@ export default class Fuseball extends PhysicalGameObject {
         const ov = new FuseballBulletOverlap(bullet, this, this.game);
         this.game.currentScene!.addOverlap(ov);
     })
+    const ov = new PlayerFuseballOverlap(this, this.game.player, this.game);
+    this.game.currentScene!.addOverlap(ov);
   }
 
   override updatePhysics(deltaTime: number): void {

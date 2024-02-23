@@ -164,11 +164,9 @@ export class MyGame extends Engine {
     let isEdge = false;
     if (!this.level.lopped) {
       if (this.currentLevelSide + speed > this.level.numberOfSides) {
-        console.log("kraniec");
         isEdge = true;
       }
       if (this.currentLevelSide + speed < 0) {
-        console.log("kraniec");
         isEdge = true;
       }
     }

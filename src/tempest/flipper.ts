@@ -26,7 +26,6 @@ export default class Fipper extends PhysicalGameObject {
         this.setLineColor(i, "red");
       }
       this.currentLevelSide = Math.round(Math.random() * this.game.level.numberOfPoints * 10) / 10;
-      console.log(this.position.z)
       if(this.position.z == 0) this.depth = 80;
       else this.depth = this.position.z 
       this.setFlipperPosition();
@@ -88,7 +87,6 @@ export default class Fipper extends PhysicalGameObject {
         this.side += direction;
 
       }
-      console.log(this.side)
 
       this.moveRight(); 
 
@@ -99,7 +97,6 @@ export default class Fipper extends PhysicalGameObject {
         this.side += direction;
 
       }
-      console.log(this.side)
 
       this.moveLeft(); 
 

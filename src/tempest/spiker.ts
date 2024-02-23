@@ -59,7 +59,7 @@ export default class Spiker extends PhysicalGameObject {
     if(this.isAddingTrace){
       this.trace.vertecies[1] = {x: this.position.x, y: this.position.y, z: this.position.z}
     }
-    if (this.position.z < this.randomRange) {
+    if (this.position.z < 5) {
       this.isAddingTrace = false;
       this.velocity.z = 20;
     }

@@ -13,12 +13,10 @@ export class FlipperBulletOverlap extends Overlap {
     this.game = game;
     this.bullet = obj1;
     this.flipper = obj2;
-    console.log("added")
   }
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-    console.log("ASDASD")
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.flipper.id);

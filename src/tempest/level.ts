@@ -27,13 +27,9 @@ export default class Level extends PhysicalGameObject {
       this.numberOfSides = (this.game.level.getMesh().length - this.game.level.vertecies.length / 2) / 2;
       this.numberOfPoints = this.game.level.vertecies.length / 2;
     });
-    console.log(this.lopped);
   }
   override Start(): void {
-    console.log();
     this.game.player.setPlayerPosition();
-    console.log(`number fo sides ${this.numberOfSides}`);
-    console.log(`number fo points ${this.numberOfPoints}`);
   }
   updateColorOnPlayer() {
     let currSide = Math.floor(this.game.currentLevelSide);
