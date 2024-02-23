@@ -17,11 +17,14 @@ export class PlayerFuseballOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
+    console.log("ASDDSA")
     // console.log(this.flipper.canBeCollided)
     // if(this.flipper.canBeCollided){
     //     this.game.currentScene.removeGameObject(this.flipper.id);
     //     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
     // }
+    this.game.currentScene.removeGameObject(this.fuseball.id);
+    this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id); 
 
 
   }

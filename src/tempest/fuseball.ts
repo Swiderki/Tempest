@@ -8,7 +8,8 @@ import Flipper from "./flipper";
 export default class Fuseball extends PhysicalGameObject {
   game: MyGame;
   targetVertex: {x: number, y: number, z: number} | null = null;
-
+  actualIndex: number = 0;
+  isMoving: boolean = false;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/fuseball.obj`, options);
     this.game = game;
@@ -35,6 +36,7 @@ export default class Fuseball extends PhysicalGameObject {
     }}
     const randomRange = this.game.level.vertecies.length / 2 - 1;
     const randomIndex = Math.floor(Math.random() * randomRange);
+    this.actualIndex = randomIndex;
     const randomVertex1 = this.game.level.vertecies[randomIndex];
     const randomVertex2 = this.game.level.vertecies[randomIndex + 1];
     const middle = { x: (randomVertex1.x + randomVertex2.x) / 2, y: (randomVertex1.y + randomVertex2.y) / 2, z: 80 };
@@ -48,52 +50,43 @@ export default class Fuseball extends PhysicalGameObject {
     this.game.currentScene!.addOverlap(ov);
   }
 
-  override updatePhysics(deltaTime: number): void {
-    super.updatePhysics(deltaTime);
+override updatePhysics(deltaTime: number): void {
+  super.updatePhysics(deltaTime);
 
-    this.boxCollider![0].z = this.position.z - 2;
+  // Aktualizacja pozycji dolnej krawędzi boxCollidera
+  this.boxCollider![0].z = this.position.z - 2;
 
-    if (this.position.z <= 0) {
-      if (!this.targetVertex) {
-        this.targetVertex = this.findNearestVertex();
-        this.moveToTarget();
-      } else if (this.isAtTarget()) {
-        this.targetVertex = this.findNextVertex();
-        this.moveToTarget();
+
+  let targetSide = this.game.currentLevelSide;
+  let direction = 0;
+  if (this.actualIndex != targetSide) {
+    let clockwiseDistance = (targetSide - this.actualIndex + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+    let counterClockwiseDistance = (this.actualIndex - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+
+    direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
+  }
+
+  if (this.position.z <= 0) {
+    if (!this.targetVertex) {
+
+      this.actualIndex = (this.actualIndex + direction) % this.game.level.vertecies.length; 
+      if(this.actualIndex == 0){
+        this.actualIndex = this.game.level.vertecies.length ;
       }
+      this.targetVertex = this.game.level.vertecies[this.actualIndex];
+      this.moveToTarget();
+    } else if (this.isAtTarget()) {
+      this.actualIndex = (this.actualIndex + direction) % this.game.level.vertecies.length;
+      if(this.actualIndex == 0){
+        this.actualIndex = this.game.level.vertecies.length ;
+      }
+      this.targetVertex = this.game.level.vertecies[this.actualIndex];
+      this.moveToTarget();
     }
   }
+}
 
-  findNearestVertex() {
-    return this.game.level.vertecies.reduce((prev, curr) => {
-      const prevDistance = Math.hypot(prev.x - this.position.x, prev.y - this.position.y, prev.z - this.position.z);
-      const currDistance = Math.hypot(curr.x - this.position.x, curr.y - this.position.y, curr.z - this.position.z);
-      return prevDistance < currDistance ? prev : curr;
-    });
-  }
-  findNextVertex() {
-    if (!this.targetVertex) return null;
-  
-    const currentIndex = this.game.level.vertecies.findIndex(vertex => 
-      vertex.x === this.targetVertex!.x && vertex.y === this.targetVertex!.y && vertex.z === this.targetVertex!.z
-    );
-  
-    if (currentIndex === -1) return null;
-  
-    let nextIndex;
-  
-    if (currentIndex === 0) {
-      nextIndex = currentIndex + 1;
-    }
-    else if (currentIndex === this.game.level.vertecies.length - 1) {
-      nextIndex = currentIndex - 1;
-    }
-    else {
-      nextIndex = Math.random() > 0.5 ? currentIndex + 1 : currentIndex - 1;
-    }
-  
-    return this.game.level.vertecies[nextIndex];
-  }
+
   
   moveToTarget() {
     if (this.targetVertex) {
@@ -104,14 +97,12 @@ export default class Fuseball extends PhysicalGameObject {
       this.velocity.z = 0;
     }
   }
-
   isAtTarget() {
-    if (this.targetVertex) {
-      const distance = Math.hypot(this.targetVertex.x - this.position.x, this.targetVertex.y - this.position.y);
-      return distance < 0.2; 
-    }
-    return false;
+    if (!this.targetVertex) return false;
+    const distance = Math.hypot(this.targetVertex.x - this.position.x, this.targetVertex.y - this.position.y);
+    return distance < 0.1; 
   }
+  
 
 
   static createFuseball(game: MyGame){
