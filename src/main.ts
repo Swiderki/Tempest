@@ -9,6 +9,7 @@ import Tanker from "./tempest/tanker";
 import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
 import Fuseball from "./tempest/fuseball";
+import Particle from "./tempest/particle";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -31,7 +32,7 @@ export class MyGame extends Engine {
   fuseballs: Fuseball[] = [];
   spikerTraces: SpikerTrace[] = [];
   enemyBullets: EnemyBullet[] = [];
-
+  particles: Particle[] = [];
   // Scene
   mainScene: Scene = new Scene();
 
@@ -49,9 +50,9 @@ export class MyGame extends Engine {
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
-    this.scoreText = new GUIText("Score: 0", 50, "Arial", "green", 100);
-    this.bestScoreText = new GUIText("Best Score: 0", 30, "Arial", "green", 200);
-    this.levelText = new GUIText("Level: 1", 25, "Arial", "blue", 300);
+    this.scoreText = new GUIText("0", 50, "Arial", "green", 100);
+    this.bestScoreText = new GUIText("0", 30, "Arial", "green", 200);
+    this.levelText = new GUIText("1", 25, "Arial", "blue", 300);
     this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"),new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"),new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")]
 
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
@@ -82,14 +83,11 @@ export class MyGame extends Engine {
     this.gui.addElement(this.scoreText);
     this.gui.addElement(this.bestScoreText);
     this.gui.addElement(this.levelText);
-    this.levelText.text = "1";
     this.levelText.position = { x:  this.getCanvas.width/2 - this.levelText.width/2, y: 40 };
 
-    this.bestScoreText.text = "222";
     this.bestScoreText.position = { x: this.getCanvas.width/2 - this.bestScoreText.width/2, y: 10 };
 
     this.scoreText.position = { x: 200, y: 10 };
-    this.scoreText.text = "10000";
     this.iconsID[0] = this.gui.addElement(this.icons[0]);
     this.iconsID[1] = this.gui.addElement(this.icons[1]);
     this.iconsID[2] = this.gui.addElement(this.icons[2]);
@@ -99,19 +97,19 @@ export class MyGame extends Engine {
   }
 
   updateScore(newScore: number) {
-    this.scoreText.text = `Score: ${newScore}`;
+    this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
     // Update the GUI element to display the new score
   }
 
   updateBestScore(newScore: number) {
-    this.bestScoreText.text = `Best Score: ${newScore}`;
+    this.bestScoreText.text = `${Number(this.bestScoreText.text) + newScore}`;
     this.bestScoreText.position = { x: this.getCanvas.width/2 - this.bestScoreText.width/2, y: 10 };
 
     // Update the GUI element to display the new best score
   }
 
   updateLevel(newLevel: number) {
-    this.levelText.text = `Level: ${newLevel}`;
+    this.levelText.text = `${newLevel}`;
     // Update the GUI element to display the new level
   }
   addEventListeners() {
@@ -138,7 +136,7 @@ export class MyGame extends Engine {
       this.movePlayer(this.movementSpeed * -1);
     }
     if (this.keysPressed.has("w")) {
-      // Spiker.createSpiker(this);
+      Spiker.createSpiker(this);
       Fuseball.createFuseball(this);
     }
     if (this.keysPressed.has("k")) {
@@ -226,18 +224,31 @@ export class MyGame extends Engine {
       });
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
+        this.updateScore(100)
+
       }
       this.tankers = [];
       for (const spiker of this.spikers) {
         this.currentScene.removeGameObject(spiker.id);
+        this.updateScore(50)
+
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
+        this.updateScore(150)
+
       }
       this.flippers = [];
       for (const fuseball of this.fuseballs) {
         this.currentScene.removeGameObject(fuseball.id);
+        if(fuseball.position.z > 30){
+          this.updateScore(250)
+        }else if(fuseball.position.z > 10){
+          this.updateScore(500)
+        }else{
+          this.updateScore(750)
+        }
       }
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {

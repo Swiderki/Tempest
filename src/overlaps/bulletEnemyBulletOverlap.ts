@@ -1,19 +1,19 @@
 import { Overlap } from "drake-engine";
 import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
-import Flipper from "../tempest/flipper";
+import EnemyBullet from "../tempest/enemyBullet";
 import Particle from "../tempest/particle";
 
-export class FlipperBulletOverlap extends Overlap {
+export class BulletEnemyBulletOverlap extends Overlap {
   private game: MyGame;
   private collised: boolean = false;
   private bullet: Bullet;
-  private flipper: Flipper;
-  constructor(obj1: Bullet, obj2: Flipper, game: MyGame) {
+  private enemyBullet: EnemyBullet;
+  constructor(obj1: Bullet, obj2: EnemyBullet, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
     this.bullet = obj1;
-    this.flipper = obj2;
+    this.enemyBullet = obj2;
   }
 
   override onOverlap(): void {
@@ -23,10 +23,9 @@ export class FlipperBulletOverlap extends Overlap {
     this.game.particles.push(particle);
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
-    this.game.currentScene.removeGameObject(this.flipper.id);
-    this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
-    // this.game.currentScene.removeOverlap(this.id);
-    this.game.updateScore(150)
+    this.game.currentScene.removeGameObject(this.enemyBullet.id);
+    this.game.enemyBullets = this.game.enemyBullets.filter((enemyBullet) => enemyBullet.id !== this.enemyBullet.id);
+
 
   }
   

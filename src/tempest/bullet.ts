@@ -5,6 +5,7 @@ import { SpikerTraceBulletOverlap } from "../overlaps/spikerTraceBulletOverlap";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 import { FuseballBulletOverlap } from "../overlaps/fuseballBulletOverlap";
+import { BulletEnemyBulletOverlap } from "../overlaps/bulletEnemyBulletOverlap";
 
 export default class Bullet extends PhysicalGameObject {
     game: MyGame;
@@ -50,6 +51,10 @@ export default class Bullet extends PhysicalGameObject {
     })
     this.game.fuseballs.forEach((fuseball) => {
       const ov = new FuseballBulletOverlap(this, fuseball, this.game);
+      this.game.currentScene.addOverlap(ov);
+    })
+    this.game.enemyBullets.forEach((bullet) => {  
+      const ov = new BulletEnemyBulletOverlap(this, bullet, this.game);
       this.game.currentScene.addOverlap(ov);
     })
   }

@@ -2,6 +2,7 @@ import { Overlap } from "drake-engine";
 import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import SpikerTrace from "../tempest/spikerTrace";
+import Particle from "../tempest/particle";
 
 export class SpikerTraceBulletOverlap extends Overlap {
   private game: MyGame;
@@ -20,6 +21,9 @@ export class SpikerTraceBulletOverlap extends Overlap {
     if (!this.game.currentScene) return;
     if(this.collised) return
     this.collised = true
+    const particle = new Particle({ position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z], size: [0.1, 0.1, 0.1] }, this.game);
+    this.game.currentScene.addGameObject(particle);
+    this.game.particles.push(particle);
     if(this.spikerTrace.vertecies[1].z + 10> 80){
 
       this.game.currentScene.removeGameObject(this.spikerTrace.id);

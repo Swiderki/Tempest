@@ -1,6 +1,8 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { PlayerEnemyBulletOverlap } from "../overlaps/playerEnemyBullet.Overlap";
+import { BulletEnemyBulletOverlap } from "../overlaps/bulletEnemyBulletOverlap";
+
 export default class EnemyBullet extends PhysicalGameObject {
     game: MyGame;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
@@ -29,6 +31,10 @@ export default class EnemyBullet extends PhysicalGameObject {
     for (let i = 0; i < this.getMesh().length/2; i++) {
       this.setLineColor(i, "red");
     }
+    this.game.bullets.forEach((bullet) => {
+      const ov = new BulletEnemyBulletOverlap(bullet, this, this.game);
+      this.game.currentScene?.addOverlap(ov);
+    })
 
   }
 

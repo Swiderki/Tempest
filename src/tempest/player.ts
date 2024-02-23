@@ -53,7 +53,7 @@ export default class Player extends PhysicalGameObject {
 
   destroyFlipper() {
     this.game.flippers.forEach((flipper) => {
-      if(flipper.canBeCollided && flipper.currentLevelSide%16 == this.game.currentLevelSide-0.5){
+      if(flipper.canBeCollided && flipper.currentLevelSide%16 == this.game.currentLevelSide-0.5 && flipper.position.z <= 0.5 ){
         this.game.currentScene.removeGameObject(flipper.id);
         this.game.flippers = this.game.flippers.filter((f) => f.id !== flipper.id);
       }

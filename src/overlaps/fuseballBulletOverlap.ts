@@ -2,6 +2,7 @@ import { Overlap } from "drake-engine";
 import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import Fuseball from "../tempest/fuseball";
+import Particle from "../tempest/particle";
 
 export class FuseballBulletOverlap extends Overlap {
   private game: MyGame;
@@ -17,11 +18,22 @@ export class FuseballBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
+
+    if(this.fuseball.position.z > 30){
+      this.game.updateScore(250)
+    }else if(this.fuseball.position.z > 10){
+      this.game.updateScore(500)
+    }else{
+      this.game.updateScore(750)
+    }
+
+    const particle = new Particle({ position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z], size: [0.1, 0.1, 0.1] }, this.game);
+    this.game.currentScene.addGameObject(particle);
+    this.game.particles.push(particle);
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.fuseball.id);
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id);
     // this.game.currentScene.removeOverlap(this.id);
-
   }
 }
