@@ -1,17 +1,21 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
+import { PlayerFlipperOverlap } from "../overlaps/playerFlipperOverlap";
 import EnemyBullet from "./enemyBullet";
+
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;
-  currentLevelSide: number = 0.5;
+  currentLevelSide: number = 0;
   depth: number = 0;
   lastShootTime: number = Date.now();
   animationSpeed: number = 30;
   timeBetweenAnimations: number = 300;
   isMoving: boolean = false;
   side: number = 0;
+  lastTimeMoved = Date.now();
+  canBeCollided = true;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame,closestVertexId?: number) {
     super(`obj/flipper.obj`, options);
     this.game = game;
@@ -22,12 +26,10 @@ export default class Fipper extends PhysicalGameObject {
         this.setLineColor(i, "red");
       }
       this.currentLevelSide = Math.round(Math.random() * this.game.level.numberOfPoints * 10) / 10;
-      // this.depth = Math.round(Math.random() * 80);
       console.log(this.position.z)
       if(this.position.z == 0) this.depth = 80;
       else this.depth = this.position.z 
       this.setFlipperPosition();
-      // this.moveRight();
     });
   }
   override Start(): void {
@@ -36,23 +38,74 @@ export default class Fipper extends PhysicalGameObject {
       const ov = new FlipperBulletOverlap(bullet, this, this.game);
       this.game.currentScene.addOverlap(ov);
     });
+    const ov = new PlayerFlipperOverlap(this, this.game.player, this.game);
+    this.game.currentScene.addOverlap(ov);
   }
 
   override updatePhysics(deltaTime: number): void {
-    this.generateBoxCollider();
-    this.boxCollider![1].z = this.position.z + 2;
-    this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
-    this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
-    this.position.z = this.depth;
 
-    // Creating bullets
     const time = Date.now();
+    if (this.position.z <= 0 && time - this.lastTimeMoved > 2000) {
+      this.moveTowardsPlayer();
+      this.lastTimeMoved = time;
+    }else if(this.position.z > 0){
+      this.depth += -30*deltaTime;
+      this.setFlipperPosition();
+    }
+    this.updateFlipperPosition();
+
+
     if (this.lastShootTime < time - 2000) {
       this.lastShootTime = time;
       EnemyBullet.createEnemyBullet(this.game, this.position);
     }
   }
 
+  updateFlipperPosition() {
+    
+    
+    this.generateBoxCollider();
+    this.boxCollider![1].z = this.position.z + 2;
+    this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
+    this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
+    this.position.z = this.depth;
+  }
+
+  moveTowardsPlayer(): void {
+    let targetSide = this.game.currentLevelSide;
+    let direction = 0;
+    if (this.side != targetSide) {
+      let clockwiseDistance = (targetSide - this.side + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+      let counterClockwiseDistance = (this.side - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+  
+      direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
+    }
+  
+    if (direction == 1) {
+      if (this.side + 1 > this.game.level.numberOfPoints) {
+        this.side = 0;        
+      }else{
+        this.side += direction;
+
+      }
+      console.log(this.side)
+
+      this.moveRight(); 
+
+    } else if (direction == -1) {
+      if (this.side - 1 ==0) {
+        this.side = this.game.level.numberOfPoints ;
+      }else{
+        this.side += direction;
+
+      }
+      console.log(this.side)
+
+      this.moveLeft(); 
+
+    }
+  }
+  
   static createFlipper(game: MyGame, position: { x: number; y: number; z: number }, closestVertexId: number) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
@@ -65,6 +118,8 @@ export default class Fipper extends PhysicalGameObject {
     if(this.side == -1){
     this.side = Math.floor(this.currentLevelSide);
   }
+  this.currentLevelSide = this.side;
+
     this.vertecies[0].x = this.game.level.vertecies[this.side].x * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
     this.vertecies[0].y = this.game.level.vertecies[this.side].y * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
     this.vertecies[0].z = this.depth;
@@ -90,6 +145,7 @@ export default class Fipper extends PhysicalGameObject {
   moveRight() {
     const side = Math.floor(this.currentLevelSide);
     setTimeout(() => {
+      this.canBeCollided = false;
       this.setToHalfTheRight();
       setTimeout(() => {
         this.setToTheRight();
@@ -100,17 +156,55 @@ export default class Fipper extends PhysicalGameObject {
           setTimeout(() => {
             this.setToHalfTheLeft();
             setTimeout(() => {
+
               this.setFlipperPosition();
               setTimeout(() => {
-                this.moveRight();
-              }, this.timeBetweenAnimations);
+                this.canBeCollided = true;
+
+                if(this.side%16 == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
+                  this.game.currentScene.removeGameObject(this.id);
+                  this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+                }              }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
         }, this.animationSpeed);
       }, this.animationSpeed);
     }, this.animationSpeed);
   }
+
+  moveLeft() {
+    const side = Math.floor(this.currentLevelSide);
+    setTimeout(() => {
+      this.setToHalfTheLeft();
+      this.canBeCollided = false;
+
+      setTimeout(() => {
+        this.setToTheLeft();
+        this.currentLevelSide--;
+        this.currentLevelSide = this.currentLevelSide % this.game.level.numberOfPoints;
+        setTimeout(() => {
+          this.setToTheRight();
+          setTimeout(() => {
+            this.setToHalfTheRight();
+            setTimeout(() => {
+
+              this.setFlipperPosition();
+              setTimeout(() => {
+                this.canBeCollided = true;
+
+                if(this.side%16 == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
+                  this.game.currentScene.removeGameObject(this.id);
+                  this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+                }              }, 50);
+            }, this.animationSpeed);
+          }, this.animationSpeed);
+        }, this.animationSpeed);
+      }, this.animationSpeed);
+    }, this.animationSpeed);
+  }
+
   setToTheRight() {
+    
     const side = Math.floor(this.currentLevelSide);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.8;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.8;
@@ -126,6 +220,8 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.7;
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
+    this.updateFlipperPosition();
+
   }
   setToHalfTheRight() {
     const side = Math.floor(this.currentLevelSide);
@@ -143,6 +239,8 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.6 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.4) * 0.82;
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
+    this.updateFlipperPosition();
+
   }
   setToTheLeft() {
     const side = Math.floor(this.currentLevelSide);
@@ -160,6 +258,8 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.7;
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
+    this.updateFlipperPosition();
+
   }
   setToHalfTheLeft() {
     const side = Math.floor(this.currentLevelSide);
@@ -177,47 +277,10 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.4 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.6) * 0.82;
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
+    this.updateFlipperPosition();
+
   }
 
-  checkOverlap() {
-    this.game.bullets.forEach((bullet) => {
-      const box1 = this.boxCollider!;
-      const box2 = bullet.boxCollider!;
-      const pos1 = this.position;
-      const pos2 = bullet.position;
 
-      const obj1AABB = [
-        {
-          x: Math.min(pos1.x + box1[0].x, pos1.x + box1[1].x),
-          y: Math.min(pos1.y + box1[0].y, pos1.y + box1[1].y),
-          z: Math.min(pos1.z + box1[0].z, pos1.z + box1[1].z),
-        },
-        {
-          x: Math.max(pos1.x + box1[0].x, pos1.x + box1[1].x),
-          y: Math.max(pos1.y + box1[0].y, pos1.y + box1[1].y),
-          z: Math.max(pos1.z + box1[0].z, pos1.z + box1[1].z),
-        },
-      ];
-
-      const obj2AABB = [
-        {
-          x: Math.min(pos2.x + box2[0].x, pos2.x + box2[1].x),
-          y: Math.min(pos2.y + box2[0].y, pos2.y + box2[1].y),
-          z: Math.min(pos2.z + box2[0].z, pos2.z + box2[1].z),
-        },
-        {
-          x: Math.max(pos2.x + box2[0].x, pos2.x + box2[1].x),
-          y: Math.max(pos2.y + box2[0].y, pos2.y + box2[1].y),
-          z: Math.max(pos2.z + box2[0].z, pos2.z + box2[1].z),
-        },
-      ];
-
-      const overlapX = obj1AABB[0].x < obj2AABB[1].x && obj1AABB[1].x > obj2AABB[0].x;
-      const overlapY = obj1AABB[0].y < obj2AABB[1].y && obj1AABB[1].y > obj2AABB[0].y;
-      const overlapZ = obj1AABB[0].z < obj2AABB[1].z && obj1AABB[1].z > obj2AABB[0].z;
-      console.log(overlapX && overlapY && overlapZ);
-      return overlapX && overlapY && overlapZ;
-    });
-  }
 }
-``;
+

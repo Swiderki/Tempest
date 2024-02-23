@@ -21,7 +21,11 @@ export default class Player extends PhysicalGameObject {
     this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
     this.position.z = this.boxCollider![1].z;
     this.boxCollider![0].z = 1;
+    this.boxCollider![1].z = -1;
+
   }
+
+
 
   setPlayerPosition() {
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;
@@ -44,5 +48,15 @@ export default class Player extends PhysicalGameObject {
     this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.96;
     this.vertecies[5].z = 0;
     this.game.level.updateColorOnPlayer();
+    this.destroyFlipper();
+  }
+
+  destroyFlipper() {
+    this.game.flippers.forEach((flipper) => {
+      if(flipper.canBeCollided && flipper.currentLevelSide%16 == this.game.currentLevelSide-0.5){
+        this.game.currentScene.removeGameObject(flipper.id);
+        this.game.flippers = this.game.flippers.filter((f) => f.id !== flipper.id);
+      }
+    })
   }
 }
