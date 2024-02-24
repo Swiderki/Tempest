@@ -167,6 +167,8 @@ export default class Fipper extends PhysicalGameObject {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
                   this.game.enemiesInGame--;
+                  this.game.deleteLife()
+
                   blasterExplosionSound.play();
 
                 }              }, 50);
@@ -201,6 +203,8 @@ export default class Fipper extends PhysicalGameObject {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
                   this.game.enemiesInGame--;
+                  this.game.deleteLife()
+
                   blasterExplosionSound.play();
                 }              }, 50);
             }, this.animationSpeed);

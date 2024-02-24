@@ -49,6 +49,7 @@ export class MyGame extends Engine {
   enemiesSpawned: number = 0;
   enemiesLimit: number = 3;
   realLimit: number = 3;
+  lifes: number = 3;
 
   //keyboroard events
   keysPressed = new Set();
@@ -122,6 +123,14 @@ export class MyGame extends Engine {
     this.levelText.text = `${newLevel}`;
     // Update the GUI element to display the new level
   }
+
+  deleteLife() {
+    const id = this.iconsID.pop();
+    this.gui.removeElement(id!);    
+    this.icons.pop();
+    this.lifes--;
+  }
+
   addEventListeners() {
     document.addEventListener("keydown", (e) => this.handleKeyDown(e));
     document.addEventListener("keyup", (e) => this.handleKeyUp(e));

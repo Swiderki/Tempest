@@ -18,11 +18,12 @@ export class PlayerFlipperOverlap extends Overlap {
   override onOverlap(): void {
     if (!this.game.currentScene) return;
     
-    // if(this.flipper.canBeCollided){
-    //     this.game.currentScene.removeGameObject(this.flipper.id);
-    //     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
-    // }
-    
+    if(this.flipper.canBeCollided){
+        this.game.currentScene.removeGameObject(this.flipper.id);
+        this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
+    }
+    this.game.enemiesInGame--
+    this.game.deleteLife()
 
   }
 }
