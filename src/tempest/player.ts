@@ -1,5 +1,5 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
-import { MyGame } from "../main";
+import { MyGame, debugMode } from "../main";
 
 const moveSounds = new Audio("sounds/blasterMove.mp3");
 const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
@@ -19,7 +19,7 @@ export default class Player extends PhysicalGameObject {
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, "yellow");
     }
-    this.showBoxcollider = true;
+    this.showBoxcollider = debugMode;
   }
 
   override updatePhysics(deltaTime: number): void {
@@ -61,7 +61,7 @@ export default class Player extends PhysicalGameObject {
       if (flipper.canBeCollided && flipper.currentLevelSide % 16 == this.game.currentLevelSide - 0.5 && flipper.position.z <= 0.5) {
         this.game.currentScene.removeGameObject(flipper.id);
         this.game.enemiesInGame--;
-        this.game.deleteLife()
+        this.game.deleteLife();
 
         blasterExplosionSound.play();
         this.game.flippers = this.game.flippers.filter((f) => f.id !== flipper.id);

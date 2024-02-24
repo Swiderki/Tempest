@@ -1,20 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="src/style.css" />
     <title>Vite + TS</title>
 
     <style>
+      #game {
+        opacity: 0.6;
+      }
       canvas {
-        filter: blur(0.1px);
+        position: fixed;
+      }
+      #canvas2 {
+        filter: blur(5px);
       }
     </style>
   </head>
   <body>
+    <canvas id="canvas2"></canvas>
     <canvas id="game"></canvas>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      function aaaa() {
+        var canvas1 = document.getElementById("game");
+        var canvas2 = document.getElementById("canvas2");
+        var ctx1 = canvas1.getContext("2d");
+        var ctx2 = canvas2.getContext("2d");
+        var imageData = ctx1.getImageData(0, 0, canvas1.width, canvas1.height);
+
+        canvas2.width = canvas1.width;
+        canvas2.height = canvas1.height;
+
+        setTimeout(aaaa, 50);
+        ctx2.putImageData(imageData, 0, 0);
+      }
+      aaaa();
+    </script>
   </body>
 </html>
