@@ -7,6 +7,7 @@ export default class Player extends PhysicalGameObject {
     super("obj/player.obj", options);
     this.game = game;
     this.autoupdateBoxCollider = true;
+    this.isShining = true;
   }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
@@ -55,6 +56,8 @@ export default class Player extends PhysicalGameObject {
     this.game.flippers.forEach((flipper) => {
       if(flipper.canBeCollided && flipper.currentLevelSide%16 == this.game.currentLevelSide-0.5 && flipper.position.z <= 0.5 ){
         this.game.currentScene.removeGameObject(flipper.id);
+        this.game.enemiesInGame--;
+        console.log("dupa")
         this.game.flippers = this.game.flippers.filter((f) => f.id !== flipper.id);
       }
     })

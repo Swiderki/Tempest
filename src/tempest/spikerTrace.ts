@@ -9,7 +9,7 @@ export default class SpikerTrace extends PhysicalGameObject {
     super(`obj/spikerTrace.obj`, options);
     this.game = game;
     this.spiker = spiker
-
+    this.isShining = true;
   }
   override updatePhysics(deltaTime: number): void {
     // console.table([this.boxCollider![0], this.boxCollider![1]])
@@ -23,7 +23,7 @@ export default class SpikerTrace extends PhysicalGameObject {
     this.showBoxcollider = true
 
     for (let i = 0; i < this.getMesh().length; i++) {
-        this.setLineColor(i, "transparent");
+        this.setLineColor(i, "lime");
       }
       this.setPosition(this.spiker.position.x, this.spiker.position.y, this.spiker.position.z)
       this.game.bullets.forEach((bullet) => {

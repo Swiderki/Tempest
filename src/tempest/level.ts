@@ -27,6 +27,7 @@ export default class Level extends PhysicalGameObject {
       this.numberOfSides = (this.game.level.getMesh().length - this.game.level.vertecies.length / 2) / 2;
       this.numberOfPoints = this.game.level.vertecies.length / 2;
     });
+    // this.isShining = true;
   }
   override Start(): void {
     this.game.player.setPlayerPosition();

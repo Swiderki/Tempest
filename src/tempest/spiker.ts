@@ -14,6 +14,8 @@ export default class Spiker extends PhysicalGameObject {
     super(`obj/spiker.obj`, options);
     this.game = game;
     this.setPosition(0,0,0)
+    
+    this.isShining = true;
 
     this.autoupdateBoxCollider = true
     this.velocity.z = -20
@@ -25,7 +27,7 @@ export default class Spiker extends PhysicalGameObject {
     this.showBoxcollider = true
    
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "green");
+      this.setLineColor(i, "lime");
     }
    
     // Random position

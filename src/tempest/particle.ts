@@ -8,6 +8,7 @@ export default class Particle extends PhysicalGameObject {
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/particle.obj`, options);
     this.game = game;
+    this.isShining = true;
   }
   override updatePhysics(deltaTime: number): void {
     super.updatePhysics(deltaTime);

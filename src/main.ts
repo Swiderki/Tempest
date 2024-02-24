@@ -39,6 +39,13 @@ export class MyGame extends Engine {
   // Level
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
+  playerLevelNumber: number = 0;
+  lastSpawned: number = Date.now();
+  spawnDelta: number = 3000;
+  isLevelChanging: boolean = false;
+  enemiesInGame: number = 3;
+  enemiesSpawned: number = 0;
+  enemiesLimit: number = 3;
 
   //keyboroard events
   keysPressed = new Set();
@@ -201,6 +208,50 @@ export class MyGame extends Engine {
     if (currentTime - this.flipperLastSpawn > 1000) {
       this.flipperLastSpawn = currentTime;
     }
+
+    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.enemiesLimit) {
+      if (Date.now() - this.lastSpawned > this.spawnDelta) {
+        const randomNumber = Math.floor(Math.random() * 4);
+
+        switch (randomNumber) {
+            case 0:
+                Tanker.createTanker(this);
+                break;
+            case 1:
+                Spiker.createSpiker(this);
+                break;
+            case 2:
+                // Losowanie dodatkowej liczby dla Flipper
+                const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
+                Flipper.createFlipper(this, {x: 0, y: 0, z: 0}, randomVertexIndex);
+                break;
+            case 3:
+                Fuseball.createFuseball(this);
+                break;
+            default:
+                console.error('Nieoczekiwany błąd');
+        }
+        
+        this.enemiesSpawned++;
+        this.lastSpawned = Date.now()
+      }
+    }
+
+    if (this.enemiesSpawned == this.enemiesLimit && this.enemiesInGame == 0) {
+      this.enemiesLimit++;
+      this.enemiesInGame = this.enemiesLimit;
+      this.enemiesSpawned = 0;
+      if (this.spawnDelta > 400) this.spawnDelta -= 400;
+      this.lastSpawned = Date.now();
+      this.nextLevel();
+      this.spikerTraces.forEach(el => this.currentScene.removeGameObject(el.id));
+      this.spikerTraces = [];
+      this.levelText.text = String(Number(this.levelText.text) + 1);
+    }
+
+    console.log(this.enemiesInGame);
+    console.log(this.enemiesSpawned);
+    console.log("")
   }
 
   shoot() {
