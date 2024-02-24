@@ -68,7 +68,9 @@ override updatePhysics(deltaTime: number): void {
   }
 
   if (this.position.z <= 0) {
+    if(this.game.level.lopped){
     if (!this.targetVertex) {
+    
       if(direction == -1) direction = 0
       this.actualIndex = (this.actualIndex + direction) % this.game.level.vertecies.length; 
       if(this.actualIndex == 0){
@@ -76,14 +78,31 @@ override updatePhysics(deltaTime: number): void {
       }
       this.targetVertex = this.game.level.vertecies[this.actualIndex];
       this.moveToTarget();
+    
     } else if (this.isAtTarget()) {
+    
       this.actualIndex = (this.actualIndex + direction) % this.game.level.vertecies.length;
       if(this.actualIndex == 0){
         this.actualIndex = this.game.level.vertecies.length ;
       }
       this.targetVertex = this.game.level.vertecies[this.actualIndex];
       this.moveToTarget();
+    
+    }}else{
+      if (!this.targetVertex) {
+        this.actualIndex = this.actualIndex<targetSide?this.actualIndex+1:this.actualIndex-1;
+        if(this.actualIndex > 0 && this.actualIndex < this.game.level.vertecies.length){
+          this.targetVertex = this.game.level.vertecies[this.actualIndex];
+          this.moveToTarget();        }
+
+      } else if (this.isAtTarget()) {
+        this.actualIndex = this.actualIndex<targetSide?this.actualIndex+1:this.actualIndex-1;
+        if(this.actualIndex > 0 && this.actualIndex < this.game.level.vertecies.length){
+          this.targetVertex = this.game.level.vertecies[this.actualIndex];
+          this.moveToTarget();        }
+      }
     }
+  
   }
 }
 

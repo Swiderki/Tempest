@@ -78,33 +78,36 @@ export default class Fipper extends PhysicalGameObject {
   moveTowardsPlayer(): void {
     let targetSide = this.game.currentLevelSide;
     let direction = 0;
+
     if (this.side != targetSide) {
       let clockwiseDistance = (targetSide - this.side + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
       let counterClockwiseDistance = (this.side - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
   
       direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
     }
-  
+    if(this.game.level.lopped){
     if (direction == 1) {
       if (this.side + 1 > this.game.level.numberOfPoints) {
         this.side = 0;        
       }else{
         this.side += direction;
-
       }
-
       this.moveRight(); 
-
     } else if (direction == -1) {
       if (this.side - 1 ==0) {
         this.side = this.game.level.numberOfPoints ;
       }else{
         this.side += direction;
-
       }
-
       this.moveLeft(); 
-
+    }}else{
+      if(this.side < this.game.currentLevelSide && this.side + 1 < this.game.level.numberOfPoints){
+        this.side++;
+        this.moveRight();
+      }else if(this.side > this.game.currentLevelSide && this.side - 1 > 0){
+        this.side--;
+        this.moveLeft();
+      }
     }
   }
   

@@ -169,7 +169,7 @@ export class MyGame extends Engine {
       this.movePlayer(this.movementSpeed * -1);
     }
     if (this.keysPressed.has("w")) {
-      Spiker.createSpiker(this);
+      // Spiker.createSpiker(this);
       Fuseball.createFuseball(this);
     }
     if (this.keysPressed.has("k")) {
@@ -235,45 +235,45 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
-      if (Date.now() - this.lastSpawned > this.spawnDelta) {
-        const randomNumber = Math.floor(Math.random() * 4);
+    // if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
+    //   if (Date.now() - this.lastSpawned > this.spawnDelta) {
+    //     const randomNumber = Math.floor(Math.random() * 4);
 
-        switch (randomNumber) {
-            case 0:
-                Tanker.createTanker(this);
-                break;
-            case 1:
-                Spiker.createSpiker(this);
-                break;
-            case 2:
-                // Losowanie dodatkowej liczby dla Flipper
-                const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
-                Flipper.createFlipper(this, {x: 0, y: 0, z: 0}, randomVertexIndex);
-                break;
-            case 3:
-                Fuseball.createFuseball(this);
-                break;
-            default:
-                console.error('Nieoczekiwany błąd');
-        }
+    //     switch (randomNumber) {
+    //         case 0:
+    //             Tanker.createTanker(this);
+    //             break;
+    //         case 1:
+    //             Spiker.createSpiker(this);
+    //             break;
+    //         case 2:
+    //             // Losowanie dodatkowej liczby dla Flipper
+    //             const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
+    //             Flipper.createFlipper(this, {x: 0, y: 0, z: 0}, randomVertexIndex);
+    //             break;
+    //         case 3:
+    //             Fuseball.createFuseball(this);
+    //             break;
+    //         default:
+    //             console.error('Nieoczekiwany błąd');
+    //     }
       
-        this.lastSpawned = Date.now()
-      }
-    }
+    //     this.lastSpawned = Date.now()
+    //   }
+    // }
 
-    if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
-      this.enemiesLimit++;
-      this.realLimit = this.enemiesLimit;
-      this.enemiesInGame = this.enemiesLimit;
-      this.enemiesSpawned = 0;
-      if (this.spawnDelta > 400) this.spawnDelta -= 400;
-      this.lastSpawned = Date.now();
-      this.nextLevel();
-      this.spikerTraces.forEach(el => this.currentScene.removeGameObject(el.id));
-      this.spikerTraces = [];
-      this.levelText.text = String(Number(this.levelText.text) + 1);
-    }
+    // if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
+    //   this.enemiesLimit++;
+    //   this.realLimit = this.enemiesLimit;
+    //   this.enemiesInGame = this.enemiesLimit;
+    //   this.enemiesSpawned = 0;
+    //   if (this.spawnDelta > 400) this.spawnDelta -= 400;
+    //   this.lastSpawned = Date.now();
+    //   this.nextLevel();
+    //   this.spikerTraces.forEach(el => this.currentScene.removeGameObject(el.id));
+    //   this.spikerTraces = [];
+    //   this.levelText.text = String(Number(this.levelText.text) + 1);
+    // }
 
     // 1, 3, 3
     // 1, 5, 3
