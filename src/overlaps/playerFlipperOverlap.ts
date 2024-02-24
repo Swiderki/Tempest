@@ -22,7 +22,7 @@ export class PlayerFlipperOverlap extends Overlap {
     //     this.game.currentScene.removeGameObject(this.flipper.id);
     //     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
     // }
-
+    
 
   }
 }
