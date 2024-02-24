@@ -1,13 +1,18 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 
+const moveSounds = new Audio("sounds/blasterMove.mp3");
+
 export default class Player extends PhysicalGameObject {
+  private sound: HTMLAudioElement | null = null;
   game: MyGame;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super("obj/player.obj", options);
     this.game = game;
     this.autoupdateBoxCollider = true;
     this.isShining = true;
+
+    this.sound = moveSounds;
   }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
@@ -23,12 +28,10 @@ export default class Player extends PhysicalGameObject {
     this.position.z = this.boxCollider![1].z;
     this.boxCollider![0].z = 1;
     this.boxCollider![1].z = -1;
-
   }
 
-
-
   setPlayerPosition() {
+    this.sound!.play();
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;
     this.vertecies[0].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 1.2 * levelShift;
     this.vertecies[0].y = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 1.2 * levelShift;
@@ -54,12 +57,12 @@ export default class Player extends PhysicalGameObject {
 
   destroyFlipper() {
     this.game.flippers.forEach((flipper) => {
-      if(flipper.canBeCollided && flipper.currentLevelSide%16 == this.game.currentLevelSide-0.5 && flipper.position.z <= 0.5 ){
+      if (flipper.canBeCollided && flipper.currentLevelSide % 16 == this.game.currentLevelSide - 0.5 && flipper.position.z <= 0.5) {
         this.game.currentScene.removeGameObject(flipper.id);
         this.game.enemiesInGame--;
-        console.log("dupa")
+        console.log("dupa");
         this.game.flippers = this.game.flippers.filter((f) => f.id !== flipper.id);
       }
-    })
+    });
   }
 }
