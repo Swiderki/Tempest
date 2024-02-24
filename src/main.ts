@@ -46,6 +46,7 @@ export class MyGame extends Engine {
   enemiesInGame: number = 3;
   enemiesSpawned: number = 0;
   enemiesLimit: number = 3;
+  realLimit: number = 3;
 
   //keyboroard events
   keysPressed = new Set();
@@ -209,7 +210,7 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.enemiesLimit) {
+    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
       if (Date.now() - this.lastSpawned > this.spawnDelta) {
         const randomNumber = Math.floor(Math.random() * 4);
 
@@ -231,14 +232,14 @@ export class MyGame extends Engine {
             default:
                 console.error('Nieoczekiwany błąd');
         }
-        
-        this.enemiesSpawned++;
+      
         this.lastSpawned = Date.now()
       }
     }
 
-    if (this.enemiesSpawned == this.enemiesLimit && this.enemiesInGame == 0) {
+    if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
       this.enemiesLimit++;
+      this.realLimit = this.enemiesLimit;
       this.enemiesInGame = this.enemiesLimit;
       this.enemiesSpawned = 0;
       if (this.spawnDelta > 400) this.spawnDelta -= 400;
@@ -249,8 +250,11 @@ export class MyGame extends Engine {
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
 
+    // 1, 3, 3
+    // 1, 5, 3
     console.log(this.enemiesInGame);
     console.log(this.enemiesSpawned);
+    console.log(this.realLimit);
     console.log("")
   }
 

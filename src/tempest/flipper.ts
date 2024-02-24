@@ -30,7 +30,10 @@ export default class Fipper extends PhysicalGameObject {
       else this.depth = this.position.z 
       this.setFlipperPosition();
     });
+    this.game.enemiesSpawned++;
   }
+
+
   override Start(): void {
     this.showBoxcollider = true;
     this.game.bullets.forEach((bullet) => {
