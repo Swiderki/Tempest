@@ -1,5 +1,5 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
-import { MyGame } from "../main";
+import { MyGame, debugMode } from "../main";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 import { PlayerFlipperOverlap } from "../overlaps/playerFlipperOverlap";
 import EnemyBullet from "./enemyBullet";
@@ -17,7 +17,7 @@ export default class Fipper extends PhysicalGameObject {
   side: number = 0;
   lastTimeMoved = Date.now();
   canBeCollided = true;
-  constructor(options: PhysicalObjectInitialConfig, game: MyGame,closestVertexId?: number) {
+  constructor(options: PhysicalObjectInitialConfig, game: MyGame, closestVertexId?: number) {
     super(`obj/flipper.obj`, options);
     this.game = game;
     this.autoupdateBoxCollider = true;
@@ -27,16 +27,15 @@ export default class Fipper extends PhysicalGameObject {
         this.setLineColor(i, "red");
       }
       this.currentLevelSide = Math.round(Math.random() * this.game.level.numberOfPoints * 10) / 10;
-      if(this.position.z == 0) this.depth = 80;
-      else this.depth = this.position.z 
+      if (this.position.z == 0) this.depth = 80;
+      else this.depth = this.position.z;
       this.setFlipperPosition();
     });
     this.game.enemiesSpawned++;
   }
 
-
   override Start(): void {
-    this.showBoxcollider = true;
+    this.showBoxcollider = debugMode;
     this.game.bullets.forEach((bullet) => {
       const ov = new FlipperBulletOverlap(bullet, this, this.game);
       this.game.currentScene.addOverlap(ov);
@@ -46,17 +45,15 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-
     const time = Date.now();
     if (this.position.z <= 0 && time - this.lastTimeMoved > 2000) {
       this.moveTowardsPlayer();
       this.lastTimeMoved = time;
-    }else if(this.position.z > 0){
-      this.depth += -30*deltaTime;
+    } else if (this.position.z > 0) {
+      this.depth += -30 * deltaTime;
       this.setFlipperPosition();
     }
     this.updateFlipperPosition();
-
 
     if (this.lastShootTime < time - 2000 && this.position.z > 0) {
       this.lastShootTime = time;
@@ -66,8 +63,6 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   updateFlipperPosition() {
-    
-    
     this.generateBoxCollider();
     this.boxCollider![1].z = this.position.z + 2;
     this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
@@ -82,21 +77,21 @@ export default class Fipper extends PhysicalGameObject {
     if (this.side != targetSide) {
       let clockwiseDistance = (targetSide - this.side + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
       let counterClockwiseDistance = (this.side - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
-  
+
       direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
     }
     if(this.game.level.lopped){
     if (direction == 1) {
       if (this.side + 1 > this.game.level.numberOfPoints) {
-        this.side = 0;        
-      }else{
+        this.side = 0;
+      } else {
         this.side += direction;
       }
       this.moveRight(); 
     } else if (direction == -1) {
-      if (this.side - 1 ==0) {
-        this.side = this.game.level.numberOfPoints ;
-      }else{
+      if (this.side - 1 == 0) {
+        this.side = this.game.level.numberOfPoints;
+      } else {
         this.side += direction;
       }
       this.moveLeft(); 
@@ -110,7 +105,7 @@ export default class Fipper extends PhysicalGameObject {
       }
     }
   }
-  
+
   static createFlipper(game: MyGame, position: { x: number; y: number; z: number }, closestVertexId: number) {
     if (game.currentScene == null) {
       throw new Error("Main scene must be set first.");
@@ -120,10 +115,10 @@ export default class Fipper extends PhysicalGameObject {
     game.flippers.push(flipper);
   }
   setFlipperPosition() {
-    if(this.side == -1){
-    this.side = Math.floor(this.currentLevelSide);
-  }
-  this.currentLevelSide = this.side;
+    if (this.side == -1) {
+      this.side = Math.floor(this.currentLevelSide);
+    }
+    this.currentLevelSide = this.side;
 
     this.vertecies[0].x = this.game.level.vertecies[this.side].x * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
     this.vertecies[0].y = this.game.level.vertecies[this.side].y * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
@@ -161,20 +156,19 @@ export default class Fipper extends PhysicalGameObject {
           setTimeout(() => {
             this.setToHalfTheLeft();
             setTimeout(() => {
-
               this.setFlipperPosition();
               setTimeout(() => {
                 this.canBeCollided = true;
 
-                if(this.side%this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
+                if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
                   this.game.enemiesInGame--;
-                  this.game.deleteLife()
+                  this.game.deleteLife();
 
                   blasterExplosionSound.play();
-
-                }              }, 50);
+                }
+              }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
         }, this.animationSpeed);
@@ -197,19 +191,19 @@ export default class Fipper extends PhysicalGameObject {
           setTimeout(() => {
             this.setToHalfTheRight();
             setTimeout(() => {
-
               this.setFlipperPosition();
               setTimeout(() => {
                 this.canBeCollided = true;
 
-                if(this.side%this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
+                if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
                   this.game.enemiesInGame--;
-                  this.game.deleteLife()
+                  this.game.deleteLife();
 
                   blasterExplosionSound.play();
-                }              }, 50);
+                }
+              }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
         }, this.animationSpeed);
@@ -218,7 +212,6 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   setToTheRight() {
-    
     const side = Math.floor(this.currentLevelSide);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.8;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.8;
@@ -235,7 +228,6 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
     this.updateFlipperPosition();
-
   }
   setToHalfTheRight() {
     const side = Math.floor(this.currentLevelSide);
@@ -254,7 +246,6 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
     this.updateFlipperPosition();
-
   }
   setToTheLeft() {
     const side = Math.floor(this.currentLevelSide);
@@ -273,7 +264,6 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
     this.updateFlipperPosition();
-
   }
   setToHalfTheLeft() {
     const side = Math.floor(this.currentLevelSide);
@@ -292,9 +282,5 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
     this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
     this.updateFlipperPosition();
-
   }
-
-
 }
-

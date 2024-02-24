@@ -15,6 +15,7 @@ const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
 
+export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
   //GUI
@@ -67,7 +68,7 @@ export class MyGame extends Engine {
     this.scoreText = new GUIText("0", 50, "Arial", "green", 100);
     this.bestScoreText = new GUIText("0", 30, "Arial", "green", 200);
     this.levelText = new GUIText("1", 25, "Arial", "blue", 300);
-    this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"),new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"),new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")]
+    this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")];
 
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
 
@@ -97,28 +98,28 @@ export class MyGame extends Engine {
     this.gui.addElement(this.scoreText);
     this.gui.addElement(this.bestScoreText);
     this.gui.addElement(this.levelText);
-    this.levelText.position = { x:  this.getCanvas.width/2 - this.levelText.width/2, y: 40 };
+    this.levelText.position = { x: this.getCanvas.width / 2 - this.levelText.width / 2, y: 40 };
 
-    this.bestScoreText.position = { x: this.getCanvas.width/2 - this.bestScoreText.width/2, y: 10 };
+    this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
 
     this.scoreText.position = { x: 200, y: 10 };
     this.iconsID[0] = this.gui.addElement(this.icons[0]);
     this.iconsID[1] = this.gui.addElement(this.icons[1]);
     this.iconsID[2] = this.gui.addElement(this.icons[2]);
-    
+
     this.currentScene.setCurrentGUI(x);
     // Add more GUI elements as needed
   }
 
   updateScore(newScore: number) {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
-    this.addLife()
+    this.addLife();
     // Update the GUI element to display the new score
   }
 
   updateBestScore(newScore: number) {
     this.bestScoreText.text = `${Number(this.bestScoreText.text) + newScore}`;
-    this.bestScoreText.position = { x: this.getCanvas.width/2 - this.bestScoreText.width/2, y: 10 };
+    this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
 
     // Update the GUI element to display the new best score
   }
@@ -130,14 +131,14 @@ export class MyGame extends Engine {
 
   deleteLife() {
     const id = this.iconsID.pop();
-    this.gui.removeElement(id!);    
+    this.gui.removeElement(id!);
     this.icons.pop();
     this.lifes--;
   }
 
   addLife() {
-    if(this.lifes < 3 && this.nextLife < Number(this.scoreText.text)){
-      console.log("dodano życie")
+    if (this.lifes < 3 && this.nextLife < Number(this.scoreText.text)) {
+      console.log("dodano życie");
       this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
       this.lifes++;
@@ -235,52 +236,52 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    // if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
-    //   if (Date.now() - this.lastSpawned > this.spawnDelta) {
-    //     const randomNumber = Math.floor(Math.random() * 4);
+    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
+      if (Date.now() - this.lastSpawned > this.spawnDelta) {
+        const randomNumber = Math.floor(Math.random() * 4);
 
-    //     switch (randomNumber) {
-    //         case 0:
-    //             Tanker.createTanker(this);
-    //             break;
-    //         case 1:
-    //             Spiker.createSpiker(this);
-    //             break;
-    //         case 2:
-    //             // Losowanie dodatkowej liczby dla Flipper
-    //             const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
-    //             Flipper.createFlipper(this, {x: 0, y: 0, z: 0}, randomVertexIndex);
-    //             break;
-    //         case 3:
-    //             Fuseball.createFuseball(this);
-    //             break;
-    //         default:
-    //             console.error('Nieoczekiwany błąd');
-    //     }
-      
-    //     this.lastSpawned = Date.now()
-    //   }
-    // }
+        switch (randomNumber) {
+          case 0:
+            Tanker.createTanker(this);
+            break;
+          case 1:
+            Spiker.createSpiker(this);
+            break;
+          case 2:
+            // Losowanie dodatkowej liczby dla Flipper
+            const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
+            Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, randomVertexIndex);
+            break;
+          case 3:
+            Fuseball.createFuseball(this);
+            break;
+          default:
+            console.error("Nieoczekiwany błąd");
+        }
 
-    // if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
-    //   this.enemiesLimit++;
-    //   this.realLimit = this.enemiesLimit;
-    //   this.enemiesInGame = this.enemiesLimit;
-    //   this.enemiesSpawned = 0;
-    //   if (this.spawnDelta > 400) this.spawnDelta -= 400;
-    //   this.lastSpawned = Date.now();
-    //   this.nextLevel();
-    //   this.spikerTraces.forEach(el => this.currentScene.removeGameObject(el.id));
-    //   this.spikerTraces = [];
-    //   this.levelText.text = String(Number(this.levelText.text) + 1);
-    // }
+        this.lastSpawned = Date.now();
+      }
+    }
+
+    if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
+      this.enemiesLimit++;
+      this.realLimit = this.enemiesLimit;
+      this.enemiesInGame = this.enemiesLimit;
+      this.enemiesSpawned = 0;
+      if (this.spawnDelta > 400) this.spawnDelta -= 400;
+      this.lastSpawned = Date.now();
+      this.nextLevel();
+      this.spikerTraces.forEach((el) => this.currentScene.removeGameObject(el.id));
+      this.spikerTraces = [];
+      this.levelText.text = String(Number(this.levelText.text) + 1);
+    }
 
     // 1, 3, 3
     // 1, 5, 3
-    console.log(this.enemiesInGame);
-    console.log(this.enemiesSpawned);
-    console.log(this.realLimit);
-    console.log("")
+    //console.log(this.enemiesInGame);
+    //console.log(this.enemiesSpawned);
+    //console.log(this.realLimit);
+    //console.log("")
   }
 
   shoot() {
@@ -296,7 +297,6 @@ export class MyGame extends Engine {
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
-        
       }
     });
     setTimeout(() => {
@@ -307,37 +307,32 @@ export class MyGame extends Engine {
       });
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
-        this.updateScore(100)
+        this.updateScore(100);
         this.enemiesInGame--;
-
-
       }
       this.tankers = [];
       for (const spiker of this.spikers) {
         this.currentScene.removeGameObject(spiker.id);
-        this.updateScore(50)
+        this.updateScore(50);
         this.enemiesInGame--;
-
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
-        this.updateScore(150)
+        this.updateScore(150);
         this.enemiesInGame--;
-
       }
       this.flippers = [];
       for (const fuseball of this.fuseballs) {
         this.currentScene.removeGameObject(fuseball.id);
-        if(fuseball.position.z > 30){
-          this.updateScore(250)
-        }else if(fuseball.position.z > 10){
-          this.updateScore(500)
-        }else{
-          this.updateScore(750)
+        if (fuseball.position.z > 30) {
+          this.updateScore(250);
+        } else if (fuseball.position.z > 10) {
+          this.updateScore(500);
+        } else {
+          this.updateScore(750);
         }
         this.enemiesInGame--;
-
       }
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {
