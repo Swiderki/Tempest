@@ -2,6 +2,7 @@ import { Overlap } from "drake-engine";
 import { MyGame } from "../main";
 import Player from "../tempest/player";
 import Fuseball from "../tempest/fuseball";
+const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
 
 export class PlayerFuseballOverlap extends Overlap {
   private game: MyGame;
@@ -25,7 +26,7 @@ export class PlayerFuseballOverlap extends Overlap {
     // }
     this.game.currentScene.removeGameObject(this.fuseball.id);
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id); 
-
     this.game.enemiesInGame--;
+    blasterExplosionSound.play();
   }
 }

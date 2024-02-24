@@ -3,7 +3,8 @@ import { MyGame } from "../main";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 import { PlayerFlipperOverlap } from "../overlaps/playerFlipperOverlap";
 import EnemyBullet from "./enemyBullet";
-
+const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;
@@ -57,8 +58,9 @@ export default class Fipper extends PhysicalGameObject {
     this.updateFlipperPosition();
 
 
-    if (this.lastShootTime < time - 2000) {
+    if (this.lastShootTime < time - 2000 && this.position.z > 0) {
       this.lastShootTime = time;
+      enemyBulletSound.play();
       EnemyBullet.createEnemyBullet(this.game, this.position);
     }
   }
@@ -164,6 +166,9 @@ export default class Fipper extends PhysicalGameObject {
                 if(this.side%this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+                  this.game.enemiesInGame--;
+                  blasterExplosionSound.play();
+
                 }              }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
@@ -195,6 +200,8 @@ export default class Fipper extends PhysicalGameObject {
                 if(this.side%this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0){
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+                  this.game.enemiesInGame--;
+                  blasterExplosionSound.play();
                 }              }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);

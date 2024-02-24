@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import Tanker from "../tempest/tanker";
 import Particle from "../tempest/particle";
+const enemyExplosionSound = new Audio("sounds/enemyExplosion.mp3");
 
 export class TankerBulletOverlap extends Overlap {
   private game: MyGame;
@@ -27,5 +28,6 @@ export class TankerBulletOverlap extends Overlap {
     this.game.tankers = this.game.tankers.filter((spiker) => spiker.id !== this.tanker.id);
     this.game.enemiesInGame--;
     this.game.updateScore(100)
+    enemyExplosionSound.play();
   }
 }

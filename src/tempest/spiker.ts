@@ -3,6 +3,9 @@ import { MyGame } from "../main";
 import SpikerTrace from "./spikerTrace";
 import Tanker from "./tanker";
 import { QuaternionUtils } from "drake-engine";
+import EnemyBullet from "./enemyBullet";
+const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+
 
 export default class Spiker extends PhysicalGameObject {
   game: MyGame;
@@ -10,6 +13,7 @@ export default class Spiker extends PhysicalGameObject {
   rotationQuaternion: QuaternionUtils.Quaternion = {x: 0, y: 0, z: 0, w: 1}
   trace: SpikerTrace;
   isAddingTrace: boolean = true;
+  lastShootTime: number = 900;
   constructor( options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/spiker.obj`, options);
     this.game = game;
@@ -45,6 +49,7 @@ export default class Spiker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    const time = Date.now();
     super.updatePhysics(deltaTime);
     // console.log("spiker" + this.position.z)
     // Fixing box collider
@@ -56,10 +61,14 @@ export default class Spiker extends PhysicalGameObject {
     QuaternionUtils.normalize(this.rotationQuaternion)
     this.applyQuaternion(this.rotationQuaternion)
 
-
+    if(this.lastShootTime < time - 2000){
+      this.lastShootTime = time;
+      enemyBulletSound.play();
+      EnemyBullet.createEnemyBullet(this.game, this.position);
+    }
     // Trace
     if(this.isAddingTrace){
-      this.trace.vertecies[1] = {x: this.position.x, y: this.position.y, z: this.position.z}
+      this.trace.vertecies[1] = {x: this.position.x, y: this.position.y, z: this.position.z+0.1}
     }
     if (this.position.z < 5) {
       this.isAddingTrace = false;

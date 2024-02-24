@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import Spiker from "../tempest/spiker";
 import Particle from "../tempest/particle";
+const enemyExplosionSound = new Audio("sounds/enemyExplosion.mp3");
 
 export class SpikerBulletOverlap extends Overlap {
   private game: MyGame;
@@ -29,6 +30,6 @@ export class SpikerBulletOverlap extends Overlap {
     // this.game.currentScene.removeOverlap(this.id);
     this.game.updateScore(50)
     this.game.enemiesInGame--;
-    
+    enemyExplosionSound.play();
   }
 }

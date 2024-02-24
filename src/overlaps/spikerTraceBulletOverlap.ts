@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import SpikerTrace from "../tempest/spikerTrace";
 import Particle from "../tempest/particle";
+const enemyExplosionSound = new Audio("sounds/enemyExplosion.mp3");
 
 export class SpikerTraceBulletOverlap extends Overlap {
   private game: MyGame;
@@ -32,7 +33,7 @@ export class SpikerTraceBulletOverlap extends Overlap {
     this.spikerTrace.vertecies[1].z = this.spikerTrace.vertecies[1].z + 10
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
-
+    enemyExplosionSound.play();
     // console.table([this.spikerTrace.position, this.spikerTrace.boxCollider![0],this.spikerTrace.boxCollider![1], this.bullet.position, this.bullet.boxCollider![0], this.bullet.boxCollider![1]], )
   }
 }

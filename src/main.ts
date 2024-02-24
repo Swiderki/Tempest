@@ -13,6 +13,8 @@ import Particle from "./tempest/particle";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
+const blasterBullet = new Audio("sounds/blasterBullet.mp3");
+
 
 export class MyGame extends Engine {
   //GUI
@@ -260,6 +262,8 @@ export class MyGame extends Engine {
 
   shoot() {
     // to też by trzeb przenieść
+    blasterBullet.volume = 0.1;
+    blasterBullet.play();
     const bullet = new Bullet({ position: [(this.player.vertecies[2].x + this.player.vertecies[3].x) / 2, (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2, 0], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
@@ -269,6 +273,7 @@ export class MyGame extends Engine {
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
+        
       }
     });
     setTimeout(() => {
@@ -280,18 +285,22 @@ export class MyGame extends Engine {
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
         this.updateScore(100)
+        this.enemiesInGame--;
+
 
       }
       this.tankers = [];
       for (const spiker of this.spikers) {
         this.currentScene.removeGameObject(spiker.id);
         this.updateScore(50)
+        this.enemiesInGame--;
 
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
         this.updateScore(150)
+        this.enemiesInGame--;
 
       }
       this.flippers = [];
@@ -304,10 +313,14 @@ export class MyGame extends Engine {
         }else{
           this.updateScore(750)
         }
+        this.enemiesInGame--;
+
       }
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {
         this.currentScene.removeGameObject(bullet.id);
+        this.enemiesInGame--;
+
       }
       this.enemyBullets = [];
 

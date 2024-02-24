@@ -4,6 +4,7 @@ import { QuaternionUtils } from "drake-engine";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import EnemyBullet from "./enemyBullet";
 import Flipper from "./flipper";
+const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
 
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;
@@ -53,6 +54,7 @@ export default class Tanker extends PhysicalGameObject {
     const time = Date.now();
     if(this.lastShootTime < time - 2000){
       this.lastShootTime = time;
+      enemyBulletSound.play();
       EnemyBullet.createEnemyBullet(this.game, this.position);
     }
     if (this.position.z < 10) {

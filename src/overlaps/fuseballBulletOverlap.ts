@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import Bullet from "../tempest/bullet";
 import Fuseball from "../tempest/fuseball";
 import Particle from "../tempest/particle";
+const enemyExplosionSound = new Audio("sounds/enemyExplosion.mp3");
 
 export class FuseballBulletOverlap extends Overlap {
   private game: MyGame;
@@ -35,6 +36,7 @@ export class FuseballBulletOverlap extends Overlap {
     this.game.currentScene.removeGameObject(this.fuseball.id);
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id);
     this.game.enemiesInGame -= 1;
+    enemyExplosionSound.play();
     // this.game.currentScene.removeOverlap(this.id);
   }
 }
