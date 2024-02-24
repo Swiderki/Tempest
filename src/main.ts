@@ -49,7 +49,10 @@ export class MyGame extends Engine {
   enemiesSpawned: number = 0;
   enemiesLimit: number = 3;
   realLimit: number = 3;
+
+  //Lifes
   lifes: number = 3;
+  nextLife: number = 10000;
 
   //keyboroard events
   keysPressed = new Set();
@@ -109,6 +112,7 @@ export class MyGame extends Engine {
 
   updateScore(newScore: number) {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
+    this.addLife()
     // Update the GUI element to display the new score
   }
 
@@ -129,6 +133,16 @@ export class MyGame extends Engine {
     this.gui.removeElement(id!);    
     this.icons.pop();
     this.lifes--;
+  }
+
+  addLife() {
+    if(this.lifes < 3 && this.nextLife < Number(this.scoreText.text)){
+      console.log("dodano życie")
+      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+      this.lifes++;
+      this.nextLife += 10000;
+    }
   }
 
   addEventListeners() {
