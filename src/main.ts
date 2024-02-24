@@ -319,8 +319,6 @@ export class MyGame extends Engine {
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {
         this.currentScene.removeGameObject(bullet.id);
-        this.enemiesInGame--;
-
       }
       this.enemyBullets = [];
 
