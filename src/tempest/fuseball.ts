@@ -69,7 +69,7 @@ override updatePhysics(deltaTime: number): void {
 
   if (this.position.z <= 0) {
     if (!this.targetVertex) {
-
+      if(direction == -1) direction = 0
       this.actualIndex = (this.actualIndex + direction) % this.game.level.vertecies.length; 
       if(this.actualIndex == 0){
         this.actualIndex = this.game.level.vertecies.length ;
