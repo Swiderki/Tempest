@@ -12,7 +12,7 @@ export default class Fipper extends PhysicalGameObject {
   depth: number = 0;
   lastShootTime: number = Date.now();
   animationSpeed: number = 30;
-  timeBetweenAnimations: number = 300;
+  timeBetweenMovement: number = 1000;
   isMoving: boolean = false;
   side: number = 0;
   lastTimeMoved = Date.now();
@@ -46,16 +46,18 @@ export default class Fipper extends PhysicalGameObject {
 
   override updatePhysics(deltaTime: number): void {
     const time = Date.now();
-    if (this.position.z <= 0 && time - this.lastTimeMoved > 2000) {
+    if ((this.position.z <= 0 && time - this.lastTimeMoved > this.timeBetweenMovement) || (this.game.currentLevel > 1 && time - this.lastTimeMoved > this.timeBetweenMovement)) {
       this.moveTowardsPlayer();
       this.lastTimeMoved = time;
     } else if (this.position.z > 0) {
       this.depth += -30 * deltaTime;
-      this.setFlipperPosition();
+      if (!this.isMoving) {
+        this.setFlipperPosition();
+      }
     }
     this.updateFlipperPosition();
 
-    if (this.lastShootTime < time - 2000 && this.position.z > 0) {
+    if (this.lastShootTime < time - 1500 && this.position.z > 0) {
       this.lastShootTime = time;
       enemyBulletSound.play();
       EnemyBullet.createEnemyBullet(this.game, this.position);
@@ -80,26 +82,27 @@ export default class Fipper extends PhysicalGameObject {
 
       direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
     }
-    if(this.game.level.lopped){
-    if (direction == 1) {
-      if (this.side + 1 > this.game.level.numberOfPoints) {
-        this.side = 0;
-      } else {
-        this.side += direction;
+    if (this.game.level.lopped) {
+      if (direction == 1) {
+        if (this.side + 1 > this.game.level.numberOfPoints) {
+          this.side = 0;
+        } else {
+          this.side += direction;
+        }
+        this.moveRight();
+      } else if (direction == -1) {
+        if (this.side - 1 == 0) {
+          this.side = this.game.level.numberOfPoints;
+        } else {
+          this.side += direction;
+        }
+        this.moveLeft();
       }
-      this.moveRight(); 
-    } else if (direction == -1) {
-      if (this.side - 1 == 0) {
-        this.side = this.game.level.numberOfPoints;
-      } else {
-        this.side += direction;
-      }
-      this.moveLeft(); 
-    }}else{
-      if(this.side < this.game.currentLevelSide && this.side + 1 < this.game.level.numberOfPoints){
+    } else {
+      if (this.side < this.game.currentLevelSide && this.side + 1 < this.game.level.numberOfPoints) {
         this.side++;
         this.moveRight();
-      }else if(this.side > this.game.currentLevelSide && this.side - 1 > 0){
+      } else if (this.side > this.game.currentLevelSide && this.side - 1 > 0) {
         this.side--;
         this.moveLeft();
       }
@@ -143,6 +146,7 @@ export default class Fipper extends PhysicalGameObject {
     this.vertecies[4].z = this.depth;
   }
   moveRight() {
+    this.isMoving = true;
     const side = Math.floor(this.currentLevelSide);
     setTimeout(() => {
       this.canBeCollided = false;
@@ -156,10 +160,10 @@ export default class Fipper extends PhysicalGameObject {
           setTimeout(() => {
             this.setToHalfTheLeft();
             setTimeout(() => {
+              this.isMoving = false;
               this.setFlipperPosition();
               setTimeout(() => {
                 this.canBeCollided = true;
-
                 if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
@@ -177,6 +181,7 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   moveLeft() {
+    this.isMoving = true;
     const side = Math.floor(this.currentLevelSide);
     setTimeout(() => {
       this.setToHalfTheLeft();
@@ -191,10 +196,10 @@ export default class Fipper extends PhysicalGameObject {
           setTimeout(() => {
             this.setToHalfTheRight();
             setTimeout(() => {
+              this.isMoving = false;
               this.setFlipperPosition();
               setTimeout(() => {
                 this.canBeCollided = true;
-
                 if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
                   this.game.currentScene.removeGameObject(this.id);
                   this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);

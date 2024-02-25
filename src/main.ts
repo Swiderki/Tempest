@@ -15,7 +15,7 @@ const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
 
-export const debugMode: boolean = false;
+export const debugMode: boolean = true;
 
 export class MyGame extends Engine {
   //GUI
