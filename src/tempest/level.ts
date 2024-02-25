@@ -13,6 +13,7 @@ export default class Level extends PhysicalGameObject {
   lopped: boolean = true;
   numberOfSides: number = 0;
   numberOfPoints: number = 0;
+  color: string = "blue";
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     const nonLopped = [8, 9, 10];
     super(`obj/level${levelId}.obj`, options);
@@ -22,12 +23,12 @@ export default class Level extends PhysicalGameObject {
     }
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
-        this.setLineColor(i, "blue");
+        this.setLineColor(i, this.color);
       }
       this.numberOfSides = (this.game.level.getMesh().length - this.game.level.vertecies.length / 2) / 2;
       this.numberOfPoints = this.game.level.vertecies.length / 2;
+      this.isShining = true;
     });
-    // this.isShining = true;
   }
   override Start(): void {
     this.game.player.setPlayerPosition();
@@ -35,7 +36,7 @@ export default class Level extends PhysicalGameObject {
   updateColorOnPlayer() {
     let currSide = Math.floor(this.game.currentLevelSide);
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "blue");
+      this.setLineColor(i, this.color);
     }
     if (!this.lopped) {
       currSide--;
