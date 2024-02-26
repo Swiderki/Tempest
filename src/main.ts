@@ -43,6 +43,7 @@ export class MyGame extends Engine {
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
   playerLevelNumber: number = 0;
+  enemiesInGame:number = 3;
 
   //Lifes
   lifes: number = 3;
@@ -228,6 +229,11 @@ export class MyGame extends Engine {
     const currentTime = Date.now();
     if (currentTime - this.flipperLastSpawn > 1000) {
       this.flipperLastSpawn = currentTime;
+    }
+
+    if (this.enemiesInGame == 0) {
+      console.log("next level");
+      
     }
   }
 

@@ -24,5 +24,6 @@ export class PlayerFlipperOverlap extends Overlap {
     }
     this.game.deleteLife()
 
+    this.game.enemiesInGame--;
   }
 }

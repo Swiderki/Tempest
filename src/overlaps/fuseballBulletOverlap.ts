@@ -35,7 +35,6 @@ export class FuseballBulletOverlap extends Overlap {
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.fuseball.id);
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id);
-    this.game.enemiesInGame -= 1;
     enemyExplosionSound.play();
     // this.game.currentScene.removeOverlap(this.id);
   }

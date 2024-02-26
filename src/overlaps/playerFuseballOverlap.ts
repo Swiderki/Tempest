@@ -29,5 +29,6 @@ export class PlayerFuseballOverlap extends Overlap {
     blasterExplosionSound.play();
     this.game.deleteLife()
 
+    this.game.enemiesInGame--;
   }
 }

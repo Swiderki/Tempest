@@ -28,5 +28,7 @@ export class TankerBulletOverlap extends Overlap {
     this.game.tankers = this.game.tankers.filter((spiker) => spiker.id !== this.tanker.id);
     this.game.updateScore(100)
     enemyExplosionSound.play();
+
+    this.game.enemiesInGame--;
   }
 }
