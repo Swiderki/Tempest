@@ -162,17 +162,17 @@ export default class Fipper extends PhysicalGameObject {
             setTimeout(() => {
               this.isMoving = false;
               this.setFlipperPosition();
-              setTimeout(() => {
-                this.canBeCollided = true;
-                if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
-                  this.game.currentScene.removeGameObject(this.id);
-                  this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
-                  this.game.enemiesInGame--;
-                  this.game.deleteLife();
+              // setTimeout(() => {
+              //   this.canBeCollided = true;
+              //   if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
+              //     this.game.currentScene.removeGameObject(this.id);
+              //     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+              //     this.game.enemiesInGame--;
+              //     this.game.deleteLife();
 
-                  blasterExplosionSound.play();
-                }
-              }, 50);
+              //     blasterExplosionSound.play();
+              //   }
+              // }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
         }, this.animationSpeed);
@@ -198,17 +198,17 @@ export default class Fipper extends PhysicalGameObject {
             setTimeout(() => {
               this.isMoving = false;
               this.setFlipperPosition();
-              setTimeout(() => {
-                this.canBeCollided = true;
-                if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
-                  this.game.currentScene.removeGameObject(this.id);
-                  this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
-                  this.game.enemiesInGame--;
-                  this.game.deleteLife();
+              // setTimeout(() => {
+              //   this.canBeCollided = true;
+              //   if (this.side % this.game.level.numberOfPoints == this.game.currentLevelSide - 0.5 && this.position.z <= 0) {
+              //     this.game.currentScene.removeGameObject(this.id);
+              //     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.id);
+              //     this.game.enemiesInGame--;
+              //     this.game.deleteLife();
 
-                  blasterExplosionSound.play();
-                }
-              }, 50);
+              //     blasterExplosionSound.play();
+              //   }
+              // }, 50);
             }, this.animationSpeed);
           }, this.animationSpeed);
         }, this.animationSpeed);

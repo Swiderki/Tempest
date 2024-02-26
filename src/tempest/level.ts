@@ -16,7 +16,7 @@ export default class Level extends PhysicalGameObject {
   color: string = "blue";
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     const nonLopped = [8, 9, 10, 13];
-    super(`obj/level${levelId}.obj`, options);
+    super(`obj/level${(levelId-1)%3+1}.obj`, options);
     this.game = game;
     if (nonLopped.includes(levelId)) {
       this.lopped = false;

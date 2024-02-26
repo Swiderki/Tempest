@@ -53,7 +53,7 @@ export default class Player extends PhysicalGameObject {
     this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.96;
     this.vertecies[5].z = 0;
     this.game.level.updateColorOnPlayer();
-    this.destroyFlipper();
+    // this.destroyFlipper();
   }
 
   destroyFlipper() {

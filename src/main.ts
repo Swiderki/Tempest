@@ -130,6 +130,7 @@ export class MyGame extends Engine {
   }
 
   deleteLife() {
+    return;
     const id = this.iconsID.pop();
     this.gui.removeElement(id!);
     this.icons.pop();
@@ -238,7 +239,8 @@ export class MyGame extends Engine {
 
     if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
       if (Date.now() - this.lastSpawned > this.spawnDelta) {
-        const randomNumber = Math.floor(Math.random() * 4);
+        // const randomNumber = Math.floor(Math.random() * 4);
+        const randomNumber: number = 0;
 
         switch (randomNumber) {
           case 0:
@@ -278,10 +280,10 @@ export class MyGame extends Engine {
 
     // 1, 3, 3
     // 1, 5, 3
-    //console.log(this.enemiesInGame);
-    //console.log(this.enemiesSpawned);
-    //console.log(this.realLimit);
-    //console.log("")
+    console.log(this.enemiesInGame);
+    console.log(this.enemiesSpawned);
+    console.log(this.realLimit);
+    console.log("")
   }
 
   shoot() {
