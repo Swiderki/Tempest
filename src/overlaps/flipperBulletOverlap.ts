@@ -29,6 +29,7 @@ export class FlipperBulletOverlap extends Overlap {
     // this.game.currentScene.removeOverlap(this.id);
     this.game.updateScore(150)
     enemyExplosionSound.play();
+    this.game.enemiesInGame--;
   }
   
 }

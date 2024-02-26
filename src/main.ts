@@ -48,6 +48,8 @@ export class MyGame extends Engine {
   //Lifes
   lifes: number = 3;
   nextLife: number = 10000;
+  lastSpawned: number = Date.now();
+  spawnDelta: number = 3000;
 
   //keyboroard events
   keysPressed = new Set();
@@ -231,9 +233,18 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
+    if (Date.now() - this.lastSpawned > this.spawnDelta) {
+      console.log(Date.now() - this.lastSpawned)
+      Tanker.createTanker(this);
+      this.lastSpawned = Date.now();
+    }
+
     if (this.enemiesInGame == 0) {
       console.log("next level");
-      
+      this.nextLevel();
+      this.playerLevelNumber++;
+      this.enemiesInGame = 3 + this.playerLevelNumber;
+      this.lastSpawned = Date.now();
     }
   }
 
