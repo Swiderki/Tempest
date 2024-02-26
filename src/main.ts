@@ -44,12 +44,15 @@ export class MyGame extends Engine {
   currentLevelSide: number = 0.5;
   playerLevelNumber: number = 0;
   enemiesInGame:number = 3;
+  normallySpawned: number = 0;
+  maxNormallySpawned: number = 3;
 
   //Lifes
   lifes: number = 3;
   nextLife: number = 10000;
   lastSpawned: number = Date.now();
-  spawnDelta: number = 3000;
+  spawnDelta: number = 5000;
+
 
   //keyboroard events
   keysPressed = new Set();
@@ -233,10 +236,28 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    if (Date.now() - this.lastSpawned > this.spawnDelta) {
-      console.log(Date.now() - this.lastSpawned)
-      Tanker.createTanker(this);
+    if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned) {
+
+      const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
+      const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
+  
+      switch (randomType) {
+          case "Tanker":
+              Tanker.createTanker(this);
+              break;
+          case "Spiker":
+              Spiker.createSpiker(this);
+              break;
+          case "Fuseball":
+              Fuseball.createFuseball(this);
+              break;
+          case "Flipper":
+              Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+              break;
+      }
+
       this.lastSpawned = Date.now();
+      this.normallySpawned++;
     }
 
     if (this.enemiesInGame == 0) {
@@ -244,6 +265,9 @@ export class MyGame extends Engine {
       this.nextLevel();
       this.playerLevelNumber++;
       this.enemiesInGame = 3 + this.playerLevelNumber;
+      this.maxNormallySpawned = 3 + this.playerLevelNumber;
+      this.normallySpawned = 0;
+      if (this.spawnDelta - 300 > 600) this.spawnDelta -= 300;
       this.lastSpawned = Date.now();
     }
   }
