@@ -8,7 +8,6 @@ const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;
-  currentLevelSide: number = 0;
   depth: number = 0;
   lastShootTime: number = Date.now();
   animationSpeed: number = 30;
@@ -21,12 +20,12 @@ export default class Fipper extends PhysicalGameObject {
     super(`obj/flipper.obj`, options);
     this.game = game;
     this.autoupdateBoxCollider = true;
-    this.side = closestVertexId || -1;
+    //this.side = closestVertexId || -1;
+    this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
         this.setLineColor(i, "red");
       }
-      this.currentLevelSide = Math.round(Math.random() * this.game.level.numberOfPoints * 10) / 10;
       if (this.position.z == 0) this.depth = 80;
       else this.depth = this.position.z;
       this.setFlipperPosition();
@@ -72,37 +71,27 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   moveTowardsPlayer(): void {
-    let targetSide = this.game.currentLevelSide;
-    let direction = 0;
-
-    if (this.side != targetSide) {
-      let clockwiseDistance = (targetSide - this.side + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
-      let counterClockwiseDistance = (this.side - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
-
-      direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
-    }
+    let targetSide = Math.round(this.game.currentLevelSide) - 1;
+    let currSide = Math.round(this.side);
+    let clockwiseDistance = 0;
+    let counterClockwiseDistance = 0;
     if (this.game.level.lopped) {
-      if (direction == 1) {
-        if (this.side + 1 > this.game.level.numberOfPoints) {
-          this.side = 0;
-        } else {
-          this.side += direction;
-        }
-        this.moveRight();
-      } else if (direction == -1) {
-        if (this.side - 1 == 0) {
-          this.side = this.game.level.numberOfPoints;
-        } else {
-          this.side += direction;
-        }
-        this.moveLeft();
+      clockwiseDistance = targetSide - currSide;
+      if (clockwiseDistance < 0) {
+        clockwiseDistance += this.game.level.numberOfSides;
+      }
+      counterClockwiseDistance = this.game.level.numberOfSides - targetSide + currSide;
+      if (counterClockwiseDistance > this.game.level.numberOfSides) {
+        counterClockwiseDistance -= this.game.level.numberOfSides;
       }
     } else {
-      if (this.side < this.game.currentLevelSide && this.side + 1 < this.game.level.numberOfPoints) {
-        this.side++;
+      clockwiseDistance = currSide;
+      counterClockwiseDistance = targetSide;
+    }
+    if (currSide != targetSide) {
+      if (counterClockwiseDistance > clockwiseDistance) {
         this.moveRight();
-      } else if (this.side > this.game.currentLevelSide && this.side - 1 > 0) {
-        this.side--;
+      } else {
         this.moveLeft();
       }
     }
@@ -117,43 +106,38 @@ export default class Fipper extends PhysicalGameObject {
     game.flippers.push(flipper);
   }
   setFlipperPosition() {
-    if (this.side == -1) {
-      this.side = Math.floor(this.currentLevelSide);
-    }
-    this.currentLevelSide = this.side;
-
-    this.vertecies[0].x = this.game.level.vertecies[this.side].x * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
-    this.vertecies[0].y = this.game.level.vertecies[this.side].y * 0.95 * 0.5 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
+    const side = Math.floor(this.side);
+    this.vertecies[0].x = this.game.level.vertecies[side].x * 0.95 * 0.5 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.95 * 0.5;
+    this.vertecies[0].y = this.game.level.vertecies[side].y * 0.95 * 0.5 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.95 * 0.5;
     this.vertecies[0].z = this.depth;
-    this.vertecies[5].x = this.game.level.vertecies[this.side].x;
-    this.vertecies[5].y = this.game.level.vertecies[this.side].y;
+    this.vertecies[5].x = this.game.level.vertecies[side].x;
+    this.vertecies[5].y = this.game.level.vertecies[side].y;
     this.vertecies[5].z = this.depth;
-    this.vertecies[6].x = this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x;
-    this.vertecies[6].y = this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y;
+    this.vertecies[6].x = this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x;
+    this.vertecies[6].y = this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y;
     this.vertecies[6].z = this.depth;
-    this.vertecies[1].x = (this.game.level.vertecies[this.side].x * 0.9 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
-    this.vertecies[1].y = (this.game.level.vertecies[this.side].y * 0.9 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
+    this.vertecies[1].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.9;
+    this.vertecies[1].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.9;
     this.vertecies[1].z = this.depth;
-    this.vertecies[2].x = (this.game.level.vertecies[this.side].x * 0.1 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
-    this.vertecies[2].y = (this.game.level.vertecies[this.side].y * 0.1 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
+    this.vertecies[2].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.9;
+    this.vertecies[2].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.9;
     this.vertecies[2].z = this.depth;
-    this.vertecies[3].x = (this.game.level.vertecies[this.side].x * 0.8 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.2) * 0.95;
-    this.vertecies[3].y = (this.game.level.vertecies[this.side].y * 0.8 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.2) * 0.95;
+    this.vertecies[3].x = (this.game.level.vertecies[side].x * 0.8 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.2) * 0.95;
+    this.vertecies[3].y = (this.game.level.vertecies[side].y * 0.8 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.2) * 0.95;
     this.vertecies[3].z = this.depth;
-    this.vertecies[4].x = (this.game.level.vertecies[this.side].x * 0.2 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].x * 0.8) * 0.95;
-    this.vertecies[4].y = (this.game.level.vertecies[this.side].y * 0.2 + this.game.level.vertecies[(this.side + 1) % this.game.level.numberOfPoints].y * 0.8) * 0.95;
+    this.vertecies[4].x = (this.game.level.vertecies[side].x * 0.2 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.8) * 0.95;
+    this.vertecies[4].y = (this.game.level.vertecies[side].y * 0.2 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.8) * 0.95;
     this.vertecies[4].z = this.depth;
   }
   moveRight() {
     this.isMoving = true;
-    const side = Math.floor(this.currentLevelSide);
     setTimeout(() => {
       this.canBeCollided = false;
       this.setToHalfTheRight();
       setTimeout(() => {
         this.setToTheRight();
-        this.currentLevelSide++;
-        this.currentLevelSide = this.currentLevelSide % this.game.level.numberOfPoints;
+        this.side++;
+        this.side = this.side % this.game.level.numberOfPoints;
         setTimeout(() => {
           this.setToTheLeft();
           setTimeout(() => {
@@ -170,15 +154,17 @@ export default class Fipper extends PhysicalGameObject {
 
   moveLeft() {
     this.isMoving = true;
-    const side = Math.floor(this.currentLevelSide);
     setTimeout(() => {
       this.setToHalfTheLeft();
       this.canBeCollided = false;
 
       setTimeout(() => {
         this.setToTheLeft();
-        this.currentLevelSide--;
-        this.currentLevelSide = this.currentLevelSide % this.game.level.numberOfPoints;
+        this.side--;
+        this.side = this.side % this.game.level.numberOfPoints;
+        if (this.side < 0) {
+          this.side += this.game.level.numberOfSides;
+        }
         setTimeout(() => {
           this.setToTheRight();
           setTimeout(() => {
@@ -194,7 +180,7 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   setToTheRight() {
-    const side = Math.floor(this.currentLevelSide);
+    const side = Math.floor(this.side);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.9) * 0.8;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.1 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.9) * 0.8;
     this.vertecies[5].x = this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.6;
@@ -212,7 +198,7 @@ export default class Fipper extends PhysicalGameObject {
     this.updateFlipperPosition();
   }
   setToHalfTheRight() {
-    const side = Math.floor(this.currentLevelSide);
+    const side = Math.floor(this.side);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.35 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.65) * 0.85;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.35 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.65) * 0.85;
     this.vertecies[5].x = (this.game.level.vertecies[side].x * 0.8 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.2) * 0.85;
@@ -230,7 +216,7 @@ export default class Fipper extends PhysicalGameObject {
     this.updateFlipperPosition();
   }
   setToTheLeft() {
-    const side = Math.floor(this.currentLevelSide);
+    const side = Math.floor(this.side);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.1) * 0.8;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.9 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.1) * 0.8;
     this.vertecies[5].x = this.game.level.vertecies[side].x * 0.6;
@@ -248,7 +234,7 @@ export default class Fipper extends PhysicalGameObject {
     this.updateFlipperPosition();
   }
   setToHalfTheLeft() {
-    const side = Math.floor(this.currentLevelSide);
+    const side = Math.floor(this.side);
     this.vertecies[0].x = (this.game.level.vertecies[side].x * 0.65 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.35) * 0.85;
     this.vertecies[0].y = (this.game.level.vertecies[side].y * 0.65 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].y * 0.35) * 0.85;
     this.vertecies[5].x = (this.game.level.vertecies[side].x * 0.2 + this.game.level.vertecies[(side + 1) % this.game.level.numberOfPoints].x * 0.8) * 0.85;
