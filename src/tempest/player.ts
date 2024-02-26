@@ -26,9 +26,9 @@ export default class Player extends PhysicalGameObject {
     super.updatePhysics(deltaTime);
     this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
     this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
-    this.position.z = this.boxCollider![1].z;
-    this.boxCollider![0].z = 1;
-    this.boxCollider![1].z = -1;
+    this.position.z = this.boxCollider![0].z
+    this.boxCollider![0].z += 1;
+    this.boxCollider![1].z += -1;
   }
 
   setPlayerPosition() {
@@ -36,22 +36,23 @@ export default class Player extends PhysicalGameObject {
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;
     this.vertecies[0].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 1.2 * levelShift;
     this.vertecies[0].y = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 1.2 * levelShift;
-    this.vertecies[0].z = 0;
+    this.vertecies[0].z = this.position.z;
     this.vertecies[1].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 1.1 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 1.1 * levelShift;
     this.vertecies[1].y = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 1.1 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 1.1 * levelShift;
-    this.vertecies[1].z = 0;
+    this.vertecies[1].z = this.position.z;
     this.vertecies[2].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x;
     this.vertecies[2].y = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y;
-    this.vertecies[2].z = 0;
+    this.vertecies[2].z = this.position.z;
     this.vertecies[3].x = this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x;
     this.vertecies[3].y = this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y;
-    this.vertecies[3].z = 0;
+    this.vertecies[3].z = this.position.z;
     this.vertecies[4].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.3) * 0.96;
     this.vertecies[4].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.7 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.3) * 0.96;
-    this.vertecies[4].z = 0;
+    this.vertecies[4].z = this.position.z;
     this.vertecies[5].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.7) * 0.96;
     this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.96;
-    this.vertecies[5].z = 0;
+    this.vertecies[5].z = this.position.z;
+    this.generateBoxCollider()
     this.game.level.updateColorOnPlayer();
   }
 }
