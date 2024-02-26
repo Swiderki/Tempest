@@ -54,13 +54,12 @@ export class MyGame extends Engine {
   lastSpawned: number = Date.now();
   spawnDelta: number = 5000;
 
-
   //keyboroard events
   keysPressed = new Set();
 
   // Enemys data
   flipperLastSpawn: number = 0;
-  isInHyperspace = false
+  isInHyperspace = false;
   movementSpeed: number = 1;
 
   //GUI SCENE
@@ -129,13 +128,12 @@ export class MyGame extends Engine {
     const mainSceneId = this.addScene(this.mainScene);
     this.setCurrentScene(mainSceneId);
     this.initializeGUI();
-    this.initializeGUIScene(camera)
+    this.initializeGUIScene(camera);
     this.setCurrentScene(this.GUIScene!);
 
     this.mainScene.addGameObject(this.level);
     this.mainScene._started = true;
     this.addEventListeners();
-
   }
 
   switchScene() {
@@ -240,7 +238,10 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
     if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, Math.round(Math.random() * this.level.numberOfSides));
+    }
+    if (this.keysPressed.has("t")) {
+      Tanker.createTanker(this);
     }
   }
 
@@ -278,9 +279,9 @@ export class MyGame extends Engine {
   nextLevel() {
     this.currentLevel++;
     this.spikerTraces.forEach((trace) => {
-      this.currentScene.removeGameObject(trace.id)
-    })
-    this.spikerTraces = []
+      this.currentScene.removeGameObject(trace.id);
+    });
+    this.spikerTraces = [];
 
     this.currentScene!.removeGameObject(this.level.id);
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
@@ -294,7 +295,6 @@ export class MyGame extends Engine {
     }
 
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
-
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
 
@@ -317,11 +317,11 @@ export class MyGame extends Engine {
       this.normallySpawned++;
     }
     if (this.player.position.z >= 80) {
-      this.isInHyperspace = false
+      this.isInHyperspace = false;
 
-      this.player.setPosition(0, 0, 0)
-      this.player.setPlayerPosition()
-      this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25)
+      this.player.setPosition(0, 0, 0);
+      this.player.setPlayerPosition();
+      this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
       this.nextLevel();
 
       this.playerLevelNumber++;
@@ -330,22 +330,21 @@ export class MyGame extends Engine {
       this.normallySpawned = 0;
       if (this.spawnDelta - 300 > 600) this.spawnDelta -= 300;
       this.lastSpawned = Date.now();
-      this.levelText.text = String(Number(this.levelText.text) + 1)
+      this.levelText.text = String(Number(this.levelText.text) + 1);
     }
     if (this.enemiesInGame == 0) {
       console.log("next level");
-      this.isInHyperspace = true
-
+      this.isInHyperspace = true;
     }
 
     if (this.isInHyperspace) {
-      this.hyperSpace(this.deltaTime)
+      this.hyperSpace(this.deltaTime);
     }
   }
 
   hyperSpace(delta: number) {
-    this.player.move(0, 0, 10 * delta)
-    this.mainCamera?.move(0, 0, 10 * delta)
+    this.player.move(0, 0, 10 * delta);
+    this.mainCamera?.move(0, 0, 10 * delta);
   }
 
   shoot() {

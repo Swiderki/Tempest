@@ -20,8 +20,8 @@ export default class Fipper extends PhysicalGameObject {
     super(`obj/flipper.obj`, options);
     this.game = game;
     this.autoupdateBoxCollider = true;
-    //this.side = closestVertexId || -1;
-    this.side = Math.round(Math.random() * this.game.level.numberOfSides);
+    this.side = closestVertexId || -1;
+    //this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
         this.setLineColor(i, "red");
