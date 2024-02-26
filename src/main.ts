@@ -238,7 +238,7 @@ export class MyGame extends Engine {
       this.nextLevel();
     }
     if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, Math.round(Math.random() * this.level.numberOfSides));
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
     }
     if (this.keysPressed.has("t")) {
       Tanker.createTanker(this);
