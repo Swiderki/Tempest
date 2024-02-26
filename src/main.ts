@@ -269,6 +269,7 @@ export class MyGame extends Engine {
       this.normallySpawned = 0;
       if (this.spawnDelta - 300 > 600) this.spawnDelta -= 300;
       this.lastSpawned = Date.now();
+      this.levelText.text = String(Number(this.levelText.text) + 1)
     }
   }
 
