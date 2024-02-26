@@ -17,7 +17,6 @@ export default class Tanker extends PhysicalGameObject {
     }
     this.velocity.z = -30;
     this.autoupdateBoxCollider = true;
-    this.game.enemiesSpawned++;
   }
 
   override Start(): void {
@@ -74,8 +73,6 @@ export default class Tanker extends PhysicalGameObject {
       this.game.tankers.pop();
       Flipper.createFlipper(this.game, this.position, closestVertexId);
       Flipper.createFlipper(this.game, this.position, (closestVertexId + 1) % 16);
-      this.game.enemiesInGame++;
-      this.game.realLimit += 2;
     }
   }
 

@@ -29,7 +29,6 @@ export class SpikerBulletOverlap extends Overlap {
 
     // this.game.currentScene.removeOverlap(this.id);
     this.game.updateScore(50)
-    this.game.enemiesInGame--;
     enemyExplosionSound.play();
   }
 }

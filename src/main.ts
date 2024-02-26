@@ -43,13 +43,6 @@ export class MyGame extends Engine {
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
   playerLevelNumber: number = 0;
-  lastSpawned: number = Date.now();
-  spawnDelta: number = 3000;
-  isLevelChanging: boolean = false;
-  enemiesInGame: number = 3;
-  enemiesSpawned: number = 0;
-  enemiesLimit: number = 3;
-  realLimit: number = 3;
 
   //Lifes
   lifes: number = 3;
@@ -236,54 +229,6 @@ export class MyGame extends Engine {
     if (currentTime - this.flipperLastSpawn > 1000) {
       this.flipperLastSpawn = currentTime;
     }
-
-    if (this.currentScene._started && !this.isLevelChanging && this.enemiesSpawned < this.realLimit) {
-      if (Date.now() - this.lastSpawned > this.spawnDelta) {
-        // const randomNumber = Math.floor(Math.random() * 4);
-        const randomNumber: number = 0;
-
-        switch (randomNumber) {
-          case 0:
-            Tanker.createTanker(this);
-            break;
-          case 1:
-            Spiker.createSpiker(this);
-            break;
-          case 2:
-            // Losowanie dodatkowej liczby dla Flipper
-            const randomVertexIndex = Math.floor(Math.random() * this.level.vertecies.length);
-            Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, randomVertexIndex);
-            break;
-          case 3:
-            Fuseball.createFuseball(this);
-            break;
-          default:
-            console.error("Nieoczekiwany błąd");
-        }
-
-        this.lastSpawned = Date.now();
-      }
-    }
-
-    if (this.enemiesSpawned == this.realLimit && this.enemiesInGame == 0) {
-      this.enemiesLimit++;
-      this.realLimit = this.enemiesLimit;
-      this.enemiesInGame = this.enemiesLimit;
-      this.enemiesSpawned = 0;
-      if (this.spawnDelta > 400) this.spawnDelta -= 400;
-      this.lastSpawned = Date.now();
-      this.nextLevel();
-      this.spikerTraces.forEach((el) => this.currentScene.removeGameObject(el.id));
-      this.spikerTraces = [];
-      this.levelText.text = String(Number(this.levelText.text) + 1);
-    }
-
-    // 1, 3, 3
-    // 1, 5, 3
-    console.log(this.enemiesInGame);
-    console.log(this.enemiesSpawned);
-    console.log(this.realLimit);
-    console.log("")
   }
 
   shoot() {
@@ -310,19 +255,16 @@ export class MyGame extends Engine {
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
         this.updateScore(100);
-        this.enemiesInGame--;
       }
       this.tankers = [];
       for (const spiker of this.spikers) {
         this.currentScene.removeGameObject(spiker.id);
         this.updateScore(50);
-        this.enemiesInGame--;
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
         this.updateScore(150);
-        this.enemiesInGame--;
       }
       this.flippers = [];
       for (const fuseball of this.fuseballs) {
@@ -334,7 +276,6 @@ export class MyGame extends Engine {
         } else {
           this.updateScore(750);
         }
-        this.enemiesInGame--;
       }
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {

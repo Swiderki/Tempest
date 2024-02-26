@@ -18,7 +18,6 @@ export default class Fuseball extends PhysicalGameObject {
     }
     this.velocity.z = -40;
     this.autoupdateBoxCollider = true;
-    this.game.enemiesSpawned++;
   }
 
   override Start(): void {
