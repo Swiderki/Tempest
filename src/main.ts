@@ -1,4 +1,5 @@
-import { Engine, Camera, Scene, GUI, GUIText, Icon } from "drake-engine";
+import { Engine, Camera, Scene, GUI, GUIText, Icon, Button } from "drake-engine";
+import { StartButton } from "./startButton";
 import _default from "drake-engine";
 import Player from "./tempest/player";
 import Level from "./tempest/level";
@@ -62,6 +63,10 @@ export class MyGame extends Engine {
   isInHyperspace = false
   movementSpeed: number = 1;
 
+  //GUI SCENE
+  GUIScene: number | null = null;
+  startButton: Button | null = null;
+
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.scoreText = new GUIText("0", 50, "Arial", "green", 100);
@@ -76,6 +81,46 @@ export class MyGame extends Engine {
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
   }
 
+  initializeGUIScene(camera: Camera): Scene {
+    const GUIScene = new Scene();
+    GUIScene.setMainCamera(camera, this.width, this.height);
+
+    const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
+    this.configureStartScreenGUIElements(GUISceneGUI);
+
+    const GUISceneGUIID = GUIScene.addGUI(GUISceneGUI);
+    GUIScene.setCurrentGUI(GUISceneGUIID);
+
+    this.GUIScene = this.addScene(GUIScene);
+    return GUIScene;
+  }
+  configureStartScreenGUIElements(GUISceneGUI: GUI): void {
+    const t1 = new GUIText("Tempest", 70, "monospace", "#fff", 700);
+    const t2 = new GUIText("Made by Świderki", 16, "monospace", "#fff", 700);
+    const t3 = new StartButton(this);
+
+    // Positioning logic
+    t1.position.x = (this.width - t1.width) / 2;
+    t1.position.y = this.height / 2 - 100;
+    t2.position.x = (this.width - t1.width) / 2;
+    t3.position.x = (this.width - t1.width) / 2;
+    t3.position.y = t1.position.y + t1.height + 5 + t2.height + 30;
+    t2.position.y = t1.position.y + t1.height + 5;
+
+    // Padding and styling for the start button
+    t3.padding.bottom = 30;
+    t3.padding.top = 30;
+    t3.padding.right = 90;
+    t3.padding.left = 90;
+
+    this.startButton = t3;
+
+    // Add elements to GUI
+    GUISceneGUI.addElement(t1);
+    GUISceneGUI.addElement(t2);
+    GUISceneGUI.addElement(t3);
+  }
+
   override Start(): void {
     this.setResolution(1280, 720);
     const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
@@ -84,11 +129,18 @@ export class MyGame extends Engine {
     const mainSceneId = this.addScene(this.mainScene);
     this.setCurrentScene(mainSceneId);
     this.initializeGUI();
+    this.initializeGUIScene(camera)
+    this.setCurrentScene(this.GUIScene!);
 
-    this.mainScene.addGameObject(this.player);
     this.mainScene.addGameObject(this.level);
     this.mainScene._started = true;
     this.addEventListeners();
+
+  }
+
+  switchScene() {
+    this.setCurrentScene(this.mainScene.id);
+    this.mainScene.addGameObject(this.player);
   }
 
   initializeGUI() {

@@ -20,6 +20,7 @@ export default class Player extends PhysicalGameObject {
       this.setLineColor(i, "yellow");
     }
     this.showBoxcollider = debugMode;
+    this.setPlayerPosition()
   }
 
   override updatePhysics(deltaTime: number): void {
