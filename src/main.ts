@@ -43,7 +43,7 @@ export class MyGame extends Engine {
   currentLevel: number = 1;
   currentLevelSide: number = 0.5;
   playerLevelNumber: number = 0;
-  enemiesInGame:number = 3;
+  enemiesInGame: number = 3;
   normallySpawned: number = 0;
   maxNormallySpawned: number = 3;
 
@@ -59,7 +59,7 @@ export class MyGame extends Engine {
 
   // Enemys data
   flipperLastSpawn: number = 0;
-
+  isInHyperspace = false
   movementSpeed: number = 1;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -225,6 +225,11 @@ export class MyGame extends Engine {
 
   nextLevel() {
     this.currentLevel++;
+    this.spikerTraces.forEach((trace) => {
+      this.currentScene.removeGameObject(trace.id)
+    })
+    this.spikerTraces = []
+
     this.currentScene!.removeGameObject(this.level.id);
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
     this.mainScene.addGameObject(this.level);
@@ -236,33 +241,37 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned) {
+    if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
 
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
-  
+
       switch (randomType) {
-          case "Tanker":
-              Tanker.createTanker(this);
-              break;
-          case "Spiker":
-              Spiker.createSpiker(this);
-              break;
-          case "Fuseball":
-              Fuseball.createFuseball(this);
-              break;
-          case "Flipper":
-              Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
-              break;
+        case "Tanker":
+          Tanker.createTanker(this);
+          break;
+        case "Spiker":
+          Spiker.createSpiker(this);
+          break;
+        case "Fuseball":
+          Fuseball.createFuseball(this);
+          break;
+        case "Flipper":
+          Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+          break;
       }
 
       this.lastSpawned = Date.now();
       this.normallySpawned++;
     }
+    if (this.player.position.z >= 80) {
+      this.isInHyperspace = false
 
-    if (this.enemiesInGame == 0) {
-      console.log("next level");
+      this.player.setPosition(0, 0, 0)
+      this.player.setPlayerPosition()
+      this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25)
       this.nextLevel();
+
       this.playerLevelNumber++;
       this.enemiesInGame = 3 + this.playerLevelNumber;
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
@@ -271,6 +280,20 @@ export class MyGame extends Engine {
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1)
     }
+    if (this.enemiesInGame == 0) {
+      console.log("next level");
+      this.isInHyperspace = true
+
+    }
+
+    if (this.isInHyperspace) {
+      this.hyperSpace(this.deltaTime)
+    }
+  }
+
+  hyperSpace(delta: number) {
+    this.player.move(0, 0, 10 * delta)
+    this.mainCamera?.move(0, 0, 10 * delta)
   }
 
   shoot() {

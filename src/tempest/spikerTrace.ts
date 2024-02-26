@@ -1,7 +1,9 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
 import { SpikerTraceBulletOverlap } from "../overlaps/spikerTraceBulletOverlap";
+import { playerSpikerTraceOverlap } from "../overlaps/playerSpikerTraceOverlap";
 import Spiker from "./spiker";
+
 export default class SpikerTrace extends PhysicalGameObject {
   game: MyGame;
   spiker: Spiker;
@@ -35,5 +37,8 @@ export default class SpikerTrace extends PhysicalGameObject {
       const ov = new SpikerTraceBulletOverlap(bullet, this, this.game);
       this.game.currentScene.addOverlap(ov);
     });
+
+    const ov = new playerSpikerTraceOverlap(this, this.game.player, this.game);
+    this.game.currentScene.addOverlap(ov);
   }
 }
