@@ -17,6 +17,7 @@ export class StartButton extends Button {
         this.border.right.color = color;
     }
 
+
     override onClick(): void {
         this.game.switchScene()
 
