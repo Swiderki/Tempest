@@ -20,7 +20,6 @@ export class StartButton extends Button {
 
     override onClick(): void {
         this.game.switchScene()
-
-
+        this.game.gameStarted = true;
     }
 }

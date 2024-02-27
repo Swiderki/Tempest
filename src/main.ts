@@ -1,4 +1,4 @@
-import { Engine, Camera, Scene, GUI, GUIText, Icon, Button } from "drake-engine";
+import { Engine, Camera, Scene, GUI, GUIText, Icon, Button, PhysicalGameObject, QuaternionUtils } from "drake-engine";
 import { StartButton } from "./startButton";
 import _default from "drake-engine";
 import Player from "./tempest/player";
@@ -67,6 +67,9 @@ export class MyGame extends Engine {
   GUIScene: number | null = null;
   startButton: Button | null = null;
 
+  // Mechanism
+  gameStarted: boolean = false;
+
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.scoreText = new GUIText("0", 50, "monospace", "green", 100);
@@ -84,6 +87,19 @@ export class MyGame extends Engine {
   initializeGUIScene(camera: Camera): Scene {
     const GUIScene = new Scene();
     GUIScene.setMainCamera(camera, this.width, this.height);
+
+    const guiDecoration = new PhysicalGameObject("obj/level1.obj", {})
+    guiDecoration.Start = () => guiDecoration.getMesh().forEach((line, i) => {
+      guiDecoration.setLineColor(i, "#121b2e");
+      console.log(i);
+    });
+
+    let rotationQuaternion = { x: 0, y: 0, z: 0, w: 1 };
+    QuaternionUtils.setFromAxisAngle(rotationQuaternion, { x: 1, y: 0, z: 1 }, (Math.PI / 2) * 300);
+    QuaternionUtils.normalize(rotationQuaternion);
+    guiDecoration.applyQuaternion(rotationQuaternion);
+
+    GUIScene.addGameObject(guiDecoration);
 
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.configureStartScreenGUIElements(GUISceneGUI);
@@ -104,8 +120,8 @@ export class MyGame extends Engine {
     t1.position.y = this.height / 2 - 100;
     t2.position.x = (this.width - t1.width) / 2;
     t3.position.x = (this.width - t1.width) / 2;
-    t3.position.y = t1.position.y + t1.height + 5 + t2.height + 30;
-    t2.position.y = t1.position.y + t1.height + 5;
+    t3.position.y = t1.position.y + t1.height + 15 + t2.height + 30;
+    t2.position.y = t1.position.y + t1.height + 15;
 
     // Padding and styling for the start button
     t3.padding.bottom = 30;
@@ -135,6 +151,16 @@ export class MyGame extends Engine {
     this.mainScene.addGameObject(this.level);
     this.mainScene._started = true;
     this.addEventListeners();
+
+    this.canvas.addEventListener("mousemove", (ev: MouseEvent) => {
+      if (!this.startButton!.isCoordInElement(ev.offsetX, ev.offsetY)) {
+        this.startButton!.color = "#fff";
+        this.startButton!.border.bottom.color = "#fff";
+        this.startButton!.border.left.color = "#fff";
+        this.startButton!.border.right.color = "#fff";
+        this.startButton!.border.top.color = "#fff";
+      }
+    });
   }
 
   switchScene() {
@@ -180,7 +206,6 @@ export class MyGame extends Engine {
   }
 
   deleteLife() {
-    return;
     const id = this.iconsID.pop();
     this.gui.removeElement(id!);
     this.icons.pop();
@@ -215,35 +240,45 @@ export class MyGame extends Engine {
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
     if (this.keysPressed.has("a")) {
+      if (!this.gameStarted) return;
       this.movePlayer(this.movementSpeed);
     }
+
     if (this.keysPressed.has("d")) {
+      if (!this.gameStarted) return;
       this.movePlayer(this.movementSpeed * -1);
     }
-    if (this.keysPressed.has("w")) {
-      // Spiker.createSpiker(this);
-      Fuseball.createFuseball(this);
-    }
+
     if (this.keysPressed.has("k")) {
+      if (!this.gameStarted) return;
       this.shoot();
       // Tanker.createTanker(this);
     }
-    if (this.keysPressed.has("l")) {
-      this.superZapper();
-    }
+
+    /* ###### IMPORTANT ###### */
+    // Commented code elements were used for manual testing. 
+    // We decided to leave them in the code to better outline our strategy.
+
+    // if (this.keysPressed.has("w")) {
+    //   // Spiker.createSpiker(this);
+    //   Fuseball.createFuseball(this);
+    // }
+    // if (this.keysPressed.has("l")) {
+    //   this.superZapper();
+    // }
     // zmiana levelów do testów
-    if (this.keysPressed.has("q")) {
-      this.previousLevel();
-    }
-    if (this.keysPressed.has("e")) {
-      this.nextLevel();
-    }
-    if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
-    }
-    if (this.keysPressed.has("t")) {
-      Tanker.createTanker(this);
-    }
+    // if (this.keysPressed.has("q")) {
+    //   this.previousLevel();
+    // }
+    // if (this.keysPressed.has("e")) {
+    //   this.nextLevel();
+    // }
+    // if (this.keysPressed.has("r")) {
+    //   Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+    // }
+    // if (this.keysPressed.has("t")) {
+    //   Tanker.createTanker(this);
+    // }
   }
 
   movePlayer(speed: number) {
@@ -289,12 +324,15 @@ export class MyGame extends Engine {
     this.mainScene.addGameObject(this.level);
   }
 
-  override Update(): void {
+  enemiesSpawnControll() {
     const currentTime = Date.now();
     if (currentTime - this.flipperLastSpawn > 1000) {
+      if (!this.gameStarted) return;
       this.flipperLastSpawn = currentTime;
     }
+
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+      if (!this.gameStarted) return;
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
 
@@ -316,11 +354,14 @@ export class MyGame extends Engine {
       this.lastSpawned = Date.now();
       this.normallySpawned++;
     }
-    if (this.player.position.z >= 80) {
+  }
 
+  override Update(): void {    
+    this.enemiesSpawnControll();
+
+    if (this.player.position.z >= 80) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
-      // this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
       this.nextLevel();
 
       this.playerLevelNumber++;
@@ -330,9 +371,8 @@ export class MyGame extends Engine {
       if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
-      
-
     }
+    
     if (this.enemiesInGame == 0 && !this.isInHyperspace) {
       console.log("next level");
       this.isInHyperspace = true;
