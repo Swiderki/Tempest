@@ -11,6 +11,7 @@ import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
 import Fuseball from "./tempest/fuseball";
 import Particle from "./tempest/particle";
+import { GUILevelObject } from "./tempest/GUILevelObject";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -88,18 +89,9 @@ export class MyGame extends Engine {
     const GUIScene = new Scene();
     GUIScene.setMainCamera(camera, this.width, this.height);
 
-    const guiDecoration = new PhysicalGameObject("obj/level1.obj", {});
-    guiDecoration.Start = () =>
-      guiDecoration.getMesh().forEach((line, i) => {
-        guiDecoration.setLineColor(i, "red");
-        console.log(i);
-      });
-    GUIScene.addGameObject(guiDecoration);
-    guiDecoration.updatePhysics = (deltaTime: number) => {
-      QuaternionUtils.setFromAxisAngle(this.guiDecorationQuaternion, { x: 0, y: 0, z: 1 }, (Math.PI / 4) * deltaTime);
-      QuaternionUtils.normalize(this.guiDecorationQuaternion);
-      guiDecoration.applyQuaternion(this.guiDecorationQuaternion);
-    };
+    const g1 = new GUILevelObject(5);
+
+    GUIScene.addGameObject(g1);
 
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.configureStartScreenGUIElements(GUISceneGUI);
@@ -110,6 +102,7 @@ export class MyGame extends Engine {
     this.GUIScene = this.addScene(GUIScene);
     return GUIScene;
   }
+  
   configureStartScreenGUIElements(GUISceneGUI: GUI): void {
     const t1 = new GUIText("Tempest", 70, "monospace", "#fff", 700);
     const t2 = new GUIText("Made by Świderki", 16, "monospace", "#fff", 700);
