@@ -275,6 +275,7 @@ export class MyGame extends Engine {
   deleteLife() {
     if (!this.gameStarted) return;
     if (this.lifes <= 1) {
+      
       this.runLoose();
       this.gameStarted = false;
       return;
@@ -296,7 +297,7 @@ export class MyGame extends Engine {
 
   runLoose() {
     this.mainScene.removeGameObject(this.player.id);
-
+    this.mainCamera!.position.z = -25;
     const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
     if (!this.gameAlreadyEnded) {
       this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
@@ -618,7 +619,7 @@ export class MyGame extends Engine {
               this.enemiesInGame--;
             });
           this.flippers
-            .filter((flipper) => flipper.position.z <= 0)
+            .filter((flipper) => flipper.position.z <= 5)
             .forEach((flipper) => {
               this.currentScene.removeGameObject(flipper.id);
               this.enemiesInGame--;
