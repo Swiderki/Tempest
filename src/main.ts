@@ -78,6 +78,7 @@ export class MyGame extends Engine {
   gameEndedText: GUIText | null = null;
   finalScore: GUIText | null = null;
   availableZapper: boolean = true;
+  isShooting: boolean = false;
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
@@ -669,11 +670,16 @@ export class MyGame extends Engine {
 
   shoot() {
     // to też by trzeb przenieść
+    if(this.isShooting) return
+    this.isShooting = true
     blasterBullet.volume = 0.1;
     blasterBullet.play();
     const bullet = new Bullet({ position: [(this.player.vertecies[2].x + this.player.vertecies[3].x) / 2, (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2, this.player.position.z], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
+    setTimeout(() => {
+      this.isShooting = false
+    }, 50);
   }
 
   superZapper() {
