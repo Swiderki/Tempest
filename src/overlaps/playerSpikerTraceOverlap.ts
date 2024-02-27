@@ -26,5 +26,6 @@ export class playerSpikerTraceOverlap extends Overlap {
         // );
 
         this.game.deleteLife();
+        this.collised = false;
     }
 }

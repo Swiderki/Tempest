@@ -447,7 +447,7 @@ export class MyGame extends Engine {
   }
 
   nextLevel() {
-    if (this.currentLevel >= 1) {
+    if (this.currentLevel >= 99) {
       this.runWin();
       return;
     }
@@ -666,19 +666,19 @@ export class MyGame extends Engine {
           this.level.setLineColor(i, "blue");
         }
       });
-      for (const tanker of this.tankers) {
-        this.currentScene.removeGameObject(tanker.id);
-        this.updateScore(100);
-      }
-      this.tankers = [];
+
       for (const spiker of this.spikers) {
         this.currentScene.removeGameObject(spiker.id);
         this.updateScore(50);
+        this.enemiesInGame--;
+
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
         this.updateScore(150);
+        this.enemiesInGame--;
+
       }
       this.flippers = [];
       for (const fuseball of this.fuseballs) {
@@ -690,7 +690,16 @@ export class MyGame extends Engine {
         } else {
           this.updateScore(750);
         }
+        this.enemiesInGame--;
+
       }
+      for (const tanker of this.tankers) {
+        this.currentScene.removeGameObject(tanker.id);
+        this.updateScore(100);
+        tanker.deployFlippers()
+        this.enemiesInGame--;
+      }
+      this.tankers = [];
       this.fuseballs = [];
       for (const bullet of this.enemyBullets) {
         this.currentScene.removeGameObject(bullet.id);
