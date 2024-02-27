@@ -13,18 +13,20 @@ export default class Level extends PhysicalGameObject {
   lopped: boolean = true;
   numberOfSides: number = 0;
   numberOfPoints: number = 0;
-  color: string = "blue";
+  levelId: number = 0;
+  colors: Array<string> = ["blue", "orange", "cyan", "red", "yellow", "black", "black", "black"];
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     const nonLopped = [8, 9, 10, 13];
     //super(`obj/level${(levelId-1)%3+1}.obj`, options);
-    super(`obj/level${levelId}.obj`, options);
+    super(`obj/level${(levelId-1)%16+1}.obj`, options);
     this.game = game;
     if (nonLopped.includes(levelId)) {
       this.lopped = false;
     }
+    this.levelId = levelId;
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
-        this.setLineColor(i, this.color);
+        this.setLineColor(i, this.colors[Math.floor((this.levelId-1)/16)]);
       }
       this.numberOfSides = (this.game.level.getMesh().length - this.game.level.vertecies.length / 2) / 2;
       this.numberOfPoints = this.game.level.vertecies.length / 2;
@@ -37,7 +39,7 @@ export default class Level extends PhysicalGameObject {
   updateColorOnPlayer() {
     let currSide = Math.floor(this.game.currentLevelSide);
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, this.color);
+      this.setLineColor(i, this.colors[Math.floor((this.levelId-1)/16)]);
     }
     if (!this.lopped) {
       currSide--;

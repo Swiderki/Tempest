@@ -294,7 +294,6 @@ export class MyGame extends Engine {
     if (currentTime - this.flipperLastSpawn > 1000) {
       this.flipperLastSpawn = currentTime;
     }
-    console.table([this.isInHyperspace])
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
@@ -328,7 +327,7 @@ export class MyGame extends Engine {
       this.enemiesInGame = 3 + this.playerLevelNumber;
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
       this.normallySpawned = 0;
-      if (this.spawnDelta - 300 > 600) this.spawnDelta -= 300;
+      if (this.spawnDelta - 500 >= 500) this.spawnDelta -= 500;
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
       
