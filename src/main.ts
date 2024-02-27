@@ -66,7 +66,7 @@ export class MyGame extends Engine {
   //GUI SCENE
   GUIScene: number | null = null;
   startButton: Button | null = null;
-
+  guiDecorationQuaternion: QuaternionUtils.Quaternion = { x: 0, y: 0, z: 0, w: 1 };
   // Mechanism
   gameStarted: boolean = false;
 
@@ -90,16 +90,17 @@ export class MyGame extends Engine {
 
     const guiDecoration = new PhysicalGameObject("obj/level1.obj", {})
     guiDecoration.Start = () => guiDecoration.getMesh().forEach((line, i) => {
-      guiDecoration.setLineColor(i, "#121b2e");
+      guiDecoration.setLineColor(i, "red");
       console.log(i);
     });
-
-    let rotationQuaternion = { x: 0, y: 0, z: 0, w: 1 };
-    QuaternionUtils.setFromAxisAngle(rotationQuaternion, { x: 1, y: 0, z: 1 }, (Math.PI / 2) * 300);
-    QuaternionUtils.normalize(rotationQuaternion);
-    guiDecoration.applyQuaternion(rotationQuaternion);
-
     GUIScene.addGameObject(guiDecoration);
+    guiDecoration.updatePhysics = (deltaTime: number) => {
+      QuaternionUtils.setFromAxisAngle(this.guiDecorationQuaternion, { x: 0, y: 0, z: 1 }, (Math.PI / 4) * deltaTime);
+      QuaternionUtils.normalize(this.guiDecorationQuaternion);
+      guiDecoration.applyQuaternion(this.guiDecorationQuaternion);
+    }
+
+
 
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.configureStartScreenGUIElements(GUISceneGUI);
@@ -356,7 +357,7 @@ export class MyGame extends Engine {
     }
   }
 
-  override Update(): void {    
+  override Update(): void {
     this.enemiesSpawnControll();
 
     if (this.player.position.z >= 80) {
@@ -372,7 +373,7 @@ export class MyGame extends Engine {
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
-    
+
     if (this.enemiesInGame == 0 && !this.isInHyperspace) {
       console.log("next level");
       this.isInHyperspace = true;
@@ -398,10 +399,11 @@ export class MyGame extends Engine {
       this.mainCamera?.move(0, 0, -190);
       this.waitingForNextLevel = true;
     }
-    if (this.mainCamera!.position.z < -23 && this.mainCamera!.position.z > -27 && this.waitingForNextLevel){
-       this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
-       this.isInHyperspace = false;
-       this.waitingForNextLevel = false;}
+    if (this.mainCamera!.position.z < -23 && this.mainCamera!.position.z > -27 && this.waitingForNextLevel) {
+      this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
+      this.isInHyperspace = false;
+      this.waitingForNextLevel = false;
+    }
   }
 
   shoot() {
