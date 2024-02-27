@@ -18,7 +18,7 @@ export class GUILevelObject extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (Date.now() - this.lastChangeTime > 500) {
+    if (Date.now() - this.lastChangeTime > 40) {
       this.lastChangeTime = Date.now();
       if (this.switch) this.setLineColor(this.i, "yellow");
       else this.setLineColor(this.i, "red");

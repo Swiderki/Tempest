@@ -70,6 +70,7 @@ export class MyGame extends Engine {
   guiDecorationQuaternion: QuaternionUtils.Quaternion = { x: 0, y: 0, z: 0, w: 1 };
   // Mechanism
   gameStarted: boolean = false;
+  looseStarted: boolean = false;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -199,10 +200,24 @@ export class MyGame extends Engine {
   }
 
   deleteLife() {
+    if (!this.gameStarted) return;
+
+    if (this.lifes <= 0) {
+      this.runLoose(); 
+      this.gameStarted = false;
+      return;
+    }
+
     const id = this.iconsID.pop();
     this.gui.removeElement(id!);
     this.icons.pop();
     this.lifes--;
+
+    
+  }
+
+  runLoose() {
+    this.mainScene.removeGameObject(this.player.id);
   }
 
   addLife() {
