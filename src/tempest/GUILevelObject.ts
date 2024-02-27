@@ -2,6 +2,9 @@ import { PhysicalGameObject, QuaternionUtils } from "drake-engine";
 
 export class GUILevelObject extends PhysicalGameObject {
   guiDecorationQuaternion: QuaternionUtils.Quaternion = { x: 0, y: 0, z: 0, w: 1 };
+  lastChangeTime: number = Date.now();
+  i: number = 15;
+  switch: boolean = true;
 
   constructor(num: number) {
     super(`obj/level${num}.obj`, {});
@@ -12,5 +15,18 @@ export class GUILevelObject extends PhysicalGameObject {
     this.getMesh().forEach((line, i) => {
       this.setLineColor(i, "red");
     });
+  }
+
+  override updatePhysics(deltaTime: number): void {
+    if (Date.now() - this.lastChangeTime > 500) {
+      this.lastChangeTime = Date.now();
+      if (this.switch) this.setLineColor(this.i, "yellow");
+      else this.setLineColor(this.i, "red");
+      this.i++;
+      if (this.i >= 31) {
+        this.i = 15;
+        this.switch = !this.switch;
+      }
+    }
   }
 }
