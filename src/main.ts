@@ -447,6 +447,11 @@ export class MyGame extends Engine {
   }
 
   nextLevel() {
+    if (this.currentLevel >= 1) {
+      this.runWin();
+      return;
+    }
+
     this.currentLevel++;
     this.spikerTraces.forEach((trace) => {
       this.currentScene.removeGameObject(trace.id);
