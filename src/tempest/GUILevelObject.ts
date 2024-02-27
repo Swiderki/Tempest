@@ -5,17 +5,12 @@ export class GUILevelObject extends PhysicalGameObject {
 
   constructor(num: number) {
     super(`obj/level${num}.obj`, {});
+    this.position.z = -80;
   }
 
   override Start() {
     this.getMesh().forEach((line, i) => {
       this.setLineColor(i, "red");
     });
-  }
-
-  override updatePhysics(deltaTime: number) {
-    QuaternionUtils.setFromAxisAngle(this.guiDecorationQuaternion, { x: 1, y: 0, z: 0 }, (Math.PI / 4) * deltaTime);
-    QuaternionUtils.normalize(this.guiDecorationQuaternion);
-    this.applyQuaternion(this.guiDecorationQuaternion);
   }
 }

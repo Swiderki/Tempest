@@ -89,7 +89,7 @@ export class MyGame extends Engine {
     const GUIScene = new Scene();
     GUIScene.setMainCamera(camera, this.width, this.height);
 
-    const g1 = new GUILevelObject(5);
+    const g1 = new GUILevelObject(9);
 
     GUIScene.addGameObject(g1);
 
