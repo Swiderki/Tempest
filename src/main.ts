@@ -373,6 +373,8 @@ export class MyGame extends Engine {
 
   handleKeyboardEvents() {
     if (!this.mainCamera) return;
+    if (this.lifeLost) return;
+
     if (this.keysPressed.has("a")) {
       if (!this.gameStarted) return;
       this.movePlayer(this.movementSpeed);
