@@ -15,7 +15,7 @@ export default class Tanker extends PhysicalGameObject {
     if (!options.position) {
       this.setPosition(0, 0, 0);
     }
-    this.velocity.z = -30;
+    this.velocity.z = -20;
     this.autoupdateBoxCollider = true;
   }
 

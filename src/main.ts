@@ -677,6 +677,7 @@ export class MyGame extends Engine {
   }
 
   superZapper() {
+    if (this.lifeLost) return;
     this.availableZapper = false;
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
