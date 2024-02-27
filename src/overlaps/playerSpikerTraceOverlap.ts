@@ -18,6 +18,7 @@ export class playerSpikerTraceOverlap extends Overlap {
     override onOverlap(): void {
         if (!this.game.currentScene) return;
         if (this.collised) return;
+        if(this.game.lifeLostType === "flipper") return;
         this.collised = true;
         this.game.lifeLostType = "spikerTrace";
         // this.game.currentScene.removeGameObject(this.spikerTrace.id);
