@@ -56,13 +56,13 @@ export class MyGame extends Engine {
   lastSpawned: number = Date.now();
   spawnDelta: number = 5000;
 
-  //keyboroard events
-  keysPressed = new Set();
-
   // Enemys data
   flipperLastSpawn: number = 0;
   isInHyperspace = false;
   movementSpeed: number = 1;
+
+  //keyboroard events
+  keysPressed = new Set();
 
   //GUI SCENE
   GUIScene: number | null = null;
@@ -90,6 +90,71 @@ export class MyGame extends Engine {
     this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] }, this);
     // level object must be at position [0,0,0]
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+  }
+
+  resetGame() {
+    this.scoreText.text = "0";
+
+    while (this.iconsID.length > 0) {
+      const id = this.iconsID.pop();
+      this.gui.removeElement(id!);
+      this.icons.pop();
+    }
+
+    this.lifes = 3;
+    for (let i = 0; i<this.lifes; i++) {
+      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+      this.nextLife += 10000;
+    }
+
+    this.currentLevel = 1;
+    this.currentLevelSide = 0.5;
+    this.playerLevelNumber = 0;
+    this.enemiesInGame = 3;
+    this.normallySpawned = 0;
+    this.maxNormallySpawned = 3;
+    this.waitingForNextLevel = false;
+    
+    this.nextLife = 10000;
+    this.lastSpawned = Date.now();
+    this.spawnDelta = 5000;
+
+    this.flipperLastSpawn = 0;
+    this.isInHyperspace = false;
+    this.movementSpeed = 1;
+
+    this.tankers.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.spikers.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.flippers.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.fuseballs.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.spikerTraces.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.bullets.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.enemyBullets.forEach(el => this.mainScene.removeGameObject(el.id));
+
+    this.tankers = [];
+    this.spikers = [];
+    this.flippers = [];
+    this.fuseballs = [];
+    this.spikerTraces = [];
+    this.bullets = [];
+    this.enemyBullets = [];
+
+    this.currentLevel++;
+
+    this.mainScene.removeGameObject(this.level.id);
+    this.level = new Level(1, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+
+    this.levelText.text = "1";
+
+    this.player.position.x = 0;
+    this.player.position.z = 0;
+    this.player.position.y = 0;
+
+    this.mainScene.overlaps.forEach((el, key) => {
+      this.mainScene.overlaps.delete(key);
+    });
   }
 
   initializeGUIScene(camera: Camera): Scene {
@@ -216,10 +281,17 @@ export class MyGame extends Engine {
 
     }
 
+
     const id = this.iconsID.pop();
     this.gui.removeElement(id!);
     this.icons.pop();
     this.lifes--;
+
+    if (this.lifes <= 0) {
+      this.runLoose(); 
+      this.gameStarted = false;
+      return;
+    }
   }
 
   runLoose() {
@@ -242,7 +314,10 @@ export class MyGame extends Engine {
 
     this.gameAlreadyEnded = true;
 
-    setTimeout(() => this.setCurrentScene(this.GUIScene!), 1000);
+    setTimeout(() => {
+      this.setCurrentScene(this.GUIScene!);
+      this.resetGame();
+    }, 1000);
   }
 
   addLife() {
