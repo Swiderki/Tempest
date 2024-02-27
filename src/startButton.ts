@@ -18,6 +18,7 @@ export class StartButton extends Button {
     }
 
     override onClick(): void {
+        this.game.mainCamera!.position.z = -25
         this.game.switchScene()
         this.game.gameStarted = true;
         this.game.lastSpawned = Date.now();
