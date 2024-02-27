@@ -20,20 +20,23 @@ export default class Player extends PhysicalGameObject {
       this.setLineColor(i, "yellow");
     }
     this.showBoxcollider = debugMode;
-    this.setPlayerPosition()
+    this.setPlayerPosition();
   }
 
   override updatePhysics(deltaTime: number): void {
-    
     super.updatePhysics(deltaTime);
     this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
     this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;
-    this.position.z = this.boxCollider![0].z
+    this.position.z = this.boxCollider![0].z;
     this.boxCollider![0].z += 1;
     this.boxCollider![1].z += -1;
   }
 
   setPlayerPosition() {
+    console.log(this.game.currentLevelSide);
+    if (isNaN(this.game.currentLevelSide)) {
+      this.game.currentLevelSide = 0.5;
+    }
     this.sound!.play();
     const levelShift = Math.floor((this.game.currentLevelSide % 1) * 10) / 10;
     this.vertecies[0].x = this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 1.2 * (1 - levelShift) + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 1.2 * levelShift;
@@ -54,7 +57,7 @@ export default class Player extends PhysicalGameObject {
     this.vertecies[5].x = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].x * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].x * 0.7) * 0.96;
     this.vertecies[5].y = (this.game.level.vertecies[Math.floor(this.game.currentLevelSide)].y * 0.3 + this.game.level.vertecies[(Math.floor(this.game.currentLevelSide) + 1) % this.game.level.numberOfPoints].y * 0.7) * 0.96;
     this.vertecies[5].z = this.position.z;
-    this.generateBoxCollider()
+    this.generateBoxCollider();
     this.game.level.updateColorOnPlayer();
   }
 }
