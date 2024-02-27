@@ -69,9 +69,9 @@ export class MyGame extends Engine {
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
-    this.scoreText = new GUIText("0", 50, "Arial", "green", 100);
-    this.bestScoreText = new GUIText("0", 30, "Arial", "green", 200);
-    this.levelText = new GUIText("1", 25, "Arial", "blue", 300);
+    this.scoreText = new GUIText("0", 50, "monospace", "green", 100);
+    this.bestScoreText = new GUIText("0", 30, "monospace", "green", 200);
+    this.levelText = new GUIText("1", 25, "monospace", "blue", 300);
     this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")];
 
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
@@ -327,7 +327,7 @@ export class MyGame extends Engine {
       this.enemiesInGame = 3 + this.playerLevelNumber;
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
       this.normallySpawned = 0;
-      if (this.spawnDelta - 500 >= 500) this.spawnDelta -= 500;
+      if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
       
