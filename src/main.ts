@@ -300,8 +300,9 @@ export class MyGame extends Engine {
     const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
     if (!this.gameAlreadyEnded) {
       this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
-      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 40, "monospace", "white", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
       g.addElement(this.gameEndedText!);
+      g.addElement(this.finalScore!);
     }
 
     this.gameEndedText!.text = "You lost!";
