@@ -3,8 +3,8 @@ import { MyGame } from "../main";
 import { PlayerEnemyBulletOverlap } from "../overlaps/playerEnemyBullet.Overlap";
 
 export default class Particle extends PhysicalGameObject {
-    game: MyGame;
-    created: number = Date.now();
+  game: MyGame;
+  created: number = Date.now();
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/particle.obj`, options);
     this.game = game;
@@ -17,14 +17,14 @@ export default class Particle extends PhysicalGameObject {
       this.game.currentScene?.removeGameObject(this.id);
       this.game.particles = this.game.particles.filter((particle) => particle.id !== this.id);
     }
-    this.scale(1.08,1.08,1.08)
+    this.scale(1.2, 1.2, 1.2)
   }
 
   override Start(): void {
 
   }
 
-  static createParticle(game: MyGame, position: {x: number, y: number, z: number}){
+  static createParticle(game: MyGame, position: { x: number, y: number, z: number }) {
     if (!game.currentScene) {
       throw new Error("Main scene must be set first.");
     }
@@ -35,5 +35,5 @@ export default class Particle extends PhysicalGameObject {
 
   }
 
-  
+
 }
