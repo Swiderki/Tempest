@@ -300,8 +300,9 @@ export class MyGame extends Engine {
     const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
     if (!this.gameAlreadyEnded) {
       this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
-      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 40, "monospace", "white", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
       g.addElement(this.gameEndedText!);
+      g.addElement(this.finalScore!);
     }
 
     this.gameEndedText!.text = "You lost!";
@@ -309,7 +310,32 @@ export class MyGame extends Engine {
     this.gameEndedText!.color = "red";
     this.gameEndedText!.position.y = 20;
     this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
-    this.finalScore!.position.y = this.gameEndedText!.position.y + 20;
+    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
+    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
+
+    this.gameAlreadyEnded = true;
+
+    setTimeout(() => {
+      this.setCurrentScene(this.GUIScene!);
+      this.resetGame();
+    }, 1000);
+  }
+
+  runWin() {
+    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
+    if (!this.gameAlreadyEnded) {
+      this.gameEndedText = new GUIText("You won!", 40, "monospace", "green", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
+      g.addElement(this.gameEndedText!);
+      g.addElement(this.finalScore!);
+    }
+
+    this.gameEndedText!.text = "You won!";
+    this.finalScore!.text = "Your score was:" + this.scoreText.text;
+    this.gameEndedText!.color = "green";
+    this.gameEndedText!.position.y = 20;
+    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
+    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
     this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
 
     this.gameAlreadyEnded = true;
@@ -421,6 +447,11 @@ export class MyGame extends Engine {
   }
 
   nextLevel() {
+    if (this.currentLevel >= 1) {
+      this.runWin();
+      return;
+    }
+
     this.currentLevel++;
     this.spikerTraces.forEach((trace) => {
       this.currentScene.removeGameObject(trace.id);
