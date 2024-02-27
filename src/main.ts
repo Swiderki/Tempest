@@ -72,6 +72,7 @@ export class MyGame extends Engine {
   gameStarted: boolean = false;
   gameAlreadyEnded: boolean = false;
   gameEndedText: GUIText | null = null;
+  finalScore: GUIText | null = null;
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | null = null
@@ -227,13 +228,17 @@ export class MyGame extends Engine {
     const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
     if (!this.gameAlreadyEnded) {
       this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 40, "monospace", "white", 700);
       g.addElement(this.gameEndedText!);
     }
 
     this.gameEndedText!.text = "You lost!";
+    this.finalScore!.text = "Your score was:" + this.scoreText.text;
     this.gameEndedText!.color = "red";
     this.gameEndedText!.position.y = 20;
     this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
+    this.finalScore!.position.y = this.gameEndedText!.position.y + 20;
+    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
 
     this.gameAlreadyEnded = true;
 
