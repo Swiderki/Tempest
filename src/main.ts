@@ -16,6 +16,8 @@ import { GUILevelObject } from "./tempest/GUILevelObject";
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
+const music = new Audio("sounds/tempestTheme.mp3");
+music.loop = true;
 
 export const debugMode: boolean = true;
 
@@ -75,7 +77,7 @@ export class MyGame extends Engine {
   finalScore: GUIText | null = null;
 
   lifeLost: boolean = false;
-  lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null
+  lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
   unpauseText: GUIText | null = new GUIText("3", 240, "monospace", "white", 500);
 
   constructor(canvas: HTMLCanvasElement) {
@@ -124,13 +126,13 @@ export class MyGame extends Engine {
     this.isInHyperspace = false;
     this.movementSpeed = 1;
 
-    this.tankers.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.spikers.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.flippers.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.fuseballs.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.spikerTraces.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.bullets.forEach(el => this.mainScene.removeGameObject(el.id));
-    this.enemyBullets.forEach(el => this.mainScene.removeGameObject(el.id));
+    this.tankers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.spikers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.flippers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.fuseballs.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.spikerTraces.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.bullets.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.enemyBullets.forEach((el) => this.mainScene.removeGameObject(el.id));
 
     this.tankers = [];
     this.spikers = [];
@@ -216,7 +218,6 @@ export class MyGame extends Engine {
     this.mainScene.addGameObject(this.level);
     this.mainScene._started = true;
     this.addEventListeners();
-
     this.canvas.addEventListener("mousemove", (ev: MouseEvent) => {
       if (!this.startButton!.isCoordInElement(ev.offsetX, ev.offsetY)) {
         this.startButton!.color = "#fff";
@@ -229,6 +230,7 @@ export class MyGame extends Engine {
   }
 
   switchScene() {
+    music.play();
     this.setCurrentScene(this.mainScene.id);
     this.mainScene.addGameObject(this.player);
   }
@@ -278,9 +280,7 @@ export class MyGame extends Engine {
       return;
     } else {
       this.lifeLost = true;
-
     }
-
 
     const id = this.iconsID.pop();
     this.gui.removeElement(id!);
@@ -471,7 +471,6 @@ export class MyGame extends Engine {
     }
 
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
-
       if (!this.gameStarted) return;
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
@@ -497,10 +496,10 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
-    console.log(this.enemiesInGame)
+    console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
-      return
+      return;
     }
 
     this.enemiesSpawnControll();
@@ -530,10 +529,10 @@ export class MyGame extends Engine {
   }
 
   lifeLostFunction() {
-    console.log(this.lifeLostType)
+    console.log(this.lifeLostType);
     if (this.lifeLostType == "bullet") {
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
-      this.unpauseText!.text = "3"
+      this.unpauseText!.text = "3";
       this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
       setTimeout(() => {
         this.unpauseText!.text = "2";
@@ -546,11 +545,10 @@ export class MyGame extends Engine {
         this.lifeLost = false;
       }, 3000);
       this.lifeLostType = null;
-
     } else if (this.lifeLostType == "fuseball") {
-      console.log("ASDDSA")
+      console.log("ASDDSA");
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
-      this.unpauseText!.text = "3"
+      this.unpauseText!.text = "3";
       this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
       setTimeout(() => {
         this.unpauseText!.text = "2";
@@ -563,9 +561,7 @@ export class MyGame extends Engine {
         this.lifeLost = false;
       }, 3000);
       this.lifeLostType = null;
-
-    }
-    else if (this.lifeLostType == "spikerTrace") {
+    } else if (this.lifeLostType == "spikerTrace") {
       if (this.currentScene.mainCamera!.position.z > -25) {
         this.player.move(0, 0, -this.player.position.z);
         this.currentScene.mainCamera!.move(0, 0, -30 * this.deltaTime);
@@ -574,7 +570,7 @@ export class MyGame extends Engine {
         }
       } else {
         const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
-        this.unpauseText!.text = "3"
+        this.unpauseText!.text = "3";
         this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
         setTimeout(() => {
           this.unpauseText!.text = "2";
@@ -589,15 +585,18 @@ export class MyGame extends Engine {
         }, 3000);
         this.lifeLostType = null;
       }
-    }
-    else if (this.lifeLostType == "flipper") {
+    } else if (this.lifeLostType == "flipper") {
       if (this.player.position.z < 80) {
         this.player.move(0, 0, 30 * this.deltaTime);
-        this.flippers.filter(flipper => flipper.killedPlayer == true).forEach(flipper => { flipper.move(0, 0, 30 * this.deltaTime) });
+        this.flippers
+          .filter((flipper) => flipper.killedPlayer == true)
+          .forEach((flipper) => {
+            flipper.move(0, 0, 30 * this.deltaTime);
+          });
       } else {
         const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
-        console.log(z)
-        this.unpauseText!.text = "3"
+        console.log(z);
+        this.unpauseText!.text = "3";
         this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
         setTimeout(() => {
           this.unpauseText!.text = "2";
@@ -610,21 +609,23 @@ export class MyGame extends Engine {
           this.lifeLost = false;
           this.player.move(0, 0, -this.player.position.z);
           this.lifeLostType = null;
-          this.flippers.filter(flipper => flipper.killedPlayer == true).forEach(flipper => {
-            this.currentScene.removeGameObject(flipper.id)
-            this.enemiesInGame--
-          });
-          this.flippers.filter(flipper => flipper.position.z <= 0).forEach(flipper => {
-            this.currentScene.removeGameObject(flipper.id);
-            this.enemiesInGame--
-          });
-
+          this.flippers
+            .filter((flipper) => flipper.killedPlayer == true)
+            .forEach((flipper) => {
+              this.currentScene.removeGameObject(flipper.id);
+              this.enemiesInGame--;
+            });
+          this.flippers
+            .filter((flipper) => flipper.position.z <= 0)
+            .forEach((flipper) => {
+              this.currentScene.removeGameObject(flipper.id);
+              this.enemiesInGame--;
+            });
         }, 3000);
         this.lifeLostType = null;
       }
     }
   }
-
 
   hyperSpace(delta: number) {
     if (this.player.position.z < 80 && !this.waitingForNextLevel) {
@@ -671,14 +672,12 @@ export class MyGame extends Engine {
         this.currentScene.removeGameObject(spiker.id);
         this.updateScore(50);
         this.enemiesInGame--;
-
       }
       this.spikers = [];
       for (const flipper of this.flippers) {
         this.currentScene.removeGameObject(flipper.id);
         this.updateScore(150);
         this.enemiesInGame--;
-
       }
       this.flippers = [];
       for (const fuseball of this.fuseballs) {
@@ -691,12 +690,11 @@ export class MyGame extends Engine {
           this.updateScore(750);
         }
         this.enemiesInGame--;
-
       }
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
         this.updateScore(100);
-        tanker.deployFlippers()
+        tanker.deployFlippers();
         this.enemiesInGame--;
       }
       this.tankers = [];
