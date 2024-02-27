@@ -70,7 +70,8 @@ export class MyGame extends Engine {
   guiDecorationQuaternion: QuaternionUtils.Quaternion = { x: 0, y: 0, z: 0, w: 1 };
   // Mechanism
   gameStarted: boolean = false;
-  looseStarted: boolean = false;
+  gameAlreadyEnded: boolean = false;
+  gameEndedText: GUIText | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -202,7 +203,7 @@ export class MyGame extends Engine {
   deleteLife() {
     if (!this.gameStarted) return;
 
-    if (this.lifes <= 0) {
+    if (this.lifes <= 1) {
       this.runLoose(); 
       this.gameStarted = false;
       return;
@@ -212,12 +213,25 @@ export class MyGame extends Engine {
     this.gui.removeElement(id!);
     this.icons.pop();
     this.lifes--;
-
-    
   }
 
   runLoose() {
     this.mainScene.removeGameObject(this.player.id);
+
+    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
+    if (!this.gameAlreadyEnded) {
+      this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
+      g.addElement(this.gameEndedText!);
+    }
+
+    this.gameEndedText!.text = "You lost!";
+    this.gameEndedText!.color = "red";
+    this.gameEndedText!.position.y = 20;
+    this.gameEndedText!.position.x = this.canvas.width/2 - this.gameEndedText!.width/2;
+    
+    this.gameAlreadyEnded = true;
+
+    setTimeout(() => this.setCurrentScene(this.GUIScene!), 1000);
   }
 
   addLife() {

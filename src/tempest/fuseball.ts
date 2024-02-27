@@ -9,7 +9,7 @@ export default class Fuseball extends PhysicalGameObject {
   targetVertex: { x: number; y: number; z: number } | null = null;
   actualIndex: number = 0;
   isMoving: boolean = false;
-  moveInterval: number = 25;
+  moveInterval: number = 50;
   lastMoveTime: number = Date.now();
   moveVectorReturn: number = 1;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {

@@ -33,10 +33,21 @@ export default class Level extends PhysicalGameObject {
       this.isShining = true;
     });
   }
+
+  updatePhysics(deltaTime: number): void {
+    let currSide = Math.floor(this.game.currentLevelSide);
+    if (!this.game.gameStarted) {
+      this.setLineColor(currSide + this.numberOfPoints, this.colors[Math.floor((this.levelId-1)/16)]);
+      this.setLineColor(((currSide + 1) % this.numberOfPoints) + this.numberOfPoints, this.colors[Math.floor((this.levelId-1)/16)]);
+      return;
+    }
+  }
+
   override Start(): void {
     this.game.player.setPlayerPosition();
   }
   updateColorOnPlayer() {
+
     let currSide = Math.floor(this.game.currentLevelSide);
     for (let i = 0; i < this.getMesh().length; i++) {
       this.setLineColor(i, this.colors[Math.floor((this.levelId-1)/16)]);
@@ -44,6 +55,7 @@ export default class Level extends PhysicalGameObject {
     if (!this.lopped) {
       currSide--;
     }
+
     this.setLineColor(currSide + this.numberOfPoints, "yellow");
     this.setLineColor(((currSide + 1) % this.numberOfPoints) + this.numberOfPoints, "yellow");
   }
