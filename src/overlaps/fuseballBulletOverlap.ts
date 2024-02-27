@@ -19,7 +19,9 @@ export class FuseballBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-
+    if (this.collised) return;
+    this.collised = true;
+    this.fuseball.killedPlayer = true;
     if(this.fuseball.position.z > 30){
       this.game.updateScore(250)
     }else if(this.fuseball.position.z > 10){

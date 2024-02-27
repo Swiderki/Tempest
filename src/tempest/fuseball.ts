@@ -12,6 +12,7 @@ export default class Fuseball extends PhysicalGameObject {
   moveInterval: number = 50;
   lastMoveTime: number = Date.now();
   moveVectorReturn: number = 1;
+  killedPlayer: boolean = false;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/fuseball.obj`, options);
     this.game = game;

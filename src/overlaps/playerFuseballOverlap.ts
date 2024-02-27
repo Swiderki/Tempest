@@ -20,7 +20,7 @@ export class PlayerFuseballOverlap extends Overlap {
     if (!this.game.currentScene) return;
     if (this.collised) return;
     this.collised = true;
-    console.log("ASDDSA")
+    this.game.lifeLostType = "fuseball";
     // console.log(this.flipper.canBeCollided)
     // if(this.flipper.canBeCollided){
     //     this.game.currentScene.removeGameObject(this.flipper.id);

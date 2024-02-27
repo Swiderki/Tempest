@@ -102,7 +102,7 @@ export class MyGame extends Engine {
     }
 
     this.lifes = 3;
-    for (let i = 0; i<this.lifes; i++) {
+    for (let i = 0; i < this.lifes; i++) {
       this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
       this.nextLife += 10000;
@@ -115,7 +115,7 @@ export class MyGame extends Engine {
     this.normallySpawned = 0;
     this.maxNormallySpawned = 3;
     this.waitingForNextLevel = false;
-    
+
     this.nextLife = 10000;
     this.lastSpawned = Date.now();
     this.spawnDelta = 5000;
@@ -288,7 +288,7 @@ export class MyGame extends Engine {
     this.lifes--;
 
     if (this.lifes <= 0) {
-      this.runLoose(); 
+      this.runLoose();
       this.gameStarted = false;
       return;
     }
@@ -499,6 +499,7 @@ export class MyGame extends Engine {
   }
 
   lifeLostFunction() {
+    console.log(this.lifeLostType)
     if (this.lifeLostType == "bullet") {
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
       this.unpauseText!.text = "3"
@@ -515,8 +516,24 @@ export class MyGame extends Engine {
       }, 3000);
       this.lifeLostType = null;
 
-    }
+    } else if (this.lifeLostType == "fuseball") {
+      console.log("ASDDSA")
+      const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
+      this.unpauseText!.text = "3"
+      this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+      setTimeout(() => {
+        this.unpauseText!.text = "2";
+      }, 1000);
+      setTimeout(() => {
+        this.unpauseText!.text = "1";
+      }, 2000);
+      setTimeout(() => {
+        this.currentScene.currentGUI!.removeElement(z);
+        this.lifeLost = false;
+      }, 3000);
+      this.lifeLostType = null;
 
+    }
     else if (this.lifeLostType == "spikerTrace") {
       if (this.currentScene.mainCamera!.position.z > -25) {
         this.player.move(0, 0, -this.player.position.z);
