@@ -26,9 +26,10 @@ export class TankerBulletOverlap extends Overlap {
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.tanker.id);
     this.game.tankers = this.game.tankers.filter((spiker) => spiker.id !== this.tanker.id);
-    this.game.updateScore(100)
+    this.game.updateScore(100);
     enemyExplosionSound.play();
-
+    this.obj2.deployFlippers();
+    // nie wiem czy się dobrze zliczają przeciwnicy
     this.game.enemiesInGame--;
   }
 }
