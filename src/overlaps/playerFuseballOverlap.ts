@@ -18,6 +18,8 @@ export class PlayerFuseballOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
+    if (this.collised) return;
+    this.collised = true;
     console.log("ASDDSA")
     // console.log(this.flipper.canBeCollided)
     // if(this.flipper.canBeCollided){

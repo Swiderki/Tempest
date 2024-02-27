@@ -54,6 +54,8 @@ export default class Fuseball extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    if (this.game.lifeLost) return
+
     super.updatePhysics(deltaTime);
 
     if (Date.now() - this.lastMoveTime > this.moveInterval) {

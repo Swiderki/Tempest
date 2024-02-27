@@ -17,14 +17,16 @@ export class PlayerFlipperOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-
-    this.game.currentScene.removeGameObject(this.flipper.id);
-    this.game.flippers = this.game.flippers.filter(
-      (flipper) => flipper.id !== this.flipper.id
-    );
+    if (this.collised) return;
+    this.collised = true;
+    this.game.lifeLostType = "flipper";
+    this.flipper.killedPlayer = true;
+    // this.game.currentScene.removeGameObject(this.flipper.id);
+    // this.game.flippers = this.game.flippers.filter(
+    //   (flipper) => flipper.id !== this.flipper.id
+    // );
 
     this.game.deleteLife();
 
-    this.game.enemiesInGame--;
   }
 }

@@ -44,6 +44,8 @@ export default class Tanker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    if (this.game.lifeLost) return
+
     super.updatePhysics(deltaTime);
 
     // Fixing box collider

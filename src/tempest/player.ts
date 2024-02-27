@@ -24,6 +24,7 @@ export default class Player extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    
     super.updatePhysics(deltaTime);
     this.position.x = (this.boxCollider![0].x + this.boxCollider![1].x) / 2;
     this.position.y = (this.boxCollider![0].y + this.boxCollider![1].y) / 2;

@@ -15,6 +15,8 @@ export default class EnemyBullet extends PhysicalGameObject {
     ];
   }
   override updatePhysics(deltaTime: number): void {
+    if (this.game.lifeLost) return
+
     super.updatePhysics(deltaTime);
 
     this.boxCollider = [

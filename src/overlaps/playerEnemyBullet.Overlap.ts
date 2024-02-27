@@ -17,7 +17,9 @@ export class PlayerEnemyBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-    console.log("AS")
+    if (this.collised) return;
+    this.collised = true;
+    this.game.lifeLostType = 'bullet';
     this.game.currentScene.removeGameObject(this.enemyBullet.id);
     this.game.enemyBullets = this.game.enemyBullets.filter((bullet) => bullet.id !== this.enemyBullet.id);
     // this.game.currentScene.removeOverlap(this.id);
