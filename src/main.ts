@@ -88,19 +88,18 @@ export class MyGame extends Engine {
     const GUIScene = new Scene();
     GUIScene.setMainCamera(camera, this.width, this.height);
 
-    const guiDecoration = new PhysicalGameObject("obj/level1.obj", {})
-    guiDecoration.Start = () => guiDecoration.getMesh().forEach((line, i) => {
-      guiDecoration.setLineColor(i, "red");
-      console.log(i);
-    });
+    const guiDecoration = new PhysicalGameObject("obj/level1.obj", {});
+    guiDecoration.Start = () =>
+      guiDecoration.getMesh().forEach((line, i) => {
+        guiDecoration.setLineColor(i, "red");
+        console.log(i);
+      });
     GUIScene.addGameObject(guiDecoration);
     guiDecoration.updatePhysics = (deltaTime: number) => {
       QuaternionUtils.setFromAxisAngle(this.guiDecorationQuaternion, { x: 0, y: 0, z: 1 }, (Math.PI / 4) * deltaTime);
       QuaternionUtils.normalize(this.guiDecorationQuaternion);
       guiDecoration.applyQuaternion(this.guiDecorationQuaternion);
-    }
-
-
+    };
 
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
     this.configureStartScreenGUIElements(GUISceneGUI);
@@ -257,29 +256,29 @@ export class MyGame extends Engine {
     }
 
     /* ###### IMPORTANT ###### */
-    // Commented code elements were used for manual testing. 
+    // Commented code elements were used for manual testing.
     // We decided to leave them in the code to better outline our strategy.
 
-    // if (this.keysPressed.has("w")) {
-    //   // Spiker.createSpiker(this);
-    //   Fuseball.createFuseball(this);
-    // }
-    // if (this.keysPressed.has("l")) {
-    //   this.superZapper();
-    // }
-    // zmiana levelów do testów
-    // if (this.keysPressed.has("q")) {
-    //   this.previousLevel();
-    // }
-    // if (this.keysPressed.has("e")) {
-    //   this.nextLevel();
-    // }
-    // if (this.keysPressed.has("r")) {
-    //   Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
-    // }
-    // if (this.keysPressed.has("t")) {
-    //   Tanker.createTanker(this);
-    // }
+    if (this.keysPressed.has("w")) {
+      // Spiker.createSpiker(this);
+      Fuseball.createFuseball(this);
+    }
+    if (this.keysPressed.has("l")) {
+      this.superZapper();
+    }
+    //zmiana levelów do testów
+    if (this.keysPressed.has("q")) {
+      this.previousLevel();
+    }
+    if (this.keysPressed.has("e")) {
+      this.nextLevel();
+    }
+    if (this.keysPressed.has("r")) {
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+    }
+    if (this.keysPressed.has("t")) {
+      Tanker.createTanker(this);
+    }
   }
 
   movePlayer(speed: number) {
@@ -379,7 +378,6 @@ export class MyGame extends Engine {
       this.isInHyperspace = true;
     }
 
-
     if (this.isInHyperspace) {
       this.hyperSpace(this.deltaTime);
     }
@@ -389,10 +387,8 @@ export class MyGame extends Engine {
     if (this.player.position.z < 80 && !this.waitingForNextLevel) {
       this.player.move(0, 0, 30 * delta);
       this.mainCamera?.move(0, 0, 30 * delta);
-
     } else {
       this.mainCamera?.move(0, 0, 60 * delta);
-
     }
 
     if (this.player.position.z > 80 && this.mainCamera!.position.z > 0) {

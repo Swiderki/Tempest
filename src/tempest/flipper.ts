@@ -21,7 +21,7 @@ export default class Fipper extends PhysicalGameObject {
     this.game = game;
     this.autoupdateBoxCollider = true;
     this.side = closestVertexId || -1;
-    if ((this.side = -1)) {
+    if (this.side == -1) {
       this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     }
     //this.side = Math.round(Math.random() * this.game.level.numberOfSides);
