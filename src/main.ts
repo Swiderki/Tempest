@@ -77,6 +77,7 @@ export class MyGame extends Engine {
   gameAlreadyEnded: boolean = false;
   gameEndedText: GUIText | null = null;
   finalScore: GUIText | null = null;
+  availableZapper: boolean = true;
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
@@ -277,7 +278,6 @@ export class MyGame extends Engine {
   deleteLife() {
     if (!this.gameStarted) return;
     if (this.lifes <= 1) {
-
       this.runLoose();
       this.gameStarted = false;
       return;
@@ -403,7 +403,9 @@ export class MyGame extends Engine {
       Fuseball.createFuseball(this);
     }
     if (this.keysPressed.has("l")) {
-      this.superZapper();
+      if (this.availableZapper) {
+        this.superZapper();
+      }
     }
     //zmiana levelów do testów
     if (this.keysPressed.has("q")) {
@@ -458,6 +460,7 @@ export class MyGame extends Engine {
     }
 
     this.currentLevel++;
+    this.availableZapper = true;
     this.spikerTraces.forEach((trace) => {
       this.currentScene.removeGameObject(trace.id);
     });
@@ -541,7 +544,6 @@ export class MyGame extends Engine {
       this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
       setTimeout(() => {
         this.unpauseText!.text = "2";
-
       }, 1000);
       setTimeout(() => {
         this.unpauseText!.text = "1";
@@ -675,6 +677,7 @@ export class MyGame extends Engine {
   }
 
   superZapper() {
+    this.availableZapper = false;
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
