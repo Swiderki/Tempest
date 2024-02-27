@@ -73,6 +73,10 @@ export class MyGame extends Engine {
   gameAlreadyEnded: boolean = false;
   gameEndedText: GUIText | null = null;
 
+  lifeLost: boolean = false;
+  lifeLostType: "flipper" | "bullet" | "spikerTrace" | null = null
+  unpauseText: GUIText | null = new GUIText("3", 240, "monospace", "white", 500);
+
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.scoreText = new GUIText("0", 50, "monospace", "green", 100);
@@ -104,7 +108,7 @@ export class MyGame extends Engine {
     this.GUIScene = this.addScene(GUIScene);
     return GUIScene;
   }
-  
+
   configureStartScreenGUIElements(GUISceneGUI: GUI): void {
     const t1 = new GUIText("Tempest", 70, "monospace", "#fff", 700);
     const t2 = new GUIText("Made by Świderki", 16, "monospace", "#fff", 700);
@@ -202,11 +206,13 @@ export class MyGame extends Engine {
 
   deleteLife() {
     if (!this.gameStarted) return;
-
     if (this.lifes <= 1) {
-      this.runLoose(); 
+      this.runLoose();
       this.gameStarted = false;
       return;
+    } else {
+      this.lifeLost = true;
+
     }
 
     const id = this.iconsID.pop();
@@ -227,8 +233,8 @@ export class MyGame extends Engine {
     this.gameEndedText!.text = "You lost!";
     this.gameEndedText!.color = "red";
     this.gameEndedText!.position.y = 20;
-    this.gameEndedText!.position.x = this.canvas.width/2 - this.gameEndedText!.width/2;
-    
+    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
+
     this.gameAlreadyEnded = true;
 
     setTimeout(() => this.setCurrentScene(this.GUIScene!), 1000);
@@ -354,6 +360,7 @@ export class MyGame extends Engine {
     }
 
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+
       if (!this.gameStarted) return;
       const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
@@ -379,9 +386,88 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
+    console.log(this.enemiesInGame)
+    if (this.lifeLost) {
+      if (this.lifeLostType == "bullet") {
+        const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
+        this.unpauseText!.text = "3"
+        this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+        setTimeout(() => {
+          this.unpauseText!.text = "2";
+        }, 1000);
+        setTimeout(() => {
+          this.unpauseText!.text = "1";
+        }, 2000);
+        setTimeout(() => {
+          this.currentScene.currentGUI!.removeElement(z);
+          this.lifeLost = false;
+        }, 3000);
+        this.lifeLostType = null;
+
+      } else if (this.lifeLostType == "spikerTrace") {
+        if (this.currentScene.mainCamera!.position.z > -25) {
+          this.player.move(0, 0, -this.player.position.z);
+          this.currentScene.mainCamera!.move(0, 0, -30 * this.deltaTime);
+          if (this.currentScene.mainCamera!.position.z < -25) {
+            this.currentScene.mainCamera!.move(0, 0, -this.currentScene.mainCamera!.position.z - 25);
+          }
+        } else {
+          const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
+          this.unpauseText!.text = "3"
+          this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+          setTimeout(() => {
+            this.unpauseText!.text = "2";
+          }, 1000);
+          setTimeout(() => {
+            this.unpauseText!.text = "1";
+          }, 2000);
+          setTimeout(() => {
+            this.currentScene.currentGUI!.removeElement(z);
+            this.lifeLost = false;
+            this.lifeLostType = null;
+          }, 3000);
+          this.lifeLostType = null;
+        }
+      }
+      else if (this.lifeLostType == "flipper") {
+        if (this.player.position.z < 80) {
+          this.player.move(0, 0, 30 * this.deltaTime);
+          this.flippers.filter(flipper => flipper.killedPlayer == true).forEach(flipper => { flipper.move(0, 0, 30 * this.deltaTime) });
+        } else {
+          const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
+          console.log(z)
+          this.unpauseText!.text = "3"
+          this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+          setTimeout(() => {
+            this.unpauseText!.text = "2";
+          }, 1000);
+          setTimeout(() => {
+            this.unpauseText!.text = "1";
+          }, 2000);
+          setTimeout(() => {
+            this.currentScene.currentGUI!.removeElement(z);
+            this.lifeLost = false;
+            this.player.move(0, 0, -this.player.position.z);
+            this.lifeLostType = null;
+            this.flippers.filter(flipper => flipper.killedPlayer == true).forEach(flipper => {
+              this.currentScene.removeGameObject(flipper.id)
+              this.enemiesInGame--
+            });
+            this.flippers.filter(flipper => flipper.position.z <= 0).forEach(flipper => {
+              this.currentScene.removeGameObject(flipper.id);
+              this.enemiesInGame--
+            });
+
+          }, 3000);
+          this.lifeLostType = null;
+        }
+      }
+      return
+    }
+
     this.enemiesSpawnControll();
 
-    if (this.player.position.z >= 80) {
+    if (this.player.position.z >= 80 && this.enemiesInGame == 0) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
@@ -404,6 +490,8 @@ export class MyGame extends Engine {
       this.hyperSpace(this.deltaTime);
     }
   }
+
+
 
   hyperSpace(delta: number) {
     if (this.player.position.z < 80 && !this.waitingForNextLevel) {

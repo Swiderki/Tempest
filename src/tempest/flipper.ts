@@ -16,6 +16,7 @@ export default class Fipper extends PhysicalGameObject {
   side: number = 0;
   lastTimeMoved = Date.now();
   canBeCollided = true;
+  killedPlayer = false;
   constructor(options: PhysicalObjectInitialConfig, game: MyGame, closestVertexId?: number) {
     super(`obj/flipper.obj`, options);
     this.game = game;
@@ -46,6 +47,7 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    if (this.game.lifeLost) return
     const time = Date.now();
     if ((this.position.z <= 0 && time - this.lastTimeMoved > this.timeBetweenMovement) || (this.game.currentLevel > 1 && time - this.lastTimeMoved > this.timeBetweenMovement)) {
       this.moveTowardsPlayer();

@@ -33,6 +33,8 @@ export default class Bullet extends PhysicalGameObject {
   }
 
   override Start(): void {
+    if (this.game.lifeLost) return
+
     this.showBoxcollider = debugMode;
 
     // Adding overlaps

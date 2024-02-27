@@ -17,7 +17,9 @@ export class playerSpikerTraceOverlap extends Overlap {
 
     override onOverlap(): void {
         if (!this.game.currentScene) return;
-        console.log("AS");
+        if (this.collised) return;
+        this.collised = true;
+        this.game.lifeLostType = "spikerTrace";
         // this.game.currentScene.removeGameObject(this.spikerTrace.id);
         // this.game.spikerTraces = this.game.spikerTraces.filter(
         //   (trace) => trace.id !== this.spikerTrace.id

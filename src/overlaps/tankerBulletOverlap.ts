@@ -19,6 +19,8 @@ export class TankerBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
+    if (this.collised) return;
+    this.collised = true;
     const particle = new Particle({ position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z], size: [0.1, 0.1, 0.1] }, this.game);
     this.game.currentScene.addGameObject(particle);
     this.game.particles.push(particle);
@@ -28,7 +30,7 @@ export class TankerBulletOverlap extends Overlap {
     this.game.tankers = this.game.tankers.filter((spiker) => spiker.id !== this.tanker.id);
     this.game.updateScore(100);
     enemyExplosionSound.play();
-    this.obj2.deployFlippers();
+    this.tanker.deployFlippers();
     // nie wiem czy się dobrze zliczają przeciwnicy
     this.game.enemiesInGame--;
   }

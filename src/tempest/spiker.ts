@@ -46,6 +46,8 @@ export default class Spiker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
+    if (this.game.lifeLost) return
+
     const time = Date.now();
     super.updatePhysics(deltaTime);
     // console.log("spiker" + this.position.z)
