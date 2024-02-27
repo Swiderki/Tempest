@@ -1,4 +1,4 @@
-import { Engine, Camera, Scene, GUI, GUIText, Icon, Button, PhysicalGameObject, QuaternionUtils } from "drake-engine";
+import { Engine, Camera, Scene, GUI, GUIText, Icon, Button, PhysicalGameObject, QuaternionUtils, Vec3DTuple } from "drake-engine";
 import { StartButton } from "./startButton";
 import _default from "drake-engine";
 import Player from "./tempest/player";
@@ -11,7 +11,9 @@ import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
 import Fuseball from "./tempest/fuseball";
 import Particle from "./tempest/particle";
+import { PlayerParticle } from "./tempest/playerParticle";
 import { GUILevelObject } from "./tempest/GUILevelObject";
+import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -275,7 +277,7 @@ export class MyGame extends Engine {
   deleteLife() {
     if (!this.gameStarted) return;
     if (this.lifes <= 1) {
-      
+
       this.runLoose();
       this.gameStarted = false;
       return;
@@ -539,9 +541,13 @@ export class MyGame extends Engine {
       this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
       setTimeout(() => {
         this.unpauseText!.text = "2";
+
       }, 1000);
       setTimeout(() => {
         this.unpauseText!.text = "1";
+        for (let i = 0; i < this.player.getMesh().length; i++) {
+          this.player.setLineColor(i, "yellow");
+        }
       }, 2000);
       setTimeout(() => {
         this.currentScene.currentGUI!.removeElement(z);
@@ -558,6 +564,9 @@ export class MyGame extends Engine {
       }, 1000);
       setTimeout(() => {
         this.unpauseText!.text = "1";
+        for (let i = 0; i < this.player.getMesh().length; i++) {
+          this.player.setLineColor(i, "yellow");
+        }
       }, 2000);
       setTimeout(() => {
         this.currentScene.currentGUI!.removeElement(z);
@@ -646,6 +655,13 @@ export class MyGame extends Engine {
       this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
       this.isInHyperspace = false;
       this.waitingForNextLevel = false;
+    }
+  }
+
+  spawnParticles(position: Vec3DTuple, amount: number) {
+    for (let i = 0; i < amount; i++) {
+      const p = new PlayerParticle(position, this, [0.5, 0.5, 0.5]);
+      this.currentScene.addGameObject(p);
     }
   }
 

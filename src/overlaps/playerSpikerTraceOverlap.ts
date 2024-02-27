@@ -24,7 +24,7 @@ export class playerSpikerTraceOverlap extends Overlap {
         // this.game.spikerTraces = this.game.spikerTraces.filter(
         //   (trace) => trace.id !== this.spikerTrace.id
         // );
-
+        this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3);
         this.game.deleteLife();
         this.collised = false;
     }

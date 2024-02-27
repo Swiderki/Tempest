@@ -21,6 +21,10 @@ export class PlayerFuseballOverlap extends Overlap {
     if (this.collised) return;
     this.collised = true;
     this.game.lifeLostType = "fuseball";
+    for (let i = 0; i < this.player.getMesh().length; i++) {
+      this.player.setLineColor(i, "yellow");
+    }
+    
     // console.log(this.flipper.canBeCollided)
     // if(this.flipper.canBeCollided){
     //     this.game.currentScene.removeGameObject(this.flipper.id);
@@ -30,7 +34,7 @@ export class PlayerFuseballOverlap extends Overlap {
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id); 
     blasterExplosionSound.play();
     this.game.deleteLife()
-    
+
     this.game.enemiesInGame--;
   }
 }

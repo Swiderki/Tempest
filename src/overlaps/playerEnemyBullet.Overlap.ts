@@ -2,6 +2,7 @@ import { Overlap } from "drake-engine";
 import { MyGame } from "../main";
 import Player from "../tempest/player";
 import EnemyBullet from "../tempest/enemyBullet";
+import { PlayerParticle } from "../tempest/playerParticle";
 
 export class PlayerEnemyBulletOverlap extends Overlap {
   private game: MyGame;
@@ -20,6 +21,12 @@ export class PlayerEnemyBulletOverlap extends Overlap {
     if (this.collised) return;
     this.collised = true;
     this.game.lifeLostType = 'bullet';
+    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3)
+    for (let i = 0; i < this.player.getMesh().length; i++) {
+      this.player.setLineColor(i, "transparent");
+    }
+    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3);
+
     this.game.currentScene.removeGameObject(this.enemyBullet.id);
     this.game.enemyBullets = this.game.enemyBullets.filter((bullet) => bullet.id !== this.enemyBullet.id);
     // this.game.currentScene.removeOverlap(this.id);

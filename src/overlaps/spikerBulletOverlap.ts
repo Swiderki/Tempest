@@ -26,7 +26,7 @@ export class SpikerBulletOverlap extends Overlap {
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.currentScene.removeGameObject(this.spiker.id);
     this.game.spikers = this.game.spikers.filter((spiker) => spiker.id !== this.spiker.id);
-
+    
     // this.game.currentScene.removeOverlap(this.id);
     this.game.updateScore(50)
     enemyExplosionSound.play();
