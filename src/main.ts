@@ -359,11 +359,11 @@ export class MyGame extends Engine {
   }
 
   addLife() {
-      console.log("ASd")
-      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
-      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
-      this.lifes++;
-      this.nextLife += 10000;
+    console.log("ASd")
+    this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+    this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+    this.lifes++;
+    this.nextLife += 10000;
   }
 
   addEventListeners() {
@@ -406,9 +406,9 @@ export class MyGame extends Engine {
     // We decided to leave them in the code to better outline our strategy.
 
     if (this.keysPressed.has("w")) {
-      // Spiker.createSpiker(this);
+      Spiker.createSpiker(this);
       // Fuseball.createFuseball(this);
-      PowerUp.createPowerUp(this);
+      // PowerUp.createPowerUp(this);
     }
     if (this.keysPressed.has("l")) {
       if (this.availableZapper) {

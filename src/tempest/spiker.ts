@@ -2,6 +2,7 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
 import SpikerTrace from "./spikerTrace";
 import Tanker from "./tanker";
+import { SpikerBulletOverlap } from "../overlaps/spikerBulletOverlap";
 import { QuaternionUtils } from "drake-engine";
 import EnemyBullet from "./enemyBullet";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
@@ -41,8 +42,12 @@ export default class Spiker extends PhysicalGameObject {
 
     this.game.currentScene.addGameObject(this.trace);
     this.game.spikerTraces.push(this.trace);
-    // this.trace.setPosition(this.position.x, this.position.y, this.position.z)
-    // this.trace.vertecies[0] = {x:middle.x, y: middle.y,z: 80}
+
+    this.game.bullets.forEach((bullet) => {
+      const ov = new SpikerBulletOverlap(bullet, this, this.game);
+      this.game.currentScene.addOverlap(ov);
+    })
+
   }
 
   override updatePhysics(deltaTime: number): void {
