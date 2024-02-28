@@ -19,7 +19,7 @@ export default class Fuseball extends PhysicalGameObject {
     if (!options.position) {
       this.setPosition(0, 0, 0);
     }
-    this.velocity.z = -70;
+    this.velocity.z = -40;
     this.autoupdateBoxCollider = true;
     this.showBoxcollider = debugMode;
   }

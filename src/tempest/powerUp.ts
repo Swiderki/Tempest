@@ -1,6 +1,7 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
 import { PlayerPowerUpOverlap } from "../overlaps/playerPowerUpOverlap";
+import { PowerUpBulletOverlap } from "../overlaps/powerUpBulletOverlap";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
 
 export default class PowerUp extends PhysicalGameObject {
@@ -39,6 +40,11 @@ export default class PowerUp extends PhysicalGameObject {
 
         const ov = new PlayerPowerUpOverlap(this, this.game.player, this.game);
         this.game.currentScene.addOverlap(ov);
+        
+        this.game.bullets.forEach((bullet) => {
+            const ov = new PowerUpBulletOverlap(this, bullet, this.game);
+            this.game.currentScene.addOverlap(ov);
+        })
     }
 
     override updatePhysics(deltaTime: number): void {

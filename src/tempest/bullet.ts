@@ -6,6 +6,7 @@ import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 import { FuseballBulletOverlap } from "../overlaps/fuseballBulletOverlap";
 import { BulletEnemyBulletOverlap } from "../overlaps/bulletEnemyBulletOverlap";
+import { PowerUpBulletOverlap } from "../overlaps/powerUpBulletOverlap";
 
 export default class Bullet extends PhysicalGameObject {
   game: MyGame;
@@ -63,6 +64,10 @@ export default class Bullet extends PhysicalGameObject {
     });
     this.game.enemyBullets.forEach((bullet) => {
       const ov = new BulletEnemyBulletOverlap(this, bullet, this.game);
+      this.game.currentScene.addOverlap(ov);
+    });
+    this.game.powerUps.forEach((powerUp) => {
+      const ov = new PowerUpBulletOverlap( powerUp, this, this.game);
       this.game.currentScene.addOverlap(ov);
     });
   }

@@ -192,7 +192,7 @@ export class MyGame extends Engine {
     this.levelText.position = { x: this.getCanvas.width / 2 - this.levelText.width / 2, y: 40 };
 
     this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
-    const bestScore = localStorage.getItem("bestResult") || "0";
+    const bestScore = localStorage.getItem("bestResultTempest") || "0";
     this.bestScoreText.text = `${bestScore}`;
     this.scoreText.position = { x: 200, y: 10 };
     this.iconsID[0] = this.gui.addElement(this.icons[0]);
@@ -212,9 +212,9 @@ export class MyGame extends Engine {
   }
 
   updateBestScore(newScore: number) {
-    const bestResult = parseInt(localStorage.getItem("bestResult") || "0");
+    const bestResult = parseInt(localStorage.getItem("bestResultTempest") || "0");
     if (newScore > bestResult) {
-      localStorage.setItem("bestResult", newScore.toString());
+      localStorage.setItem("bestResultTempest", newScore.toString());
 
       this.bestScoreText.text = `${newScore}`;
       this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
