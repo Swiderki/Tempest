@@ -15,6 +15,7 @@ import { PlayerParticle1 } from "./tempest/playerParticle1";
 import { PlayerParticle2 } from "./tempest/playerParticle2";
 import { PlayerParticle3 } from "./tempest/playerParticle3";
 import { GUILevelObject } from "./tempest/GUILevelObject";
+import PowerUp from "./tempest/powerUp";
 import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
@@ -44,6 +45,7 @@ export class MyGame extends Engine {
   spikerTraces: SpikerTrace[] = [];
   enemyBullets: EnemyBullet[] = [];
   particles: Particle[] = [];
+  powerUps: PowerUp[] = [];
   // Scene
   mainScene: Scene = new Scene();
 
@@ -81,6 +83,7 @@ export class MyGame extends Engine {
   finalScore: GUIText | null = null;
   availableZapper: boolean = true;
   isShooting: boolean = false;
+  shootingTime: number = 150;
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
@@ -262,7 +265,9 @@ export class MyGame extends Engine {
 
   updateScore(newScore: number) {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
-    this.addLife();
+    if (this.lifes < 5 && this.nextLife < Number(this.scoreText.text)) {
+      this.addLife();
+    }
     // Update the GUI element to display the new score
   }
 
@@ -353,12 +358,11 @@ export class MyGame extends Engine {
   }
 
   addLife() {
-    if (this.lifes < 3 && this.nextLife < Number(this.scoreText.text)) {
+      console.log("ASd")
       this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
       this.lifes++;
       this.nextLife += 10000;
-    }
   }
 
   addEventListeners() {
@@ -402,7 +406,8 @@ export class MyGame extends Engine {
 
     if (this.keysPressed.has("w")) {
       // Spiker.createSpiker(this);
-      Fuseball.createFuseball(this);
+      // Fuseball.createFuseball(this);
+      PowerUp.createPowerUp(this);
     }
     if (this.keysPressed.has("l")) {
       if (this.availableZapper) {
@@ -506,7 +511,7 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
-        console.log(this.enemiesInGame);
+    console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -659,7 +664,7 @@ export class MyGame extends Engine {
   }
 
   spawnParticles(position: Vec3DTuple, amount: number) {
-    
+
     const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
     this.currentScene.addGameObject(p);
     const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
@@ -680,7 +685,7 @@ export class MyGame extends Engine {
     this.currentScene.addGameObject(bullet);
     setTimeout(() => {
       this.isShooting = false
-    }, 50);
+    }, this.shootingTime);
   }
 
   superZapper() {
