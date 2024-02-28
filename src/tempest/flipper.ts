@@ -26,7 +26,6 @@ export default class Fipper extends PhysicalGameObject {
     if (this.side == -1) {
       this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     }
-    //this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
         this.setLineColor(i, "red");

@@ -2,13 +2,7 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
 
 export default class Level extends PhysicalGameObject {
-  // struktura wszystkich levelów powinna wyglądać tak:
-  // punkty są poukładane zgodnie z wskazówkami zegara
-  // najpierw te przy ekranie póżniej te z tyłu
-  // linie:
-  // najpierw łaczące z przodu
-  // później łączące punkty z przodu z tymi z tyłu
-  // i na końcu z tyłu
+
   game: MyGame;
   lopped: boolean = true;
   numberOfSides: number = 0;
@@ -17,7 +11,6 @@ export default class Level extends PhysicalGameObject {
   colors: Array<string> = ["blue", "orange", "cyan", "red", "yellow", "black", "black", "black"];
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     const nonLopped = [8, 9, 10, 13];
-    //super(`obj/level${(levelId-1)%3+1}.obj`, options);
     super(`obj/level${(levelId-1)%16+1}.obj`, options);
     this.game = game;
     if (nonLopped.includes(levelId)) {

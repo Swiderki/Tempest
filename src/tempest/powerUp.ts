@@ -37,11 +37,6 @@ export default class PowerUp extends PhysicalGameObject {
             this.move(middle.x, middle.y, 80);
         }
 
-        // Adding overlaps
-        // this.game.bullets.forEach((bullet) => {
-        //   const ov = new TankerBulletOverlap(bullet, this, this.game);
-        //   this.game.currentScene.addOverlap(ov);
-        // });
         const ov = new PlayerPowerUpOverlap(this, this.game.player, this.game);
         this.game.currentScene.addOverlap(ov);
     }

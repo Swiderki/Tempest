@@ -31,7 +31,6 @@ export class TankerBulletOverlap extends Overlap {
     this.game.updateScore(100);
     enemyExplosionSound.play();
     this.tanker.deployFlippers();
-    // nie wiem czy się dobrze zliczają przeciwnicy
     this.game.enemiesInGame--;
   }
 }

@@ -96,76 +96,35 @@ export class MyGame extends Engine {
     this.bestScoreText = new GUIText("0", 30, "monospace", "green", 200);
     this.levelText = new GUIText("1", 25, "monospace", "blue", 300);
     this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")];
-
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
 
     this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] }, this);
-    // level object must be at position [0,0,0]
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
   }
+  // START FUNCIONS 
 
-  resetGame() {
-    this.scoreText.text = "0";
+  override Start(): void {
+    this.setResolution(1280, 720);
+    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
+    this.mainScene.setMainCamera(camera, this.width, this.height);
+    const mainSceneId = this.addScene(this.mainScene);
 
-    while (this.iconsID.length > 0) {
-      const id = this.iconsID.pop();
-      this.gui.removeElement(id!);
-      this.icons.pop();
-    }
+    this.setCurrentScene(mainSceneId);
+    this.initializeGUI();
+    this.initializeGUIScene(camera);
+    this.setCurrentScene(this.GUIScene!);
 
-    this.lifes = 3;
-    for (let i = 0; i < this.lifes; i++) {
-      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
-      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
-      this.nextLife += 10000;
-    }
-
-    this.currentLevel = 1;
-    this.currentLevelSide = 0.5;
-    this.playerLevelNumber = 0;
-    this.enemiesInGame = 3;
-    this.normallySpawned = 0;
-    this.maxNormallySpawned = 3;
-    this.waitingForNextLevel = false;
-
-    this.nextLife = 10000;
-    this.lastSpawned = Date.now();
-    this.spawnDelta = 5000;
-
-    this.flipperLastSpawn = 0;
-    this.isInHyperspace = false;
-    this.movementSpeed = 1;
-
-    this.tankers.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.spikers.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.flippers.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.fuseballs.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.spikerTraces.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.bullets.forEach((el) => this.mainScene.removeGameObject(el.id));
-    this.enemyBullets.forEach((el) => this.mainScene.removeGameObject(el.id));
-
-    this.tankers = [];
-    this.spikers = [];
-    this.flippers = [];
-    this.fuseballs = [];
-    this.spikerTraces = [];
-    this.bullets = [];
-    this.enemyBullets = [];
-
-    this.currentLevel++;
-
-    this.mainScene.removeGameObject(this.level.id);
-    this.level = new Level(1, { position: [0, 0, 0], size: [1, 1, 1] }, this);
     this.mainScene.addGameObject(this.level);
-
-    this.levelText.text = "1";
-
-    this.player.position.x = 0;
-    this.player.position.z = 0;
-    this.player.position.y = 0;
-
-    this.mainScene.overlaps.forEach((el, key) => {
-      this.mainScene.overlaps.delete(key);
+    this.mainScene._started = true;
+    this.addEventListeners();
+    this.canvas.addEventListener("mousemove", (ev: MouseEvent) => {
+      if (!this.startButton!.isCoordInElement(ev.offsetX, ev.offsetY)) {
+        this.startButton!.color = "#fff";
+        this.startButton!.border.bottom.color = "#fff";
+        this.startButton!.border.left.color = "#fff";
+        this.startButton!.border.right.color = "#fff";
+        this.startButton!.border.top.color = "#fff";
+      }
     });
   }
 
@@ -174,7 +133,6 @@ export class MyGame extends Engine {
     GUIScene.setMainCamera(camera, this.width, this.height);
 
     const g1 = new GUILevelObject(9);
-
     GUIScene.addGameObject(g1);
 
     const GUISceneGUI = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
@@ -214,31 +172,6 @@ export class MyGame extends Engine {
     GUISceneGUI.addElement(t3);
   }
 
-  override Start(): void {
-    this.setResolution(1280, 720);
-    const camera = new Camera(60, 0.1, 1000, [0, 0, -25], [0, 0, 1]);
-
-    this.mainScene.setMainCamera(camera, this.width, this.height);
-    const mainSceneId = this.addScene(this.mainScene);
-    this.setCurrentScene(mainSceneId);
-    this.initializeGUI();
-    this.initializeGUIScene(camera);
-    this.setCurrentScene(this.GUIScene!);
-
-    this.mainScene.addGameObject(this.level);
-    this.mainScene._started = true;
-    this.addEventListeners();
-    this.canvas.addEventListener("mousemove", (ev: MouseEvent) => {
-      if (!this.startButton!.isCoordInElement(ev.offsetX, ev.offsetY)) {
-        this.startButton!.color = "#fff";
-        this.startButton!.border.bottom.color = "#fff";
-        this.startButton!.border.left.color = "#fff";
-        this.startButton!.border.right.color = "#fff";
-        this.startButton!.border.top.color = "#fff";
-      }
-    });
-  }
-
   switchScene() {
     music.play();
     this.setCurrentScene(this.mainScene.id);
@@ -246,7 +179,6 @@ export class MyGame extends Engine {
   }
 
   initializeGUI() {
-    // Assuming GUI and GUIText are similar to the Asteroids game
     const x = this.mainScene.addGUI(this.gui);
     this.gui.addElement(this.scoreText);
     this.gui.addElement(this.bestScoreText);
@@ -254,34 +186,37 @@ export class MyGame extends Engine {
     this.levelText.position = { x: this.getCanvas.width / 2 - this.levelText.width / 2, y: 40 };
 
     this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
-
+    const bestScore = localStorage.getItem("bestResult") || "0";
+    this.bestScoreText.text = `${bestScore}`;
     this.scoreText.position = { x: 200, y: 10 };
     this.iconsID[0] = this.gui.addElement(this.icons[0]);
     this.iconsID[1] = this.gui.addElement(this.icons[1]);
     this.iconsID[2] = this.gui.addElement(this.icons[2]);
 
     this.currentScene.setCurrentGUI(x);
-    // Add more GUI elements as needed
-  }
+    }
+  
+  // SCORE AND LIFE FUNCTIONS 
 
   updateScore(newScore: number) {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
     if (this.lifes < 5 && this.nextLife < Number(this.scoreText.text)) {
       this.addLife();
     }
-    // Update the GUI element to display the new score
   }
 
   updateBestScore(newScore: number) {
-    this.bestScoreText.text = `${Number(this.bestScoreText.text) + newScore}`;
-    this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
+    const bestResult = parseInt(localStorage.getItem("bestResult") || "0");
+    if (newScore > bestResult) {
+      localStorage.setItem("bestResult", newScore.toString());
 
-    // Update the GUI element to display the new best score
+      this.bestScoreText.text = `${newScore}`;
+      this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
+    }
   }
 
   updateLevel(newLevel: number) {
     this.levelText.text = `${newLevel}`;
-    // Update the GUI element to display the new level
   }
 
   deleteLife() {
@@ -306,177 +241,46 @@ export class MyGame extends Engine {
     }
   }
 
-  runLoose() {
-    this.mainScene.removeGameObject(this.player.id);
-    this.mainCamera!.position.z = -25;
-    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
-    if (!this.gameAlreadyEnded) {
-      this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
-      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
-      g.addElement(this.gameEndedText!);
-      g.addElement(this.finalScore!);
-    }
-
-    this.gameEndedText!.text = "You lost!";
-    this.finalScore!.text = "Your score was:" + this.scoreText.text;
-    this.gameEndedText!.color = "red";
-    this.gameEndedText!.position.y = 20;
-    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
-    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
-    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
-
-    this.gameAlreadyEnded = true;
-
-    setTimeout(() => {
-      this.setCurrentScene(this.GUIScene!);
-      this.resetGame();
-    }, 1000);
-  }
-
-  runWin() {
-    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
-    if (!this.gameAlreadyEnded) {
-      this.gameEndedText = new GUIText("You won!", 40, "monospace", "green", 700);
-      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
-      g.addElement(this.gameEndedText!);
-      g.addElement(this.finalScore!);
-    }
-
-    this.gameEndedText!.text = "You won!";
-    this.finalScore!.text = "Your score was:" + this.scoreText.text;
-    this.gameEndedText!.color = "green";
-    this.gameEndedText!.position.y = 20;
-    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
-    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
-    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
-
-    this.gameAlreadyEnded = true;
-
-    setTimeout(() => {
-      this.setCurrentScene(this.GUIScene!);
-      this.resetGame();
-    }, 1000);
-  }
-
   addLife() {
-      console.log("ASd")
-      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
-      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
-      this.lifes++;
-      this.nextLife += 10000;
+    console.log("ASd")
+    this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+    this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+    this.lifes++;
+    this.nextLife += 10000;
   }
 
-  addEventListeners() {
-    document.addEventListener("keydown", (e) => this.handleKeyDown(e));
-    document.addEventListener("keyup", (e) => this.handleKeyUp(e));
-  }
+  // GAME MECHANICS
 
-  handleKeyDown(e: KeyboardEvent) {
-    this.keysPressed.add(e.key);
-    this.handleKeyboardEvents();
-  }
+  override Update(): void {
 
-  handleKeyUp(e: KeyboardEvent) {
-    this.keysPressed.delete(e.key);
-    this.handleKeyboardEvents();
-  }
-
-  handleKeyboardEvents() {
-    if (!this.mainCamera) return;
-    if (this.lifeLost) return;
-
-    if (this.keysPressed.has("a")) {
-      if (!this.gameStarted) return;
-      this.movePlayer(this.movementSpeed);
-    }
-
-    if (this.keysPressed.has("d")) {
-      if (!this.gameStarted) return;
-      this.movePlayer(this.movementSpeed * -1);
-    }
-
-    if (this.keysPressed.has("k")) {
-      if (!this.gameStarted) return;
-      this.shoot();
-      // Tanker.createTanker(this);
-    }
-
-    /* ###### IMPORTANT ###### */
-    // Commented code elements were used for manual testing.
-    // We decided to leave them in the code to better outline our strategy.
-
-    if (this.keysPressed.has("w")) {
-      // Spiker.createSpiker(this);
-      // Fuseball.createFuseball(this);
-      PowerUp.createPowerUp(this);
-    }
-    if (this.keysPressed.has("l")) {
-      if (this.availableZapper) {
-        this.superZapper();
-      }
-    }
-    //zmiana levelów do testów
-    if (this.keysPressed.has("q")) {
-      this.previousLevel();
-    }
-    if (this.keysPressed.has("e")) {
-      this.nextLevel();
-    }
-    if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
-    }
-    if (this.keysPressed.has("t")) {
-      Tanker.createTanker(this);
-    }
-  }
-
-  movePlayer(speed: number) {
-    let isEdge = false;
-    if (!this.level.lopped) {
-      if (this.currentLevelSide + speed > this.level.numberOfSides) {
-        isEdge = true;
-      }
-      if (this.currentLevelSide + speed < 0) {
-        isEdge = true;
-      }
-    }
-    if (!isEdge) {
-      this.currentLevelSide = this.currentLevelSide + speed;
-      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
-      if (this.currentLevelSide < 0) {
-        this.currentLevelSide += this.level.numberOfSides;
-      }
-
-      this.currentLevelSide = this.currentLevelSide % this.level.numberOfSides;
-
-      this.player.setPlayerPosition();
-    }
-  }
-
-  // to też można
-  previousLevel() {
-    this.currentLevel--;
-    this.currentScene!.removeGameObject(this.level.id);
-    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
-    this.mainScene.addGameObject(this.level);
-  }
-
-  nextLevel() {
-    if (this.currentLevel >= 99) {
-      this.runWin();
+    if (this.lifeLost) {
+      this.lifeLostFunction();
       return;
     }
 
-    this.currentLevel++;
-    this.availableZapper = true;
-    this.spikerTraces.forEach((trace) => {
-      this.currentScene.removeGameObject(trace.id);
-    });
-    this.spikerTraces = [];
+    this.enemiesSpawnControll();
 
-    this.currentScene!.removeGameObject(this.level.id);
-    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
-    this.mainScene.addGameObject(this.level);
+    if (this.player.position.z >= 80 && this.enemiesInGame == 0) {
+      this.player.setPosition(0, 0, 0);
+      this.player.setPlayerPosition();
+      this.nextLevel();
+
+      this.playerLevelNumber++;
+      this.enemiesInGame = 3 + this.playerLevelNumber;
+      this.maxNormallySpawned = 3 + this.playerLevelNumber;
+      this.normallySpawned = 0;
+      if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
+      this.lastSpawned = Date.now();
+      this.levelText.text = String(Number(this.levelText.text) + 1);
+    }
+
+    if (this.enemiesInGame == 0 && !this.isInHyperspace) {
+      this.isInHyperspace = true;
+    }
+
+    if (this.isInHyperspace) {
+      this.hyperSpace(this.deltaTime);
+    }
   }
 
   enemiesSpawnControll() {
@@ -508,38 +312,6 @@ export class MyGame extends Engine {
 
       this.lastSpawned = Date.now();
       this.normallySpawned++;
-    }
-  }
-
-  override Update(): void {
-
-    if (this.lifeLost) {
-      this.lifeLostFunction();
-      return;
-    }
-
-    this.enemiesSpawnControll();
-
-    if (this.player.position.z >= 80 && this.enemiesInGame == 0) {
-      this.player.setPosition(0, 0, 0);
-      this.player.setPlayerPosition();
-      this.nextLevel();
-
-      this.playerLevelNumber++;
-      this.enemiesInGame = 3 + this.playerLevelNumber;
-      this.maxNormallySpawned = 3 + this.playerLevelNumber;
-      this.normallySpawned = 0;
-      if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
-      this.lastSpawned = Date.now();
-      this.levelText.text = String(Number(this.levelText.text) + 1);
-    }
-
-    if (this.enemiesInGame == 0 && !this.isInHyperspace) {
-      this.isInHyperspace = true;
-    }
-
-    if (this.isInHyperspace) {
-      this.hyperSpace(this.deltaTime);
     }
   }
 
@@ -645,6 +417,120 @@ export class MyGame extends Engine {
     }
   }
 
+  // KEYBOARD EVENTS
+
+  addEventListeners() {
+    document.addEventListener("keydown", (e) => this.handleKeyDown(e));
+    document.addEventListener("keyup", (e) => this.handleKeyUp(e));
+  }
+
+  handleKeyDown(e: KeyboardEvent) {
+    this.keysPressed.add(e.key);
+    this.handleKeyboardEvents();
+  }
+
+  handleKeyUp(e: KeyboardEvent) {
+    this.keysPressed.delete(e.key);
+    this.handleKeyboardEvents();
+  }
+
+  handleKeyboardEvents() {
+    if (!this.mainCamera) return;
+    if (this.lifeLost) return;
+
+    if (this.keysPressed.has("a")) {
+      if (!this.gameStarted) return;
+      this.movePlayer(this.movementSpeed);
+    }
+
+    if (this.keysPressed.has("d")) {
+      if (!this.gameStarted) return;
+      this.movePlayer(this.movementSpeed * -1);
+    }
+
+    if (this.keysPressed.has("k")) {
+      if (!this.gameStarted) return;
+      this.shoot();
+      // Tanker.createTanker(this);
+    }
+
+    /* ###### IMPORTANT ###### */
+    // Commented code elements were used for manual testing.
+    // We decided to leave them in the code to better outline our strategy.
+
+    if (this.keysPressed.has("w")) {
+      Spiker.createSpiker(this);
+      // Fuseball.createFuseball(this);
+      // PowerUp.createPowerUp(this);
+    }
+    if (this.keysPressed.has("l")) {
+      if (this.availableZapper) {
+        this.superZapper();
+      }
+    }
+    //zmiana levelów do testów
+    if (this.keysPressed.has("q")) {
+      this.previousLevel();
+    }
+    if (this.keysPressed.has("e")) {
+      this.nextLevel();
+    }
+    if (this.keysPressed.has("r")) {
+      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+    }
+    if (this.keysPressed.has("t")) {
+      Tanker.createTanker(this);
+    }
+  }
+
+  movePlayer(speed: number) {
+    let isEdge = false;
+    if (!this.level.lopped) {
+      if (this.currentLevelSide + speed > this.level.numberOfSides) {
+        isEdge = true;
+      }
+      if (this.currentLevelSide + speed < 0) {
+        isEdge = true;
+      }
+    }
+    if (!isEdge) {
+      this.currentLevelSide = this.currentLevelSide + speed;
+      this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
+      if (this.currentLevelSide < 0) {
+        this.currentLevelSide += this.level.numberOfSides;
+      }
+
+      this.currentLevelSide = this.currentLevelSide % this.level.numberOfSides;
+
+      this.player.setPlayerPosition();
+    }
+  }
+
+  previousLevel() {
+    this.currentLevel--;
+    this.currentScene!.removeGameObject(this.level.id);
+    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+  }
+
+  nextLevel() {
+    if (this.currentLevel >= 99) {
+      this.runWin();
+      return;
+    }
+
+    this.currentLevel++;
+    this.availableZapper = true;
+    this.spikerTraces.forEach((trace) => {
+      this.currentScene.removeGameObject(trace.id);
+    });
+    this.spikerTraces = [];
+
+    this.currentScene!.removeGameObject(this.level.id);
+    this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+  }
+
   hyperSpace(delta: number) {
     if (this.player.position.z < 80 && !this.waitingForNextLevel) {
       this.player.move(0, 0, 30 * delta);
@@ -664,17 +550,8 @@ export class MyGame extends Engine {
     }
   }
 
-  spawnParticles(position: Vec3DTuple, amount: number) {
-    const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
-    this.currentScene.addGameObject(p);
-    const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
-    this.currentScene.addGameObject(p2);
-    const p3 = new PlayerParticle3(position, this, [0.1, 0.1, 0.1]);
-    this.currentScene.addGameObject(p3);
-  }
 
   shoot() {
-    // to też by trzeb przenieść
     if (this.isShooting) return;
     this.isShooting = true;
     blasterBullet.volume = 0.1;
@@ -742,6 +619,137 @@ export class MyGame extends Engine {
       this.level.updateColorOnPlayer();
     }, 200);
   }
+
+  spawnParticles(position: Vec3DTuple, amount: number) {
+    const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p);
+    const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p2);
+    const p3 = new PlayerParticle3(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p3);
+  }
+
+  // GAME ENDING FUNCTIONS
+
+  runLoose() {
+    this.mainScene.removeGameObject(this.player.id);
+    this.mainCamera!.position.z = -25;
+    this.updateBestScore(Number(this.scoreText.text));
+    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
+    if (!this.gameAlreadyEnded) {
+      this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
+      g.addElement(this.gameEndedText!);
+      g.addElement(this.finalScore!);
+    }
+
+    this.gameEndedText!.text = "You lost!";
+    this.finalScore!.text = "Your score was:" + this.scoreText.text;
+    this.gameEndedText!.color = "red";
+    this.gameEndedText!.position.y = 20;
+    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
+    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
+    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
+
+    this.gameAlreadyEnded = true;
+
+    setTimeout(() => {
+      this.setCurrentScene(this.GUIScene!);
+      this.resetGame();
+    }, 1000);
+  }
+
+  runWin() {
+    const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
+    if (!this.gameAlreadyEnded) {
+      this.gameEndedText = new GUIText("You won!", 40, "monospace", "green", 700);
+      this.finalScore = new GUIText("Your score was:" + this.scoreText.text, 20, "monospace", "white", 700);
+      g.addElement(this.gameEndedText!);
+      g.addElement(this.finalScore!);
+    }
+
+    this.gameEndedText!.text = "You won!";
+    this.finalScore!.text = "Your score was:" + this.scoreText.text;
+    this.gameEndedText!.color = "green";
+    this.gameEndedText!.position.y = 20;
+    this.gameEndedText!.position.x = this.canvas.width / 2 - this.gameEndedText!.width / 2;
+    this.finalScore!.position.y = this.gameEndedText!.position.y + 40;
+    this.finalScore!.position.x = this.canvas.width / 2 - this.finalScore!.width / 2;
+
+    this.gameAlreadyEnded = true;
+
+    setTimeout(() => {
+      this.setCurrentScene(this.GUIScene!);
+      this.resetGame();
+    }, 1000);
+  }
+
+
+  resetGame() {
+    this.scoreText.text = "0";
+
+    while (this.iconsID.length > 0) {
+      const id = this.iconsID.pop();
+      this.gui.removeElement(id!);
+      this.icons.pop();
+    }
+
+    this.lifes = 3;
+    for (let i = 0; i < this.lifes; i++) {
+      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+      this.nextLife += 10000;
+    }
+
+    this.currentLevel = 1;
+    this.currentLevelSide = 0.5;
+    this.playerLevelNumber = 0;
+    this.enemiesInGame = 3;
+    this.normallySpawned = 0;
+    this.maxNormallySpawned = 3;
+    this.waitingForNextLevel = false;
+
+    this.nextLife = 10000;
+    this.lastSpawned = Date.now();
+    this.spawnDelta = 5000;
+
+    this.flipperLastSpawn = 0;
+    this.isInHyperspace = false;
+    this.movementSpeed = 1;
+
+    this.tankers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.spikers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.flippers.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.fuseballs.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.spikerTraces.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.bullets.forEach((el) => this.mainScene.removeGameObject(el.id));
+    this.enemyBullets.forEach((el) => this.mainScene.removeGameObject(el.id));
+
+    this.tankers = [];
+    this.spikers = [];
+    this.flippers = [];
+    this.fuseballs = [];
+    this.spikerTraces = [];
+    this.bullets = [];
+    this.enemyBullets = [];
+
+    this.currentLevel++;
+
+    this.mainScene.removeGameObject(this.level.id);
+    this.level = new Level(1, { position: [0, 0, 0], size: [1, 1, 1] }, this);
+    this.mainScene.addGameObject(this.level);
+
+    this.levelText.text = "1";
+
+    this.player.position.x = 0;
+    this.player.position.z = 0;
+    this.player.position.y = 0;
+
+    this.mainScene.overlaps.forEach((el, key) => {
+      this.mainScene.overlaps.delete(key);
+    });
+  }
+
 }
 
 const game = new MyGame(canvas);

@@ -61,6 +61,8 @@ export default class Tanker extends PhysicalGameObject {
     if (this.position.z < 10) {
       this.deployFlippers();
     }
+
+
   }
   deployFlippers() {
     let closestVertexId = -1;
@@ -68,7 +70,6 @@ export default class Tanker extends PhysicalGameObject {
 
     this.game.level.vertecies.forEach((vertex, index) => {
       const distance = Math.sqrt((vertex.x - this.position.x) ** 2 + (vertex.y - this.position.y) ** 2 + (vertex.z - this.position.z) ** 2);
-
       if (distance < minDistance) {
         minDistance = distance;
         closestVertexId = index;

@@ -14,13 +14,10 @@ export default class SpikerTrace extends PhysicalGameObject {
     this.isShining = true;
   }
   override updatePhysics(deltaTime: number): void {
-    // console.table([this.boxCollider![0], this.boxCollider![1]])
     this.boxCollider = [
       { x: this.vertecies[0].x, y: this.vertecies[0].y, z: this.vertecies[0].z },
       { x: this.vertecies[1].x, y: this.vertecies[1].y, z: this.vertecies[1].z },
     ];
-    // this.position.x = (this.vertecies[0].x + this.vertecies[1].x) / 2
-    // this.position.y = (this.vertecies[0].y + this.vertecies[1].y) / 2
     this.position.z = this.vertecies[1].z;
   }
   override Start(): void {
