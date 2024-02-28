@@ -254,7 +254,8 @@ export class MyGame extends Engine {
     this.levelText.position = { x: this.getCanvas.width / 2 - this.levelText.width / 2, y: 40 };
 
     this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
-
+    const bestScore = localStorage.getItem("bestResult") || "0";
+    this.bestScoreText.text = `${bestScore}`;
     this.scoreText.position = { x: 200, y: 10 };
     this.iconsID[0] = this.gui.addElement(this.icons[0]);
     this.iconsID[1] = this.gui.addElement(this.icons[1]);
@@ -269,19 +270,20 @@ export class MyGame extends Engine {
     if (this.lifes < 5 && this.nextLife < Number(this.scoreText.text)) {
       this.addLife();
     }
-    // Update the GUI element to display the new score
   }
 
   updateBestScore(newScore: number) {
-    this.bestScoreText.text = `${Number(this.bestScoreText.text) + newScore}`;
-    this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
+    const bestResult = parseInt(localStorage.getItem("bestResult") || "0");
+    if (newScore > bestResult) {
+      localStorage.setItem("bestResult", newScore.toString());
 
-    // Update the GUI element to display the new best score
+      this.bestScoreText.text = `${newScore}`;
+      this.bestScoreText.position = { x: this.getCanvas.width / 2 - this.bestScoreText.width / 2, y: 10 };
+    }
   }
 
   updateLevel(newLevel: number) {
     this.levelText.text = `${newLevel}`;
-    // Update the GUI element to display the new level
   }
 
   deleteLife() {
@@ -309,6 +311,7 @@ export class MyGame extends Engine {
   runLoose() {
     this.mainScene.removeGameObject(this.player.id);
     this.mainCamera!.position.z = -25;
+    this.updateBestScore(Number(this.scoreText.text));
     const g = this.scenes.get(this.GUIScene!)!.currentGUI!;
     if (!this.gameAlreadyEnded) {
       this.gameEndedText = new GUIText("You lost!", 40, "monospace", "red", 700);
