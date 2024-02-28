@@ -19,7 +19,7 @@ export default class Fuseball extends PhysicalGameObject {
     if (!options.position) {
       this.setPosition(0, 0, 0);
     }
-    this.velocity.z = -40;
+    this.velocity.z = -30;
     this.autoupdateBoxCollider = true;
     this.showBoxcollider = debugMode;
   }
@@ -55,16 +55,15 @@ export default class Fuseball extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return
+    if (this.game.lifeLost) return;
 
     super.updatePhysics(deltaTime);
 
     if (Date.now() - this.lastMoveTime > this.moveInterval) {
-      this.move(0.2 * this.moveVectorReturn, 0.2*this.moveVectorReturn, 0)
+      this.move(0.2 * this.moveVectorReturn, 0.2 * this.moveVectorReturn, 0);
       this.moveVectorReturn *= -1;
       this.lastMoveTime = Date.now();
     }
-
 
     // Aktualizacja pozycji dolnej krawędzi boxCollidera
     this.boxCollider![0].z = this.position.z - 2;

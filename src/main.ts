@@ -26,7 +26,7 @@ const zapperSound = new Audio("sounds/enemyExplosion.mp3");
 const music = new Audio("sounds/tempestTheme.mp3");
 music.loop = true;
 
-export const debugMode: boolean = true;
+export const debugMode: boolean = false;
 
 export class MyGame extends Engine {
   //GUI
@@ -66,7 +66,7 @@ export class MyGame extends Engine {
   nextLife: number = 10000;
   lastSpawned: number = Date.now();
   lastSpawnedPower: number = Date.now();
-  spawnDelta: number = 5000;
+  spawnDelta: number = 3000;
   spawnDeltaPower: number = 8000;
 
   // Enemys data
@@ -754,7 +754,7 @@ export class MyGame extends Engine {
     this.nextLife = 10000;
     this.lastSpawned = Date.now();
     this.lastSpawnedPower = Date.now();
-    this.spawnDelta = 5000;
+    this.spawnDelta = 3000;
     this.spawnDeltaPower = 8000;
 
     this.flipperLastSpawn = 0;

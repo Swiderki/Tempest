@@ -16,13 +16,14 @@ export class PlayerFlipperOverlap extends Overlap {
   }
 
   override onOverlap(): void {
-    if (!this.game.currentScene) return;
-    if (this.collised) return;
-    this.collised = true;
-    this.game.lifeLostType = "flipper";
-    this.flipper.killedPlayer = true;
+    if (Math.floor(this.flipper.side) == Math.floor(this.game.currentLevelSide)) {
+      if (!this.game.currentScene) return;
+      if (this.collised) return;
+      this.collised = true;
+      this.game.lifeLostType = "flipper";
+      this.flipper.killedPlayer = true;
 
-    this.game.deleteLife();
-
+      this.game.deleteLife();
+    }
   }
 }
