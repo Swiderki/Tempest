@@ -274,7 +274,6 @@ export class MyGame extends Engine {
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
       this.normallySpawned = 0;
       if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
-      if (this.spawnDeltaPower - 500 >= 1000) this.spawnDeltaPower -= 500;
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
@@ -297,7 +296,18 @@ export class MyGame extends Engine {
 
     if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
       if (!this.gameStarted) return;
-      const entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
+      console.log(this.currentLevel);
+
+      let entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
+      if (this.currentLevel < 10) {
+        entityTypes = ["Tanker", "Spiker", "Flipper"];
+      }
+      if (this.currentLevel < 5) {
+        entityTypes = ["Tanker", "Flipper"];
+      }
+      if (this.currentLevel < 2) {
+        entityTypes = ["Flipper"];
+      }
       const randomType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
 
       switch (randomType) {
