@@ -299,6 +299,7 @@ export class MyGame extends Engine {
   // GAME MECHANICS
 
   override Update(): void {
+    console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -306,7 +307,7 @@ export class MyGame extends Engine {
 
     this.enemiesSpawnControll();
 
-    if (this.player.position.z >= 80 && this.enemiesInGame == 0) {
+    if (this.player.position.z >= 80 && this.enemiesInGame <= 0) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
@@ -572,6 +573,7 @@ export class MyGame extends Engine {
     }
     if (this.keysPressed.has("t")) {
       Tanker.createTanker(this);
+      this.enemiesInGame++;
     }
   }
 
