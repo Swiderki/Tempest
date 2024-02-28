@@ -25,9 +25,8 @@ export class TankerBulletOverlap extends Overlap {
     this.game.currentScene.addGameObject(particle);
     this.game.particles.push(particle);
     this.game.currentScene.removeGameObject(this.bullet.id);
+    
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
-    this.game.currentScene.removeGameObject(this.tanker.id);
-    this.game.tankers = this.game.tankers.filter((spiker) => spiker.id !== this.tanker.id);
     this.game.updateScore(100);
     enemyExplosionSound.play();
     this.tanker.deployFlippers();

@@ -78,7 +78,7 @@ export default class Tanker extends PhysicalGameObject {
     });
 
     this.game.currentScene.removeGameObject(this.id);
-    this.game.tankers.pop();
+    this.game.tankers = this.game.tankers.filter((el) => el.id !== this.id);
     Flipper.createFlipper(this.game, this.position, closestVertexId);
     Flipper.createFlipper(this.game, this.position, (closestVertexId + 1) % 16);
     this.game.enemiesInGame++;

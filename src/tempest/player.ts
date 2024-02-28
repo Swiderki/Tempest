@@ -33,7 +33,6 @@ export default class Player extends PhysicalGameObject {
   }
 
   setPlayerPosition() {
-    console.log(this.game.currentLevelSide);
     if (isNaN(this.game.currentLevelSide)) {
       this.game.currentLevelSide = 0.5;
     }
