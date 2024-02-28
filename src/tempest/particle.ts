@@ -1,6 +1,5 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame } from "../main";
-import { PlayerEnemyBulletOverlap } from "../overlaps/playerEnemyBullet.Overlap";
 
 export default class Particle extends PhysicalGameObject {
   game: MyGame;

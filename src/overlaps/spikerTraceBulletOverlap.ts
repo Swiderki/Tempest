@@ -26,7 +26,6 @@ export class SpikerTraceBulletOverlap extends Overlap {
     this.game.currentScene.addGameObject(particle);
     this.game.particles.push(particle);
     if(this.spikerTrace.vertecies[1].z + 10> 80){
-
       this.game.currentScene.removeGameObject(this.spikerTrace.id);
       this.game.spikerTraces = this.game.spikerTraces.filter((spiker) => spiker.id !== this.spikerTrace.id);
     }
@@ -34,6 +33,5 @@ export class SpikerTraceBulletOverlap extends Overlap {
     this.game.currentScene.removeGameObject(this.bullet.id);
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     enemyExplosionSound.play();
-    // console.table([this.spikerTrace.position, this.spikerTrace.boxCollider![0],this.spikerTrace.boxCollider![1], this.bullet.position, this.bullet.boxCollider![0], this.bullet.boxCollider![1]], )
   }
 }

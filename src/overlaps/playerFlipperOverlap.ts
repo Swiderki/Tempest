@@ -21,10 +21,6 @@ export class PlayerFlipperOverlap extends Overlap {
     this.collised = true;
     this.game.lifeLostType = "flipper";
     this.flipper.killedPlayer = true;
-    // this.game.currentScene.removeGameObject(this.flipper.id);
-    // this.game.flippers = this.game.flippers.filter(
-    //   (flipper) => flipper.id !== this.flipper.id
-    // );
 
     this.game.deleteLife();
 

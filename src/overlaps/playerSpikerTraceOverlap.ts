@@ -21,10 +21,6 @@ export class playerSpikerTraceOverlap extends Overlap {
         if(this.game.lifeLostType === "flipper") return;
         this.collised = true;
         this.game.lifeLostType = "spikerTrace";
-        // this.game.currentScene.removeGameObject(this.spikerTrace.id);
-        // this.game.spikerTraces = this.game.spikerTraces.filter(
-        //   (trace) => trace.id !== this.spikerTrace.id
-        // );
         this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3);
         this.game.deleteLife();
         this.collised = false;
