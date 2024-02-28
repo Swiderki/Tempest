@@ -21,7 +21,7 @@ export class PlayerPowerUpOverlap extends Overlap {
     this.collised = true;
     if (this.powerUp.type === "powerAmmo" && this.game.shootingTime > 50) {
       this.game.shootingTime -= 10;
-    } else if (this.powerUp.type === "powerLife") {
+    } else if (this.powerUp.type === "powerLife" && this.game.lifes < 5) {
       this.game.addLife();
     } else if (this.powerUp.type === "powerZapper") {
       this.game.availableAdditionalZapper = true;
