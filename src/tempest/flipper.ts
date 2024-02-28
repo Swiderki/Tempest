@@ -22,7 +22,7 @@ export default class Fipper extends PhysicalGameObject {
     this.game = game;
     this.autoupdateBoxCollider = true;
     this.side = closestVertexId || -1;
-    this.boxColliderScale = 0.9
+    this.boxColliderScale = 0.9;
     if (this.side == -1) {
       this.side = Math.round(Math.random() * this.game.level.numberOfSides);
     }
@@ -47,13 +47,13 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return
+    if (this.game.lifeLost) return;
     const time = Date.now();
     if ((this.position.z <= 0 && time - this.lastTimeMoved > this.timeBetweenMovement) || (this.game.currentLevel > 1 && time - this.lastTimeMoved > this.timeBetweenMovement)) {
       this.moveTowardsPlayer();
       this.lastTimeMoved = time;
     } else if (this.position.z > 0) {
-      this.depth += -30 * deltaTime;
+      this.depth += -15 * deltaTime;
       if (!this.isMoving) {
         this.setFlipperPosition();
       }

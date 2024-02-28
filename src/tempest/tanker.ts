@@ -15,7 +15,7 @@ export default class Tanker extends PhysicalGameObject {
     if (!options.position) {
       this.setPosition(0, 0, 0);
     }
-    this.velocity.z = -20;
+    this.velocity.z = -10;
     this.autoupdateBoxCollider = true;
   }
 
@@ -44,7 +44,7 @@ export default class Tanker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return
+    if (this.game.lifeLost) return;
 
     super.updatePhysics(deltaTime);
 
@@ -61,8 +61,6 @@ export default class Tanker extends PhysicalGameObject {
     if (this.position.z < 10) {
       this.deployFlippers();
     }
-
-
   }
   deployFlippers() {
     let closestVertexId = -1;
@@ -82,7 +80,6 @@ export default class Tanker extends PhysicalGameObject {
     Flipper.createFlipper(this.game, this.position, (closestVertexId + 1) % 16);
     this.game.enemiesInGame++;
     this.game.enemiesInGame++;
-
   }
   static createTanker(game: MyGame) {
     if (!game.currentScene) {
