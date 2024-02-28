@@ -63,7 +63,10 @@ export class MyGame extends Engine {
   lifes: number = 3;
   nextLife: number = 10000;
   lastSpawned: number = Date.now();
+  lastSpawnedPower: number = Date.now();
+  powerUpSpawned: boolean = false;
   spawnDelta: number = 5000;
+  spawnDeltaPower: number = 12000;
 
   // Enemys data
   flipperLastSpawn: number = 0;
@@ -130,7 +133,9 @@ export class MyGame extends Engine {
 
     this.nextLife = 10000;
     this.lastSpawned = Date.now();
+    this.lastSpawnedPower = Date.now();
     this.spawnDelta = 5000;
+    this.spawnDeltaPower = 12000;
 
     this.flipperLastSpawn = 0;
     this.isInHyperspace = false;
@@ -359,11 +364,11 @@ export class MyGame extends Engine {
   }
 
   addLife() {
-      console.log("ASd")
-      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
-      this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
-      this.lifes++;
-      this.nextLife += 10000;
+    console.log("ASd");
+    this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+    this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
+    this.lifes++;
+    this.nextLife += 10000;
   }
 
   addEventListeners() {
@@ -469,6 +474,7 @@ export class MyGame extends Engine {
 
     this.currentLevel++;
     this.availableZapper = true;
+    this.powerUpSpawned = false;
     this.spikerTraces.forEach((trace) => {
       this.currentScene.removeGameObject(trace.id);
     });
@@ -509,10 +515,19 @@ export class MyGame extends Engine {
       this.lastSpawned = Date.now();
       this.normallySpawned++;
     }
+
+    if (Date.now() - this.lastSpawnedPower > this.spawnDeltaPower && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+      if (!this.gameStarted) return;
+      if (!this.powerUpSpawned) {
+        this.powerUpSpawned = true;
+        PowerUp.createPowerUp(this);
+        this.lastSpawnedPower = Date.now();
+        this.normallySpawned++;
+      }
+    }
   }
 
   override Update(): void {
-
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -530,7 +545,9 @@ export class MyGame extends Engine {
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
       this.normallySpawned = 0;
       if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
+      if (this.spawnDeltaPower - 500 >= 1000) this.spawnDeltaPower -= 500;
       this.lastSpawned = Date.now();
+      this.lastSpawnedPower = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
 
@@ -683,7 +700,7 @@ export class MyGame extends Engine {
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
     setTimeout(() => {
-      this.isShooting = false
+      this.isShooting = false;
     }, this.shootingTime);
   }
 
