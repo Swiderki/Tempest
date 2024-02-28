@@ -32,7 +32,11 @@ export default class Tanker extends PhysicalGameObject {
       const randomIndex = Math.floor(Math.random() * randomRange);
       const randomVertex1 = this.game.level.vertecies[randomIndex];
       const randomVertex2 = this.game.level.vertecies[randomIndex + 1];
-      const middle = { x: (randomVertex1.x + randomVertex2.x) / 2, y: (randomVertex1.y + randomVertex2.y) / 2, z: 80 };
+      const middle = {
+        x: (randomVertex1.x + randomVertex2.x) / 2,
+        y: (randomVertex1.y + randomVertex2.y) / 2,
+        z: 80,
+      };
       this.move(middle.x, middle.y, 80);
     }
 
@@ -46,7 +50,7 @@ export default class Tanker extends PhysicalGameObject {
   override updatePhysics(deltaTime: number): void {
     if (this.game.lifeLost) {
       this.lastShootTime = Date.now() + 1000;
-      return
+      return;
     }
 
     super.updatePhysics(deltaTime);
@@ -70,7 +74,11 @@ export default class Tanker extends PhysicalGameObject {
     let minDistance = Infinity;
 
     this.game.level.vertecies.forEach((vertex, index) => {
-      const distance = Math.sqrt((vertex.x - this.position.x) ** 2 + (vertex.y - this.position.y) ** 2 + (vertex.z - this.position.z) ** 2);
+      const distance = Math.sqrt(
+        (vertex.x - this.position.x) ** 2 +
+          (vertex.y - this.position.y) ** 2 +
+          (vertex.z - this.position.z) ** 2
+      );
       if (distance < minDistance) {
         minDistance = distance;
         closestVertexId = index;

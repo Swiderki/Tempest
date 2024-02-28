@@ -15,7 +15,7 @@ export default class EnemyBullet extends PhysicalGameObject {
     ];
   }
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return
+    if (this.game.lifeLost) return;
 
     super.updatePhysics(deltaTime);
 
@@ -50,7 +50,10 @@ export default class EnemyBullet extends PhysicalGameObject {
       throw new Error("Main scene must be set first.");
     }
 
-    const bullet = new EnemyBullet({ position: [position.x, position.y, position.z], size: [0.7, 0.7, 0.7] }, game);
+    const bullet = new EnemyBullet(
+      { position: [position.x, position.y, position.z], size: [0.7, 0.7, 0.7] },
+      game
+    );
     game.currentScene.addGameObject(bullet);
     game.enemyBullets.push(bullet);
     const ov = new PlayerEnemyBulletOverlap(bullet, game.player, game);

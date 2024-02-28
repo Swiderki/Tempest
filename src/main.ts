@@ -1,4 +1,15 @@
-import { Engine, Camera, Scene, GUI, GUIText, Icon, Button, PhysicalGameObject, QuaternionUtils, Vec3DTuple } from "drake-engine";
+import {
+  Engine,
+  Camera,
+  Scene,
+  GUI,
+  GUIText,
+  Icon,
+  Button,
+  PhysicalGameObject,
+  QuaternionUtils,
+  Vec3DTuple,
+} from "drake-engine";
 import { StartButton } from "./startButton";
 import _default from "drake-engine";
 import Player from "./tempest/player";
@@ -101,7 +112,29 @@ export class MyGame extends Engine {
     this.scoreText = new GUIText("0", 50, "monospace", "green", 100);
     this.bestScoreText = new GUIText("0", 30, "monospace", "green", 200);
     this.levelText = new GUIText("1", 25, "monospace", "blue", 300);
-    this.icons = [new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 230, y: 60 }, "yellow"), new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 260, y: 60 }, "yellow")];
+    this.icons = [
+      new Icon(
+        "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
+        1500,
+        1500,
+        { x: 200, y: 60 },
+        "yellow"
+      ),
+      new Icon(
+        "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
+        1500,
+        1500,
+        { x: 230, y: 60 },
+        "yellow"
+      ),
+      new Icon(
+        "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
+        1500,
+        1500,
+        { x: 260, y: 60 },
+        "yellow"
+      ),
+    ];
     this.gui = new GUI(this.getCanvas, this.getCanvas.getContext("2d")!);
 
     this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] }, this);
@@ -249,7 +282,15 @@ export class MyGame extends Engine {
 
   addLife() {
     console.log("ASd");
-    this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+    this.icons.push(
+      new Icon(
+        "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
+        1500,
+        1500,
+        { x: 200 + this.icons.length * 30, y: 60 },
+        "yellow"
+      )
+    );
     this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
     this.lifes++;
     this.nextLife += 10000;
@@ -295,7 +336,11 @@ export class MyGame extends Engine {
       this.flipperLastSpawn = currentTime;
     }
 
-    if (Date.now() - this.lastSpawned > this.spawnDelta && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+    if (
+      Date.now() - this.lastSpawned > this.spawnDelta &&
+      this.normallySpawned < this.maxNormallySpawned &&
+      !this.isInHyperspace
+    ) {
       if (!this.gameStarted) return;
       console.log(this.currentLevel);
 
@@ -329,7 +374,11 @@ export class MyGame extends Engine {
       this.lastSpawned = Date.now();
       this.normallySpawned++;
     }
-    if (Date.now() - this.lastSpawnedPower > this.spawnDeltaPower && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+    if (
+      Date.now() - this.lastSpawnedPower > this.spawnDeltaPower &&
+      this.normallySpawned < this.maxNormallySpawned &&
+      !this.isInHyperspace
+    ) {
       if (!this.gameStarted) return;
       if (this.availablePower) {
         this.availablePower = false;
@@ -343,7 +392,10 @@ export class MyGame extends Engine {
     if (this.lifeLostType == "bullet") {
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
       this.unpauseText!.text = "3";
-      this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+      this.unpauseText!.position = {
+        x: this.width / 2 - this.unpauseText!.width / 2,
+        y: this.height / 2 - this.unpauseText!.height / 2,
+      };
       setTimeout(() => {
         this.unpauseText!.text = "2";
       }, 1000);
@@ -361,7 +413,10 @@ export class MyGame extends Engine {
     } else if (this.lifeLostType == "fuseball") {
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
       this.unpauseText!.text = "3";
-      this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+      this.unpauseText!.position = {
+        x: this.width / 2 - this.unpauseText!.width / 2,
+        y: this.height / 2 - this.unpauseText!.height / 2,
+      };
       setTimeout(() => {
         this.unpauseText!.text = "2";
       }, 1000);
@@ -386,7 +441,10 @@ export class MyGame extends Engine {
       } else {
         const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
         this.unpauseText!.text = "3";
-        this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+        this.unpauseText!.position = {
+          x: this.width / 2 - this.unpauseText!.width / 2,
+          y: this.height / 2 - this.unpauseText!.height / 2,
+        };
         setTimeout(() => {
           this.unpauseText!.text = "2";
         }, 1000);
@@ -411,7 +469,10 @@ export class MyGame extends Engine {
       } else {
         const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
         this.unpauseText!.text = "3";
-        this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
+        this.unpauseText!.position = {
+          x: this.width / 2 - this.unpauseText!.width / 2,
+          y: this.height / 2 - this.unpauseText!.height / 2,
+        };
         setTimeout(() => {
           this.unpauseText!.text = "2";
         }, 1000);
@@ -600,7 +661,17 @@ export class MyGame extends Engine {
     this.isShooting = true;
     blasterBullet.volume = 0.1;
     blasterBullet.play();
-    const bullet = new Bullet({ position: [(this.player.vertecies[2].x + this.player.vertecies[3].x) / 2, (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2, this.player.position.z], size: [1, 1, 1] }, this);
+    const bullet = new Bullet(
+      {
+        position: [
+          (this.player.vertecies[2].x + this.player.vertecies[3].x) / 2,
+          (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2,
+          this.player.position.z,
+        ],
+        size: [1, 1, 1],
+      },
+      this
+    );
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
     setTimeout(() => {
@@ -738,7 +809,15 @@ export class MyGame extends Engine {
 
     this.lifes = 3;
     for (let i = 0; i < this.lifes; i++) {
-      this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
+      this.icons.push(
+        new Icon(
+          "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
+          1500,
+          1500,
+          { x: 200 + this.icons.length * 30, y: 60 },
+          "yellow"
+        )
+      );
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
       this.nextLife += 10000;
     }

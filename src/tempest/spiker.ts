@@ -22,7 +22,11 @@ export default class Spiker extends PhysicalGameObject {
     this.isShining = true;
     this.autoupdateBoxCollider = true;
     this.velocity.z = -20;
-    this.trace = new SpikerTrace({ position: [this.position.x, this.position.y, this.position.z], size: [1, 1, 1] }, this.game, this);
+    this.trace = new SpikerTrace(
+      { position: [this.position.x, this.position.y, this.position.z], size: [1, 1, 1] },
+      this.game,
+      this
+    );
   }
   override Start(): void {
     this.generateBoxCollider();
@@ -37,7 +41,11 @@ export default class Spiker extends PhysicalGameObject {
     const randomIndex = Math.floor(Math.random() * randomRange);
     const randomVertex1 = this.game.level.vertecies[randomIndex];
     const randomVertex2 = this.game.level.vertecies[randomIndex + 1];
-    const middle = { x: (randomVertex1.x + randomVertex2.x) / 2, y: (randomVertex1.y + randomVertex2.y) / 2, z: 80 };
+    const middle = {
+      x: (randomVertex1.x + randomVertex2.x) / 2,
+      y: (randomVertex1.y + randomVertex2.y) / 2,
+      z: 80,
+    };
     this.move(middle.x, middle.y, 80);
 
     this.game.currentScene.addGameObject(this.trace);
@@ -46,21 +54,24 @@ export default class Spiker extends PhysicalGameObject {
     this.game.bullets.forEach((bullet) => {
       const ov = new SpikerBulletOverlap(bullet, this, this.game);
       this.game.currentScene.addOverlap(ov);
-    })
-
+    });
   }
 
   override updatePhysics(deltaTime: number): void {
     if (this.game.lifeLost) {
       this.lastShootTime = Date.now() + 1000;
-      return
-    }   
-     const time = Date.now();
+      return;
+    }
+    const time = Date.now();
     super.updatePhysics(deltaTime);
     this.boxCollider![0].z = this.position.z - 5;
 
     // Rotation
-    QuaternionUtils.setFromAxisAngle(this.rotationQuaternion, { x: 0, y: 0, z: 1 }, (Math.PI / 2) * deltaTime);
+    QuaternionUtils.setFromAxisAngle(
+      this.rotationQuaternion,
+      { x: 0, y: 0, z: 1 },
+      (Math.PI / 2) * deltaTime
+    );
     QuaternionUtils.normalize(this.rotationQuaternion);
     this.applyQuaternion(this.rotationQuaternion);
 
@@ -80,7 +91,10 @@ export default class Spiker extends PhysicalGameObject {
 
     // Changing into tanker
     if (this.position.z > 80) {
-      const tanker = new Tanker({ position: [this.position.x, this.position.y, this.position.z], size: [0.7, 0.7, 0.7] }, this.game);
+      const tanker = new Tanker(
+        { position: [this.position.x, this.position.y, this.position.z], size: [0.7, 0.7, 0.7] },
+        this.game
+      );
       this.game.tankers.push(tanker);
       this.game.currentScene.addGameObject(tanker);
       this.game.currentScene.removeGameObject(this.id);

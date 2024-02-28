@@ -19,7 +19,13 @@ export class FlipperBulletOverlap extends Overlap {
 
   override onOverlap(): void {
     if (!this.game.currentScene) return;
-    const particle = new Particle({ position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z], size:[0.1, 0.1, 0.1] }, this.game);
+    const particle = new Particle(
+      {
+        position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z],
+        size: [0.1, 0.1, 0.1],
+      },
+      this.game
+    );
     this.game.currentScene.addGameObject(particle);
     this.game.particles.push(particle);
     this.game.currentScene.removeGameObject(this.bullet.id);
@@ -27,9 +33,8 @@ export class FlipperBulletOverlap extends Overlap {
     this.game.currentScene.removeGameObject(this.flipper.id);
     this.game.flippers = this.game.flippers.filter((flipper) => flipper.id !== this.flipper.id);
     // this.game.currentScene.removeOverlap(this.id);
-    this.game.updateScore(150)
+    this.game.updateScore(150);
     enemyExplosionSound.play();
     this.game.enemiesInGame--;
   }
-  
 }

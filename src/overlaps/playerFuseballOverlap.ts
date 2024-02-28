@@ -30,7 +30,7 @@ export class PlayerFuseballOverlap extends Overlap {
     this.game.currentScene.removeGameObject(this.fuseball.id);
     this.game.fuseballs = this.game.fuseballs.filter((fuseball) => fuseball.id !== this.fuseball.id);
     blasterExplosionSound.play();
-    this.game.deleteLife()
+    this.game.deleteLife();
 
     this.game.enemiesInGame--;
   }

@@ -30,7 +30,10 @@ export default class Level extends PhysicalGameObject {
     let currSide = Math.floor(this.game.currentLevelSide);
     if (!this.game.gameStarted) {
       this.setLineColor(currSide + this.numberOfPoints, this.colors[Math.floor((this.levelId - 1) / 16)]);
-      this.setLineColor(((currSide + 1) % this.numberOfPoints) + this.numberOfPoints, this.colors[Math.floor((this.levelId - 1) / 16)]);
+      this.setLineColor(
+        ((currSide + 1) % this.numberOfPoints) + this.numberOfPoints,
+        this.colors[Math.floor((this.levelId - 1) / 16)]
+      );
       return;
     }
   }

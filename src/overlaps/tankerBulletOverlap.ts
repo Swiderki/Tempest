@@ -21,11 +21,17 @@ export class TankerBulletOverlap extends Overlap {
     if (!this.game.currentScene) return;
     if (this.collised) return;
     this.collised = true;
-    const particle = new Particle({ position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z], size: [0.1, 0.1, 0.1] }, this.game);
+    const particle = new Particle(
+      {
+        position: [this.bullet.position.x, this.bullet.position.y, this.bullet.position.z],
+        size: [0.1, 0.1, 0.1],
+      },
+      this.game
+    );
     this.game.currentScene.addGameObject(particle);
     this.game.particles.push(particle);
     this.game.currentScene.removeGameObject(this.bullet.id);
-    
+
     this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.bullet.id);
     this.game.updateScore(100);
     enemyExplosionSound.play();

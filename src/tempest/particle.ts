@@ -16,23 +16,21 @@ export default class Particle extends PhysicalGameObject {
       this.game.currentScene?.removeGameObject(this.id);
       this.game.particles = this.game.particles.filter((particle) => particle.id !== this.id);
     }
-    this.scale(1.2, 1.2, 1.2)
+    this.scale(1.2, 1.2, 1.2);
   }
 
-  override Start(): void {
+  override Start(): void {}
 
-  }
-
-  static createParticle(game: MyGame, position: { x: number, y: number, z: number }) {
+  static createParticle(game: MyGame, position: { x: number; y: number; z: number }) {
     if (!game.currentScene) {
       throw new Error("Main scene must be set first.");
     }
 
-    const particle = new Particle({ position: [position.x, position.y, position.z], size: [0.7, 0.7, 0.7] }, game);
+    const particle = new Particle(
+      { position: [position.x, position.y, position.z], size: [0.7, 0.7, 0.7] },
+      game
+    );
     game.currentScene.addGameObject(particle);
     game.particles.push(particle);
-
   }
-
-
 }

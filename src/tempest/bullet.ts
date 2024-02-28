@@ -34,7 +34,7 @@ export default class Bullet extends PhysicalGameObject {
   }
 
   override Start(): void {
-    if (this.game.lifeLost) return
+    if (this.game.lifeLost) return;
 
     this.showBoxcollider = debugMode;
 
@@ -67,7 +67,7 @@ export default class Bullet extends PhysicalGameObject {
       this.game.currentScene.addOverlap(ov);
     });
     this.game.powerUps.forEach((powerUp) => {
-      const ov = new PowerUpBulletOverlap( powerUp, this, this.game);
+      const ov = new PowerUpBulletOverlap(powerUp, this, this.game);
       this.game.currentScene.addOverlap(ov);
     });
   }

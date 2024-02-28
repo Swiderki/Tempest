@@ -43,7 +43,11 @@ export default class Fuseball extends PhysicalGameObject {
     this.actualIndex = randomIndex;
     const randomVertex1 = this.game.level.vertecies[randomIndex];
     const randomVertex2 = this.game.level.vertecies[randomIndex + 1];
-    const middle = { x: (randomVertex1.x + randomVertex2.x) / 2, y: (randomVertex1.y + randomVertex2.y) / 2, z: 80 };
+    const middle = {
+      x: (randomVertex1.x + randomVertex2.x) / 2,
+      y: (randomVertex1.y + randomVertex2.y) / 2,
+      z: 80,
+    };
     this.move(middle.x, middle.y, 80);
 
     this.game.bullets.forEach((bullet) => {
@@ -71,8 +75,10 @@ export default class Fuseball extends PhysicalGameObject {
     let targetSide = this.game.currentLevelSide;
     let direction = 0;
     if (this.actualIndex != targetSide) {
-      let clockwiseDistance = (targetSide - this.actualIndex + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
-      let counterClockwiseDistance = (this.actualIndex - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+      let clockwiseDistance =
+        (targetSide - this.actualIndex + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
+      let counterClockwiseDistance =
+        (this.actualIndex - targetSide + this.game.level.numberOfPoints) % this.game.level.numberOfPoints;
 
       direction = clockwiseDistance <= counterClockwiseDistance ? 1 : -1;
     }
@@ -115,7 +121,11 @@ export default class Fuseball extends PhysicalGameObject {
 
   moveToTarget() {
     if (this.targetVertex) {
-      const direction = { x: this.targetVertex.x - this.position.x, y: this.targetVertex.y - this.position.y, z: 0 };
+      const direction = {
+        x: this.targetVertex.x - this.position.x,
+        y: this.targetVertex.y - this.position.y,
+        z: 0,
+      };
       const magnitude = Math.sqrt(direction.x ** 2 + direction.y ** 2);
       this.velocity.x = (direction.x / magnitude) * 2;
       this.velocity.y = (direction.y / magnitude) * 2;

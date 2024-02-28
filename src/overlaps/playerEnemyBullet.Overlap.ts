@@ -19,8 +19,8 @@ export class PlayerEnemyBulletOverlap extends Overlap {
     if (!this.game.currentScene) return;
     if (this.collised) return;
     this.collised = true;
-    this.game.lifeLostType = 'bullet';
-    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3)
+    this.game.lifeLostType = "bullet";
+    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3);
     for (let i = 0; i < this.player.getMesh().length; i++) {
       this.player.setLineColor(i, "transparent");
     }
@@ -28,6 +28,6 @@ export class PlayerEnemyBulletOverlap extends Overlap {
     this.game.currentScene.removeGameObject(this.enemyBullet.id);
     this.game.enemyBullets = this.game.enemyBullets.filter((bullet) => bullet.id !== this.enemyBullet.id);
     // this.game.currentScene.removeOverlap(this.id);
-    this.game.deleteLife()
+    this.game.deleteLife();
   }
 }
