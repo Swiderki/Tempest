@@ -20,6 +20,7 @@ import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
+const zapperSound = new Audio("sounds/enemyExplosion.mp3");
 const music = new Audio("sounds/tempestTheme.mp3");
 music.loop = true;
 
@@ -506,7 +507,7 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
-        console.log(this.enemiesInGame);
+    console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -659,27 +660,25 @@ export class MyGame extends Engine {
   }
 
   spawnParticles(position: Vec3DTuple, amount: number) {
-    
     const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
     this.currentScene.addGameObject(p);
     const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
     this.currentScene.addGameObject(p2);
     const p3 = new PlayerParticle3(position, this, [0.1, 0.1, 0.1]);
     this.currentScene.addGameObject(p3);
-
   }
 
   shoot() {
     // to też by trzeb przenieść
-    if (this.isShooting) return
-    this.isShooting = true
+    if (this.isShooting) return;
+    this.isShooting = true;
     blasterBullet.volume = 0.1;
     blasterBullet.play();
     const bullet = new Bullet({ position: [(this.player.vertecies[2].x + this.player.vertecies[3].x) / 2, (this.player.vertecies[2].y + this.player.vertecies[3].y) / 2, this.player.position.z], size: [1, 1, 1] }, this);
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
     setTimeout(() => {
-      this.isShooting = false
+      this.isShooting = false;
     }, 50);
   }
 
@@ -692,6 +691,7 @@ export class MyGame extends Engine {
       }
     });
     setTimeout(() => {
+      zapperSound.play();
       this.level.vertecies.forEach((_) => {
         for (let i = 0; i < this.level.getMesh().length; i++) {
           this.level.setLineColor(i, "blue");
