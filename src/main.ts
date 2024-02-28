@@ -11,11 +11,12 @@ import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
 import Fuseball from "./tempest/fuseball";
 import Particle from "./tempest/particle";
+import PowerUp from "./tempest/powerUp";
+import Stars from "./tempest/stars";
 import { PlayerParticle1 } from "./tempest/playerParticle1";
 import { PlayerParticle2 } from "./tempest/playerParticle2";
 import { PlayerParticle3 } from "./tempest/playerParticle3";
 import { GUILevelObject } from "./tempest/GUILevelObject";
-import PowerUp from "./tempest/powerUp";
 import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
@@ -47,6 +48,7 @@ export class MyGame extends Engine {
   enemyBullets: EnemyBullet[] = [];
   particles: Particle[] = [];
   powerUps: PowerUp[] = [];
+  starsArray: Stars[] = [];
   // Scene
   mainScene: Scene = new Scene();
 
@@ -194,8 +196,8 @@ export class MyGame extends Engine {
     this.iconsID[2] = this.gui.addElement(this.icons[2]);
 
     this.currentScene.setCurrentGUI(x);
-    }
-  
+  }
+
   // SCORE AND LIFE FUNCTIONS 
 
   updateScore(newScore: number) {
@@ -459,7 +461,8 @@ export class MyGame extends Engine {
     // We decided to leave them in the code to better outline our strategy.
 
     if (this.keysPressed.has("w")) {
-      Spiker.createSpiker(this);
+      // Spiker.createSpiker(this);
+      Stars.createStars(this, { x: 0, y: 0, z: 110 });
       // Fuseball.createFuseball(this);
       // PowerUp.createPowerUp(this);
     }
@@ -532,18 +535,31 @@ export class MyGame extends Engine {
   }
 
   hyperSpace(delta: number) {
-    if (this.player.position.z < 80 && !this.waitingForNextLevel) {
+    if (this.player.position.z < 70 && !this.waitingForNextLevel) {
       this.player.move(0, 0, 30 * delta);
       this.mainCamera?.move(0, 0, 30 * delta);
     } else {
+      if(this.mainCamera!.position.z > 0) {
+      this.player.move(0, 0, 10 * delta);
+    }
       this.mainCamera?.move(0, 0, 60 * delta);
+    }
+
+    if (this.player.position.z > 60 && this.mainCamera!.position.z > 0) {
+      Stars.createStars(this, { x: 0, y: 0, z: 110 });
     }
 
     if (this.player.position.z > 80 && this.mainCamera!.position.z > 0) {
       this.mainCamera?.move(0, 0, -190);
       this.waitingForNextLevel = true;
+      this.starsArray.forEach((star) => {
+        this.currentScene.removeGameObject(star.id);
+      });
+      this.starsArray = []
     }
     if (this.mainCamera!.position.z < -23 && this.mainCamera!.position.z > -27 && this.waitingForNextLevel) {
+      this.player.move(0, 0, -this.player.position.z);
+
       this.mainCamera?.move(0, 0, -this.mainCamera.position.z - 25);
       this.isInHyperspace = false;
       this.waitingForNextLevel = false;
