@@ -324,7 +324,7 @@ export class MyGame extends Engine {
         this.availablePower = false;
         PowerUp.createPowerUp(this);
       }
-      this.lastSpawned = Date.now();
+      this.lastSpawnedPower = Date.now();
     }
   }
 
