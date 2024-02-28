@@ -11,7 +11,9 @@ import SpikerTrace from "./tempest/spikerTrace";
 import EnemyBullet from "./tempest/enemyBullet";
 import Fuseball from "./tempest/fuseball";
 import Particle from "./tempest/particle";
-import { PlayerParticle } from "./tempest/playerParticle";
+import { PlayerParticle1 } from "./tempest/playerParticle1";
+import { PlayerParticle2 } from "./tempest/playerParticle2";
+import { PlayerParticle3 } from "./tempest/playerParticle3";
 import { GUILevelObject } from "./tempest/GUILevelObject";
 import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 
@@ -352,7 +354,6 @@ export class MyGame extends Engine {
 
   addLife() {
     if (this.lifes < 3 && this.nextLife < Number(this.scoreText.text)) {
-      console.log("dodano życie");
       this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
       this.lifes++;
@@ -505,7 +506,7 @@ export class MyGame extends Engine {
   }
 
   override Update(): void {
-    console.log(this.enemiesInGame);
+        console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -528,7 +529,6 @@ export class MyGame extends Engine {
     }
 
     if (this.enemiesInGame == 0 && !this.isInHyperspace) {
-      console.log("next level");
       this.isInHyperspace = true;
     }
 
@@ -538,7 +538,6 @@ export class MyGame extends Engine {
   }
 
   lifeLostFunction() {
-    console.log(this.lifeLostType);
     if (this.lifeLostType == "bullet") {
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
       this.unpauseText!.text = "3";
@@ -558,7 +557,6 @@ export class MyGame extends Engine {
       }, 3000);
       this.lifeLostType = null;
     } else if (this.lifeLostType == "fuseball") {
-      console.log("ASDDSA");
       const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
       this.unpauseText!.text = "3";
       this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
@@ -610,7 +608,6 @@ export class MyGame extends Engine {
           });
       } else {
         const z = this.currentScene.currentGUI!.addElement(this.unpauseText!);
-        console.log(z);
         this.unpauseText!.text = "3";
         this.unpauseText!.position = { x: this.width / 2 - this.unpauseText!.width / 2, y: this.height / 2 - this.unpauseText!.height / 2 };
         setTimeout(() => {
@@ -662,15 +659,19 @@ export class MyGame extends Engine {
   }
 
   spawnParticles(position: Vec3DTuple, amount: number) {
-    for (let i = 0; i < amount; i++) {
-      const p = new PlayerParticle(position, this, [0.5, 0.5, 0.5]);
-      this.currentScene.addGameObject(p);
-    }
+    
+    const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p);
+    const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p2);
+    const p3 = new PlayerParticle3(position, this, [0.1, 0.1, 0.1]);
+    this.currentScene.addGameObject(p3);
+
   }
 
   shoot() {
     // to też by trzeb przenieść
-    if(this.isShooting) return
+    if (this.isShooting) return
     this.isShooting = true
     blasterBullet.volume = 0.1;
     blasterBullet.play();

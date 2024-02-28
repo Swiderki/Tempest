@@ -1,7 +1,7 @@
 import { PhysicalGameObject, Vec3DTuple } from "drake-engine";
 import { MyGame } from "../main";
 
-export class PlayerParticle extends PhysicalGameObject {
+export class PlayerParticle3 extends PhysicalGameObject {
     game: MyGame;
     constructor(position: Vec3DTuple, game: MyGame, size?: Vec3DTuple) {
         // super call
@@ -25,7 +25,7 @@ export class PlayerParticle extends PhysicalGameObject {
         const color: string = ["yellow", "red", "orange"][Math.floor(Math.random() * 3)];
 
         // apply it to all lines
-        for (let j = 0; j < 4; j++) this.setLineColor(j, color);
+        for (let j = 0; j < 1; j++) this.setLineColor(j, color);
 
         // remove after random time(to give it 'spark' effect)
         setTimeout(() => this.game.currentScene!.removeGameObject(this.id), Math.random() * 500 + 500);
