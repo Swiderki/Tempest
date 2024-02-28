@@ -65,7 +65,9 @@ export class MyGame extends Engine {
   lifes: number = 3;
   nextLife: number = 10000;
   lastSpawned: number = Date.now();
+  lastSpawnedPower: number = Date.now();
   spawnDelta: number = 5000;
+  spawnDeltaPower: number = 8000;
 
   // Enemys data
   flipperLastSpawn: number = 0;
@@ -85,6 +87,7 @@ export class MyGame extends Engine {
   gameEndedText: GUIText | null = null;
   finalScore: GUIText | null = null;
   availableZapper: boolean = true;
+  availablePower: boolean = true;
   isShooting: boolean = false;
   shootingTime: number = 150;
 
@@ -103,7 +106,7 @@ export class MyGame extends Engine {
     this.player = new Player({ position: [0, 0, 0], size: [1, 1, 1] }, this);
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
   }
-  // START FUNCIONS 
+  // START FUNCIONS
 
   override Start(): void {
     this.setResolution(1280, 720);
@@ -198,7 +201,7 @@ export class MyGame extends Engine {
     this.currentScene.setCurrentGUI(x);
   }
 
-  // SCORE AND LIFE FUNCTIONS 
+  // SCORE AND LIFE FUNCTIONS
 
   updateScore(newScore: number) {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
@@ -244,7 +247,7 @@ export class MyGame extends Engine {
   }
 
   addLife() {
-    console.log("ASd")
+    console.log("ASd");
     this.icons.push(new Icon("m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z", 1500, 1500, { x: 200 + this.icons.length * 30, y: 60 }, "yellow"));
     this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
     this.lifes++;
@@ -254,7 +257,6 @@ export class MyGame extends Engine {
   // GAME MECHANICS
 
   override Update(): void {
-
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -272,6 +274,7 @@ export class MyGame extends Engine {
       this.maxNormallySpawned = 3 + this.playerLevelNumber;
       this.normallySpawned = 0;
       if (this.spawnDelta - 500 >= 1000) this.spawnDelta -= 500;
+      if (this.spawnDeltaPower - 500 >= 1000) this.spawnDeltaPower -= 500;
       this.lastSpawned = Date.now();
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
@@ -314,6 +317,14 @@ export class MyGame extends Engine {
 
       this.lastSpawned = Date.now();
       this.normallySpawned++;
+    }
+    if (Date.now() - this.lastSpawnedPower > this.spawnDeltaPower && this.normallySpawned < this.maxNormallySpawned && !this.isInHyperspace) {
+      if (!this.gameStarted) return;
+      if (this.availablePower) {
+        this.availablePower = false;
+        PowerUp.createPowerUp(this);
+      }
+      this.lastSpawned = Date.now();
     }
   }
 
@@ -524,6 +535,7 @@ export class MyGame extends Engine {
 
     this.currentLevel++;
     this.availableZapper = true;
+    this.availablePower = true;
     this.spikerTraces.forEach((trace) => {
       this.currentScene.removeGameObject(trace.id);
     });
@@ -539,9 +551,9 @@ export class MyGame extends Engine {
       this.player.move(0, 0, 30 * delta);
       this.mainCamera?.move(0, 0, 30 * delta);
     } else {
-      if(this.mainCamera!.position.z > 0) {
-      this.player.move(0, 0, 10 * delta);
-    }
+      if (this.mainCamera!.position.z > 0) {
+        this.player.move(0, 0, 10 * delta);
+      }
       this.mainCamera?.move(0, 0, 60 * delta);
     }
 
@@ -555,7 +567,7 @@ export class MyGame extends Engine {
       this.starsArray.forEach((star) => {
         this.currentScene.removeGameObject(star.id);
       });
-      this.starsArray = []
+      this.starsArray = [];
     }
     if (this.mainCamera!.position.z < -23 && this.mainCamera!.position.z > -27 && this.waitingForNextLevel) {
       this.player.move(0, 0, -this.player.position.z);
@@ -566,7 +578,6 @@ export class MyGame extends Engine {
     }
   }
 
-
   shoot() {
     if (this.isShooting) return;
     this.isShooting = true;
@@ -576,7 +587,7 @@ export class MyGame extends Engine {
     this.bullets.push(bullet);
     this.currentScene.addGameObject(bullet);
     setTimeout(() => {
-      this.isShooting = false
+      this.isShooting = false;
     }, this.shootingTime);
   }
 
@@ -700,7 +711,6 @@ export class MyGame extends Engine {
     }, 1000);
   }
 
-
   resetGame() {
     this.scoreText.text = "0";
 
@@ -727,7 +737,9 @@ export class MyGame extends Engine {
 
     this.nextLife = 10000;
     this.lastSpawned = Date.now();
+    this.lastSpawnedPower = Date.now();
     this.spawnDelta = 5000;
+    this.spawnDeltaPower = 8000;
 
     this.flipperLastSpawn = 0;
     this.isInHyperspace = false;
@@ -765,7 +777,6 @@ export class MyGame extends Engine {
       this.mainScene.overlaps.delete(key);
     });
   }
-
 }
 
 const game = new MyGame(canvas);
