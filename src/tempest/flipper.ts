@@ -50,8 +50,8 @@ export default class Fipper extends PhysicalGameObject {
     if (this.game.lifeLost) {
       this.lastShootTime = Date.now() + 1000;
       return
-    }   
-     const time = Date.now();
+    }
+    const time = Date.now();
     // console.table([time, this.lastShootTime])
 
 
@@ -66,7 +66,7 @@ export default class Fipper extends PhysicalGameObject {
     }
     this.updateFlipperPosition();
 
-    if (this.lastShootTime < time - 1500 && this.position.z > 0) {
+    if (this.lastShootTime < time - 1500 && this.position.z > 20) {
       this.lastShootTime = time;
       enemyBulletSound.play();
       EnemyBullet.createEnemyBullet(this.game, this.position);
