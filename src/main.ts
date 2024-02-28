@@ -87,6 +87,7 @@ export class MyGame extends Engine {
   gameEndedText: GUIText | null = null;
   finalScore: GUIText | null = null;
   availableZapper: boolean = true;
+  availableAdditionalZapper: boolean = false;
   availablePower: boolean = true;
   isShooting: boolean = false;
   shootingTime: number = 150;
@@ -488,7 +489,13 @@ export class MyGame extends Engine {
       // PowerUp.createPowerUp(this);
     }
     if (this.keysPressed.has("l")) {
-      if (this.availableZapper) {
+      if (this.availableZapper || this.availableAdditionalZapper) {
+        if (this.availableZapper) {
+          this.availableZapper = false;
+        } else {
+          this.availableAdditionalZapper = false;
+        }
+
         this.superZapper();
       }
     }
@@ -603,7 +610,6 @@ export class MyGame extends Engine {
 
   superZapper() {
     if (this.lifeLost) return;
-    this.availableZapper = false;
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
         this.level.setLineColor(i, "yellow");
