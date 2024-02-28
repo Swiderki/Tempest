@@ -51,8 +51,11 @@ export default class Spiker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return
-    const time = Date.now();
+    if (this.game.lifeLost) {
+      this.lastShootTime = Date.now() + 1000;
+      return
+    }   
+     const time = Date.now();
     super.updatePhysics(deltaTime);
     this.boxCollider![0].z = this.position.z - 5;
 

@@ -44,7 +44,10 @@ export default class Tanker extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return;
+    if (this.game.lifeLost) {
+      this.lastShootTime = Date.now() + 1000;
+      return
+    }
 
     super.updatePhysics(deltaTime);
 

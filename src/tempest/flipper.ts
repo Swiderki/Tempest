@@ -47,8 +47,14 @@ export default class Fipper extends PhysicalGameObject {
   }
 
   override updatePhysics(deltaTime: number): void {
-    if (this.game.lifeLost) return;
-    const time = Date.now();
+    if (this.game.lifeLost) {
+      this.lastShootTime = Date.now() + 1000;
+      return
+    }   
+     const time = Date.now();
+    // console.table([time, this.lastShootTime])
+
+
     if ((this.position.z <= 0 && time - this.lastTimeMoved > this.timeBetweenMovement) || (this.game.currentLevel > 1 && time - this.lastTimeMoved > this.timeBetweenMovement)) {
       this.moveTowardsPlayer();
       this.lastTimeMoved = time;
