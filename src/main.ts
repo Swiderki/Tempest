@@ -241,6 +241,7 @@ export class MyGame extends Engine {
     this.scoreText.text = `${Number(this.scoreText.text) + newScore}`;
     if (this.lifes < 5 && this.nextLife < Number(this.scoreText.text)) {
       this.addLife();
+      this.nextLife += 10000;
     }
   }
 
@@ -293,7 +294,6 @@ export class MyGame extends Engine {
     );
     this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
     this.lifes++;
-    this.nextLife += 10000;
   }
 
   // GAME MECHANICS
@@ -819,7 +819,7 @@ export class MyGame extends Engine {
         )
       );
       this.iconsID.push(this.gui.addElement(this.icons[this.icons.length - 1]));
-      this.nextLife += 10000;
+      this.nextLife = 10000;
     }
 
     this.currentLevel = 1;
