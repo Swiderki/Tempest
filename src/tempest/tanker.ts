@@ -68,6 +68,7 @@ export default class Tanker extends PhysicalGameObject {
     }
     if (this.position.z < 10) {
       this.deployFlippers();
+      this.game.enemiesInGame--;
     }
   }
   deployFlippers() {
