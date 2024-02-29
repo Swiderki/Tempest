@@ -547,14 +547,14 @@ export class MyGame extends Engine {
 
     if (this.keysPressed.has("a")) {
       if (!this.gameStarted) return;
-      if (Date.now() - this.lastKeyPress < 50) return;
+      if (Date.now() - this.lastKeyPress < 20) return;
 
       this.movePlayer(this.movementSpeed);
     }
 
     if (this.keysPressed.has("d")) {
       if (!this.gameStarted) return;
-      if (Date.now() - this.lastKeyPress < 50) return;
+      if (Date.now() - this.lastKeyPress < 20) return;
       this.movePlayer(this.movementSpeed * -1);
     }
 
