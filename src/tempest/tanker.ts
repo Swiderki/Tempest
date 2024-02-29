@@ -1,6 +1,5 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
-import { QuaternionUtils } from "drake-engine";
 import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import EnemyBullet from "./enemyBullet";
 import Flipper from "./flipper";

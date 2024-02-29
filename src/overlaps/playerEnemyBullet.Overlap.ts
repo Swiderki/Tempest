@@ -20,7 +20,7 @@ export class PlayerEnemyBulletOverlap extends Overlap {
     if (this.collised) return;
     this.collised = true;
     this.game.lifeLostType = "bullet";
-    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z], 3);
+    this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z]);
     for (let i = 0; i < this.player.getMesh().length; i++) {
       this.player.setLineColor(i, "transparent");
     }

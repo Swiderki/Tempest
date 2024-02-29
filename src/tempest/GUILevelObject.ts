@@ -12,12 +12,12 @@ export class GUILevelObject extends PhysicalGameObject {
   }
 
   override Start() {
-    this.getMesh().forEach((line, i) => {
+    this.getMesh().forEach((_, i) => {
       this.setLineColor(i, "red");
     });
   }
 
-  override updatePhysics(deltaTime: number): void {
+  override updatePhysics(): void {
     if (Date.now() - this.lastChangeTime > 40) {
       this.lastChangeTime = Date.now();
       if (this.switch) this.setLineColor(this.i, "yellow");

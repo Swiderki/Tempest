@@ -7,12 +7,11 @@ export class PlayerFlipperOverlap extends Overlap {
   private game: MyGame;
   private collised: boolean = false;
   private flipper: Flipper;
-  private player: Player;
+
   constructor(obj1: Flipper, obj2: Player, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
     this.flipper = obj1;
-    this.player = obj2;
   }
 
   override onOverlap(): void {

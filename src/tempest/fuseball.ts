@@ -2,7 +2,6 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
 import { PlayerFuseballOverlap } from "../overlaps/playerFuseballOverlap";
 import { FuseballBulletOverlap } from "../overlaps/fuseballBulletOverlap";
-import Flipper from "./flipper";
 
 export default class Fuseball extends PhysicalGameObject {
   game: MyGame;

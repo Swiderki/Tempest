@@ -1,7 +1,5 @@
 import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
-import { PlayerEnemyBulletOverlap } from "../overlaps/playerEnemyBullet.Overlap";
-import { BulletEnemyBulletOverlap } from "../overlaps/bulletEnemyBulletOverlap";
 
 export default class Stars extends PhysicalGameObject {
   game: MyGame;

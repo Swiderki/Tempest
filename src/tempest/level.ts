@@ -26,7 +26,7 @@ export default class Level extends PhysicalGameObject {
     });
   }
 
-  updatePhysics(deltaTime: number): void {
+  updatePhysics(): void {
     let currSide = Math.floor(this.game.currentLevelSide);
     if (!this.game.gameStarted) {
       this.setLineColor(currSide + this.numberOfPoints, this.colors[Math.floor((this.levelId - 1) / 16)]);

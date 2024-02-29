@@ -14,7 +14,7 @@ export default class SpikerTrace extends PhysicalGameObject {
     this.spiker = spiker;
     this.isShining = true;
   }
-  override updatePhysics(deltaTime: number): void {
+  override updatePhysics(): void {
     this.boxCollider = [
       { x: this.vertecies[0].x, y: this.vertecies[0].y, z: this.vertecies[0].z },
       { x: this.vertecies[1].x, y: this.vertecies[1].y, z: this.vertecies[1].z },

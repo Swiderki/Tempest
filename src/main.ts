@@ -1,15 +1,4 @@
-import {
-  Engine,
-  Camera,
-  Scene,
-  GUI,
-  GUIText,
-  Icon,
-  Button,
-  PhysicalGameObject,
-  QuaternionUtils,
-  Vec3DTuple,
-} from "drake-engine";
+import { Engine, Camera, Scene, GUI, GUIText, Icon, Button, QuaternionUtils, Vec3DTuple } from "drake-engine";
 import { StartButton } from "./startButton";
 import _default from "drake-engine";
 import Player from "./tempest/player";
@@ -28,7 +17,6 @@ import { PlayerParticle1 } from "./tempest/playerParticle1";
 import { PlayerParticle2 } from "./tempest/playerParticle2";
 import { PlayerParticle3 } from "./tempest/playerParticle3";
 import { GUILevelObject } from "./tempest/GUILevelObject";
-import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
@@ -161,7 +149,6 @@ export class MyGame extends Engine {
     this.setCurrentScene(this.GUIScene!);
 
     this.mainScene.addGameObject(this.level);
-    this.mainScene._started = true;
     this.addEventListeners();
     this.canvas.addEventListener("mousemove", (ev: MouseEvent) => {
       if (!this.startButton!.isCoordInElement(ev.offsetX, ev.offsetY)) {
@@ -555,7 +542,7 @@ export class MyGame extends Engine {
       this.movePlayer(this.movementSpeed * -1);
     }
 
-    if (this.keysPressed.has("k")) {
+    if (this.keysPressed.has(" ") || this.keysPressed.has("k")) {
       if (!this.gameStarted) return;
       this.shoot();
       // Tanker.createTanker(this);
@@ -761,7 +748,7 @@ export class MyGame extends Engine {
     }, 200);
   }
 
-  spawnParticles(position: Vec3DTuple, amount: number) {
+  spawnParticles(position: Vec3DTuple) {
     const p = new PlayerParticle1(position, this, [0.1, 0.1, 0.1]);
     this.currentScene.addGameObject(p);
     const p2 = new PlayerParticle2(position, this, [0.1, 0.1, 0.1]);
@@ -895,7 +882,7 @@ export class MyGame extends Engine {
     this.player.position.z = 0;
     this.player.position.y = 0;
 
-    this.mainScene.overlaps.forEach((el, key) => {
+    this.mainScene.overlaps.forEach((_, key) => {
       this.mainScene.overlaps.delete(key);
     });
   }

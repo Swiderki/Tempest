@@ -8,9 +8,9 @@ enemyExplosionSound.volume = 0.7;
 
 export class BulletEnemyBulletOverlap extends Overlap {
   private game: MyGame;
-  private collised: boolean = false;
   private bullet: Bullet;
   private enemyBullet: EnemyBullet;
+
   constructor(obj1: Bullet, obj2: EnemyBullet, game: MyGame) {
     super(obj1, obj2);
     this.game = game;
