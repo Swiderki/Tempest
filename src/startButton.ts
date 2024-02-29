@@ -22,5 +22,6 @@ export class StartButton extends Button {
         this.game.switchScene()
         this.game.gameStarted = true;
         this.game.lastSpawned = Date.now();
+        this.game.lastSafeCheck = Date.now();
     }
 }
