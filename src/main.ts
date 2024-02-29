@@ -33,10 +33,14 @@ import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
+blasterBullet.volume = 0.7;
 const zapperSound = new Audio("sounds/zapper.mp3");
+zapperSound.volume = 0.7;
 const music = new Audio("sounds/tempestTheme.mp3");
-const huperjump = new Audio("sounds/huperjump.mp3");
+music.volume = 0.5;
 music.loop = true;
+const hyperjump = new Audio("sounds/hyperjump.mp3");
+hyperjump.volume = 0.7;
 
 export const debugMode: boolean = false;
 
@@ -673,7 +677,6 @@ export class MyGame extends Engine {
   shoot() {
     if (this.isShooting) return;
     this.isShooting = true;
-    blasterBullet.volume = 0.1;
     blasterBullet.play();
     const bullet = new Bullet(
       {

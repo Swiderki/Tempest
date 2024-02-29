@@ -4,7 +4,9 @@ import { FlipperBulletOverlap } from "../overlaps/flipperBulletOverlap";
 import { PlayerFlipperOverlap } from "../overlaps/playerFlipperOverlap";
 import EnemyBullet from "./enemyBullet";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+enemyBulletSound.volume = 0.7;
 const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
+blasterExplosionSound.volume = 0.7;
 
 export default class Fipper extends PhysicalGameObject {
   game: MyGame;

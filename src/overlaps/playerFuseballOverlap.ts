@@ -3,6 +3,7 @@ import { MyGame } from "../main";
 import Player from "../tempest/player";
 import Fuseball from "../tempest/fuseball";
 const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
+blasterExplosionSound.volume = 0.7;
 
 export class PlayerFuseballOverlap extends Overlap {
   private game: MyGame;

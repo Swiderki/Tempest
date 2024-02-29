@@ -3,6 +3,7 @@ import { MyGame, debugMode } from "../main";
 import { PlayerPowerUpOverlap } from "../overlaps/playerPowerUpOverlap";
 import { PowerUpBulletOverlap } from "../overlaps/powerUpBulletOverlap";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+enemyBulletSound.volume = 0.7;
 
 export default class PowerUp extends PhysicalGameObject {
   game: MyGame;
