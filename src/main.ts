@@ -739,7 +739,6 @@ export class MyGame extends Engine {
       for (const tanker of this.tankers) {
         this.currentScene.removeGameObject(tanker.id);
         this.updateScore(100);
-        tanker.deployFlippers();
         this.enemiesInGame--;
       }
       this.tankers = [];
