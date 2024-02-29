@@ -344,7 +344,11 @@ export class MyGame extends Engine {
       if (!this.gameStarted) return;
       this.flipperLastSpawn = currentTime;
     }
-
+    console.table([
+      Date.now() - this.lastSpawned > this.spawnDelta,
+      this.normallySpawned < this.maxNormallySpawned,
+      !this.isInHyperspace,
+    ]);
     if (
       Date.now() - this.lastSpawned > this.spawnDelta &&
       this.normallySpawned < this.maxNormallySpawned &&
@@ -708,48 +712,50 @@ export class MyGame extends Engine {
         this.level.setLineColor(i, this.player.colors[Math.floor((this.currentLevel - 1) / 16)]);
       }
     });
+
+    for (const spiker of this.spikers) {
+      this.currentScene.removeGameObject(spiker.id);
+      this.updateScore(50);
+      this.enemiesInGame--;
+    }
+    this.spikers = [];
+    for (const flipper of this.flippers) {
+      this.currentScene.removeGameObject(flipper.id);
+      this.updateScore(150);
+      this.enemiesInGame--;
+    }
+    this.flippers = [];
+    for (const fuseball of this.fuseballs) {
+      this.currentScene.removeGameObject(fuseball.id);
+      if (fuseball.position.z > 30) {
+        this.updateScore(250);
+      } else if (fuseball.position.z > 10) {
+        this.updateScore(500);
+      } else {
+        this.updateScore(750);
+      }
+      this.enemiesInGame--;
+    }
+    for (const tanker of this.tankers) {
+      this.currentScene.removeGameObject(tanker.id);
+      this.updateScore(100);
+      this.enemiesInGame--;
+    }
+    this.tankers = [];
+    this.fuseballs = [];
+    for (const bullet of this.enemyBullets) {
+      this.currentScene.removeGameObject(bullet.id);
+    }
+    this.enemyBullets = [];
+
     setTimeout(() => {
       zapperSound.play();
+
       this.level.vertecies.forEach((_) => {
         for (let i = 0; i < this.level.getMesh().length; i++) {
           this.level.setLineColor(i, this.level.colors[Math.floor((this.currentLevel - 1) / 16)]);
         }
       });
-
-      for (const spiker of this.spikers) {
-        this.currentScene.removeGameObject(spiker.id);
-        this.updateScore(50);
-        this.enemiesInGame--;
-      }
-      this.spikers = [];
-      for (const flipper of this.flippers) {
-        this.currentScene.removeGameObject(flipper.id);
-        this.updateScore(150);
-        this.enemiesInGame--;
-      }
-      this.flippers = [];
-      for (const fuseball of this.fuseballs) {
-        this.currentScene.removeGameObject(fuseball.id);
-        if (fuseball.position.z > 30) {
-          this.updateScore(250);
-        } else if (fuseball.position.z > 10) {
-          this.updateScore(500);
-        } else {
-          this.updateScore(750);
-        }
-        this.enemiesInGame--;
-      }
-      for (const tanker of this.tankers) {
-        this.currentScene.removeGameObject(tanker.id);
-        this.updateScore(100);
-        this.enemiesInGame--;
-      }
-      this.tankers = [];
-      this.fuseballs = [];
-      for (const bullet of this.enemyBullets) {
-        this.currentScene.removeGameObject(bullet.id);
-      }
-      this.enemyBullets = [];
 
       this.level.updateColorOnPlayer();
     }, 200);
