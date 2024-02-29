@@ -322,7 +322,7 @@ export class MyGame extends Engine {
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
 
-    if (this.enemiesInGame == 0 && !this.isInHyperspace) {
+    if (this.enemiesInGame <= 0 && !this.isInHyperspace) {
       this.isInHyperspace = true;
     }
 
