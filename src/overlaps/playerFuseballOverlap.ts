@@ -21,7 +21,7 @@ export class PlayerFuseballOverlap extends Overlap {
     if (this.collised) return;
     this.collised = true;
     this.game.lifeLostType = "fuseball";
-    console.log("fuseball hit player");
+    // console.log("fuseball hit player");
     for (let i = 0; i < this.player.getMesh().length; i++) {
       this.player.setLineColor(i, "transparent");
     }

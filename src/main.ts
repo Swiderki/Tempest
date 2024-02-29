@@ -282,7 +282,7 @@ export class MyGame extends Engine {
   }
 
   addLife() {
-    console.log("ASd");
+    // console.log("ASd");
     this.icons.push(
       new Icon(
         "m 10 0 l 10 4 l -4 6 l 2 -5 l -8 -1 l -8 1 l 2 5 l -4 -6 z",
@@ -299,7 +299,7 @@ export class MyGame extends Engine {
   // GAME MECHANICS
 
   override Update(): void {
-    console.log(this.enemiesInGame);
+    // console.log(this.enemiesInGame);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -344,7 +344,7 @@ export class MyGame extends Engine {
       !this.isInHyperspace
     ) {
       if (!this.gameStarted) return;
-      console.log(this.currentLevel);
+      // console.log(this.currentLevel);
 
       let entityTypes = ["Tanker", "Spiker", "Fuseball", "Flipper"];
       if (this.currentLevel < 10) {
@@ -514,9 +514,9 @@ export class MyGame extends Engine {
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
     this.handleKeyboardEvents();
-    if (this.keysPressed.has("e")) {
-      this.nextLevel();
-    }
+    // if (this.keysPressed.has("e")) {
+    //   this.nextLevel();
+    // }
   }
 
   handleKeyUp(e: KeyboardEvent) {
@@ -548,12 +548,12 @@ export class MyGame extends Engine {
     // Commented code elements were used for manual testing.
     // We decided to leave them in the code to better outline our strategy.
 
-    if (this.keysPressed.has("w")) {
-      // Spiker.createSpiker(this);
-      Stars.createStars(this, { x: 0, y: 0, z: 110 });
-      // Fuseball.createFuseball(this);
-      // PowerUp.createPowerUp(this);
-    }
+    // if (this.keysPressed.has("w")) {
+    //   // Spiker.createSpiker(this);
+    //   Stars.createStars(this, { x: 0, y: 0, z: 110 });
+    //   // Fuseball.createFuseball(this);
+    //   // PowerUp.createPowerUp(this);
+    // }
     if (this.keysPressed.has("l")) {
       if (this.availableZapper || this.availableAdditionalZapper) {
         if (this.availableZapper) {
@@ -565,18 +565,18 @@ export class MyGame extends Engine {
         this.superZapper();
       }
     }
-    //zmiana levelów do testów
-    if (this.keysPressed.has("q")) {
-      this.previousLevel();
-    }
+    // //zmiana levelów do testów
+    // if (this.keysPressed.has("q")) {
+    //   this.previousLevel();
+    // }
 
-    if (this.keysPressed.has("r")) {
-      Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
-    }
-    if (this.keysPressed.has("t")) {
-      Tanker.createTanker(this);
-      this.enemiesInGame++;
-    }
+    // if (this.keysPressed.has("r")) {
+    //   Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
+    // }
+    // if (this.keysPressed.has("t")) {
+    //   Tanker.createTanker(this);
+    //   this.enemiesInGame++;
+    // }
   }
 
   movePlayer(speed: number) {
