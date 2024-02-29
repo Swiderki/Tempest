@@ -2,7 +2,9 @@ import { PhysicalGameObject, PhysicalObjectInitialConfig } from "drake-engine";
 import { MyGame, debugMode } from "../main";
 
 const moveSounds = new Audio("sounds/blasterMove.mp3");
+moveSounds.volume = 0.6;
 const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
+blasterExplosionSound.volume = 0.7;
 
 export default class Player extends PhysicalGameObject {
   private sound: HTMLAudioElement | null = null;

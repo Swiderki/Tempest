@@ -4,6 +4,7 @@ import Bullet from "../tempest/bullet";
 import Spiker from "../tempest/spiker";
 import Particle from "../tempest/particle";
 const enemyExplosionSound = new Audio("sounds/enemyExplosion.mp3");
+enemyExplosionSound.volume = 0.7;
 
 export class SpikerBulletOverlap extends Overlap {
   private game: MyGame;

@@ -5,6 +5,7 @@ import { TankerBulletOverlap } from "../overlaps/tankerBulletOverlap";
 import EnemyBullet from "./enemyBullet";
 import Flipper from "./flipper";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+enemyBulletSound.volume = 0.7;
 
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;

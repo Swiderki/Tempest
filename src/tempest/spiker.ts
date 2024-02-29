@@ -6,6 +6,7 @@ import { SpikerBulletOverlap } from "../overlaps/spikerBulletOverlap";
 import { QuaternionUtils } from "drake-engine";
 import EnemyBullet from "./enemyBullet";
 const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
+enemyBulletSound.volume = 0.7;
 
 export default class Spiker extends PhysicalGameObject {
   game: MyGame;
