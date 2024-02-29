@@ -496,13 +496,16 @@ export class MyGame extends Engine {
           this.flippers
             .filter((flipper) => flipper.killedPlayer == true)
             .forEach((flipper) => {
+              console.log("zabil");
               this.currentScene.removeGameObject(flipper.id);
+              this.flippers = this.flippers.filter((f) => f.id !== flipper.id);
               this.enemiesInGame--;
             });
           this.flippers
             .filter((flipper) => flipper.position.z <= 5)
             .forEach((flipper) => {
               this.currentScene.removeGameObject(flipper.id);
+              this.flippers = this.flippers.filter((f) => f.id !== flipper.id);
               this.enemiesInGame--;
             });
         }, 3000);
