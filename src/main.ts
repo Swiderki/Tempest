@@ -303,7 +303,7 @@ export class MyGame extends Engine {
 
     this.enemiesSpawnControll();
 
-    if ((this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) || this.safeController()) {
+    if ((this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) || (this.safeController() && this.currentScene == this.mainScene)) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
@@ -545,14 +545,14 @@ export class MyGame extends Engine {
 
     if (this.keysPressed.has("a")) {
       if (!this.gameStarted) return;
-      if (Date.now() - this.lastKeyPress < 70) return;
+      if (Date.now() - this.lastKeyPress < 50) return;
 
       this.movePlayer(this.movementSpeed);
     }
 
     if (this.keysPressed.has("d")) {
       if (!this.gameStarted) return;
-      if (Date.now() - this.lastKeyPress < 70) return;
+      if (Date.now() - this.lastKeyPress < 50) return;
       this.movePlayer(this.movementSpeed * -1);
     }
 
