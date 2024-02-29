@@ -29,7 +29,7 @@ export default class Bullet extends PhysicalGameObject {
 
     if (this.position.z >= 80) {
       this.game.currentScene.removeGameObject(this.id);
-      this.game.bullets.pop();
+      this.game.bullets = this.game.bullets.filter((bullet) => bullet.id !== this.id);
     }
   }
 

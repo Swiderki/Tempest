@@ -35,7 +35,8 @@ if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
 const zapperSound = new Audio("sounds/zapper.mp3");
 const music = new Audio("sounds/tempestTheme.mp3");
-const huperjump = new Audio("sounds/huperjump.mp3");
+const hyperJumpSound = new Audio("sounds/hyperjump.mp3");
+
 music.loop = true;
 
 export const debugMode: boolean = false;
@@ -301,7 +302,7 @@ export class MyGame extends Engine {
   // GAME MECHANICS
 
   override Update(): void {
-    // console.log(this.enemiesInGame);
+    console.table([this.enemiesInGame, this.flippers.length]);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -310,7 +311,7 @@ export class MyGame extends Engine {
 
     this.enemiesSpawnControll();
 
-    if (this.player.position.z >= 80 && this.enemiesInGame <= 0) {
+    if (this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
@@ -324,7 +325,7 @@ export class MyGame extends Engine {
       this.levelText.text = String(Number(this.levelText.text) + 1);
     }
 
-    if (this.enemiesInGame <= 0 && !this.isInHyperspace) {
+    if (this.enemiesInGame <= 0 && !this.isInHyperspace && this.flippers.length == 0) {
       this.isInHyperspace = true;
     }
 
@@ -639,6 +640,7 @@ export class MyGame extends Engine {
   }
 
   hyperSpace(delta: number) {
+    hyperJumpSound.play();
     if (this.player.position.z < 70 && !this.waitingForNextLevel) {
       this.player.move(0, 0, 30 * delta);
       this.mainCamera?.move(0, 0, 30 * delta);
