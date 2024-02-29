@@ -306,7 +306,7 @@ export class MyGame extends Engine {
   // GAME MECHANICS
 
   override Update(): void {
-    console.table([this.enemiesInGame, this.flippers.length]);
+    // console.table([this.enemiesInGame, this.flippers.length]);
     if (this.lifeLost) {
       this.lifeLostFunction();
       return;
@@ -344,11 +344,11 @@ export class MyGame extends Engine {
       if (!this.gameStarted) return;
       this.flipperLastSpawn = currentTime;
     }
-    console.table([
-      Date.now() - this.lastSpawned > this.spawnDelta,
-      this.normallySpawned < this.maxNormallySpawned,
-      !this.isInHyperspace,
-    ]);
+    // console.table([
+    //   Date.now() - this.lastSpawned > this.spawnDelta,
+    //   this.normallySpawned < this.maxNormallySpawned,
+    //   !this.isInHyperspace,
+    // ]);
     if (
       Date.now() - this.lastSpawned > this.spawnDelta &&
       this.normallySpawned < this.maxNormallySpawned &&
@@ -500,7 +500,7 @@ export class MyGame extends Engine {
           this.flippers
             .filter((flipper) => flipper.killedPlayer == true)
             .forEach((flipper) => {
-              console.log("zabil");
+              // console.log("zabil");
               this.currentScene.removeGameObject(flipper.id);
               this.flippers = this.flippers.filter((f) => f.id !== flipper.id);
               this.enemiesInGame--;
