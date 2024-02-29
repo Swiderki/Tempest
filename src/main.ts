@@ -33,8 +33,9 @@ import { PlayerEnemyBulletOverlap } from "./overlaps/playerEnemyBullet.Overlap";
 const canvas = document.getElementById("game") as HTMLCanvasElement | null;
 if (!canvas) throw new Error("unable to find canvas");
 const blasterBullet = new Audio("sounds/blasterBullet.mp3");
-const zapperSound = new Audio("sounds/enemyExplosion.mp3");
+const zapperSound = new Audio("sounds/zapper.mp3");
 const music = new Audio("sounds/tempestTheme.mp3");
+const huperjump = new Audio("sounds/huperjump.mp3");
 music.loop = true;
 
 export const debugMode: boolean = false;
@@ -532,7 +533,7 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("a")) {
       if (!this.gameStarted) return;
       if (Date.now() - this.lastKeyPress < 70) return;
-      
+
       this.movePlayer(this.movementSpeed);
     }
 
@@ -593,8 +594,9 @@ export class MyGame extends Engine {
         isEdge = true;
       }
     }
-    
-    if (Math.floor(this.currentLevelSide - this.movementSpeed) < Math.floor(this.currentLevelSide)) this.lastKeyPress = Date.now();
+
+    if (Math.floor(this.currentLevelSide - this.movementSpeed) < Math.floor(this.currentLevelSide))
+      this.lastKeyPress = Date.now();
 
     if (!isEdge) {
       this.currentLevelSide = this.currentLevelSide + speed;
