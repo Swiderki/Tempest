@@ -83,7 +83,7 @@ export class MyGame extends Engine {
   // Enemys data
   flipperLastSpawn: number = 0;
   isInHyperspace = false;
-  movementSpeed: number = 1;
+  movementSpeed: number = 0.15;
 
   //keyboroard events
   keysPressed = new Set();
@@ -304,6 +304,7 @@ export class MyGame extends Engine {
       this.lifeLostFunction();
       return;
     }
+    this.handleKeyboardEvents();
 
     this.enemiesSpawnControll();
 
@@ -840,7 +841,7 @@ export class MyGame extends Engine {
 
     this.flipperLastSpawn = 0;
     this.isInHyperspace = false;
-    this.movementSpeed = 1;
+    this.movementSpeed = 0.15;
 
     this.tankers.forEach((el) => this.mainScene.removeGameObject(el.id));
     this.spikers.forEach((el) => this.mainScene.removeGameObject(el.id));
