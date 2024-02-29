@@ -303,7 +303,7 @@ export class MyGame extends Engine {
 
     this.enemiesSpawnControll();
 
-    if (this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) {
+    if ((this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) || this.safeController()) {
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
@@ -506,14 +506,17 @@ export class MyGame extends Engine {
     }
   }
 
+  // Thanks to this feature, a potential bug does not destroy the game.
   safeController() {
     if (this.tankers.length + this.flippers.length + this.fuseballs.length + this.spikers.length == 0 && Date.now() - this.lastSafeCheck > 3500) {
-      this.nextLevel();
+      return true;
     }
 
     if (this.tankers.length + this.flippers.length + this.fuseballs.length + this.spikers.length > 0) {
       this.lastSafeCheck = Date.now();
     }
+
+    return false;
   }
 
   // KEYBOARD EVENTS
