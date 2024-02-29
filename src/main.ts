@@ -102,6 +102,7 @@ export class MyGame extends Engine {
   availablePower: boolean = true;
   isShooting: boolean = false;
   shootingTime: number = 150;
+  lastKeyPress: number = Date.now();
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
@@ -530,11 +531,14 @@ export class MyGame extends Engine {
 
     if (this.keysPressed.has("a")) {
       if (!this.gameStarted) return;
+      if (Date.now() - this.lastKeyPress < 40) return;
+      
       this.movePlayer(this.movementSpeed);
     }
 
     if (this.keysPressed.has("d")) {
       if (!this.gameStarted) return;
+      if (Date.now() - this.lastKeyPress < 40) return;
       this.movePlayer(this.movementSpeed * -1);
     }
 
@@ -589,6 +593,9 @@ export class MyGame extends Engine {
         isEdge = true;
       }
     }
+    
+    if (Math.floor(this.currentLevelSide - this.movementSpeed) < Math.floor(this.currentLevelSide)) this.lastKeyPress = Date.now();
+
     if (!isEdge) {
       this.currentLevelSide = this.currentLevelSide + speed;
       this.currentLevelSide = Math.floor(this.currentLevelSide * 20) / 20;
