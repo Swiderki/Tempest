@@ -97,6 +97,7 @@ export class MyGame extends Engine {
   isShooting: boolean = false;
   shootingTime: number = 150;
   lastKeyPress: number = Date.now();
+  lastSafeCheck: number = Date.now();
 
   lifeLost: boolean = false;
   lifeLostType: "flipper" | "bullet" | "spikerTrace" | "fuseball" | null = null;
@@ -502,6 +503,16 @@ export class MyGame extends Engine {
         }, 3000);
         this.lifeLostType = null;
       }
+    }
+  }
+
+  safeController() {
+    if (this.tankers.length + this.flippers.length + this.fuseballs.length + this.spikers.length == 0 && Date.now() - this.lastSafeCheck > 3500) {
+      this.nextLevel();
+    }
+
+    if (this.tankers.length + this.flippers.length + this.fuseballs.length + this.spikers.length > 0) {
+      this.lastSafeCheck = Date.now();
     }
   }
 
