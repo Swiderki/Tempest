@@ -20,6 +20,7 @@ export class PlayerFuseballOverlap extends Overlap {
   override onOverlap(): void {
     if (!this.game.currentScene) return;
     if (this.collised) return;
+    if(this.game.lifeLost) return
     this.collised = true;
     this.game.lifeLostType = "fuseball";
     // console.log("fuseball hit player");

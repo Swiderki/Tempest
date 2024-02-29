@@ -15,6 +15,7 @@ export class PlayerFlipperOverlap extends Overlap {
   }
 
   override onOverlap(): void {
+    if(this.game.lifeLost) return
     if (Math.floor(this.flipper.side) == Math.floor(this.game.currentLevelSide)) {
       if (!this.game.currentScene) return;
       if (this.collised) return;

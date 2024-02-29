@@ -18,6 +18,7 @@ export class PlayerEnemyBulletOverlap extends Overlap {
   override onOverlap(): void {
     if (!this.game.currentScene) return;
     if (this.collised) return;
+    if(this.game.lifeLost) return
     this.collised = true;
     this.game.lifeLostType = "bullet";
     this.game.spawnParticles([this.player.position.x, this.player.position.y, this.player.position.z]);
