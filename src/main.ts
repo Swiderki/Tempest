@@ -404,7 +404,7 @@ export class MyGame extends Engine {
       setTimeout(() => {
         this.unpauseText!.text = "1";
         for (let i = 0; i < this.player.getMesh().length; i++) {
-          this.player.setLineColor(i, "yellow");
+          this.player.setLineColor(i, this.player.colors[Math.floor((this.currentLevel - 1) / 16)]);
         }
       }, 2000);
       setTimeout(() => {
@@ -425,7 +425,7 @@ export class MyGame extends Engine {
       setTimeout(() => {
         this.unpauseText!.text = "1";
         for (let i = 0; i < this.player.getMesh().length; i++) {
-          this.player.setLineColor(i, "yellow");
+          this.player.setLineColor(i, this.player.colors[Math.floor((this.currentLevel - 1) / 16)]);
         }
       }, 2000);
       setTimeout(() => {
@@ -514,6 +514,9 @@ export class MyGame extends Engine {
   handleKeyDown(e: KeyboardEvent) {
     this.keysPressed.add(e.key);
     this.handleKeyboardEvents();
+    if (this.keysPressed.has("e")) {
+      this.nextLevel();
+    }
   }
 
   handleKeyUp(e: KeyboardEvent) {
@@ -566,9 +569,7 @@ export class MyGame extends Engine {
     if (this.keysPressed.has("q")) {
       this.previousLevel();
     }
-    if (this.keysPressed.has("e")) {
-      this.nextLevel();
-    }
+
     if (this.keysPressed.has("r")) {
       Flipper.createFlipper(this, { x: 0, y: 0, z: 0 }, -1);
     }
@@ -625,6 +626,7 @@ export class MyGame extends Engine {
     this.currentScene!.removeGameObject(this.level.id);
     this.level = new Level(this.currentLevel, { position: [0, 0, 0], size: [1, 1, 1] }, this);
     this.mainScene.addGameObject(this.level);
+    this.player.updateColor();
   }
 
   hyperSpace(delta: number) {
@@ -686,14 +688,14 @@ export class MyGame extends Engine {
     if (this.lifeLost) return;
     this.level.vertecies.forEach((_) => {
       for (let i = 0; i < this.level.getMesh().length; i++) {
-        this.level.setLineColor(i, "yellow");
+        this.level.setLineColor(i, this.player.colors[Math.floor((this.currentLevel - 1) / 16)]);
       }
     });
     setTimeout(() => {
       zapperSound.play();
       this.level.vertecies.forEach((_) => {
         for (let i = 0; i < this.level.getMesh().length; i++) {
-          this.level.setLineColor(i, "blue");
+          this.level.setLineColor(i, this.level.colors[Math.floor((this.currentLevel - 1) / 16)]);
         }
       });
 

@@ -7,6 +7,7 @@ import Spiker from "./spiker";
 export default class SpikerTrace extends PhysicalGameObject {
   game: MyGame;
   spiker: Spiker;
+  colors: Array<string> = ["lime", "cyan", "red", "red", "lime", "blue", "blue", "pink"];
   constructor(options: PhysicalObjectInitialConfig, game: MyGame, spiker: Spiker) {
     super(`obj/spikerTrace.obj`, options);
     this.game = game;
@@ -25,7 +26,7 @@ export default class SpikerTrace extends PhysicalGameObject {
     this.showBoxcollider = debugMode;
 
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "lime");
+      this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
     }
     this.setPosition(this.spiker.position.x, this.spiker.position.y, this.spiker.position.z);
     this.game.bullets.forEach((bullet) => {

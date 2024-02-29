@@ -14,6 +14,7 @@ export default class Spiker extends PhysicalGameObject {
   trace: SpikerTrace;
   isAddingTrace: boolean = true;
   lastShootTime: number = 900;
+  colors: Array<string> = ["lime", "cyan", "red", "red", "lime", "blue", "blue", "pink"];
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/spiker.obj`, options);
     this.game = game;
@@ -33,7 +34,7 @@ export default class Spiker extends PhysicalGameObject {
     this.showBoxcollider = debugMode;
 
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "lime");
+      this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
     }
 
     // Random position

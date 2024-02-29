@@ -9,6 +9,7 @@ const enemyBulletSound = new Audio("sounds/enemyBullet.mp3");
 export default class Tanker extends PhysicalGameObject {
   game: MyGame;
   lastShootTime: number = 900;
+  colors: Array<string> = ["#A020F0", "blue", "cyan", "purle", "#A020F0", "#A020F0", "#A020F0", "#A020F0"];
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super(`obj/tanker.obj`, options);
     this.game = game;
@@ -21,7 +22,7 @@ export default class Tanker extends PhysicalGameObject {
 
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "#A020F0");
+      this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
     }
     this.generateBoxCollider();
     this.showBoxcollider = debugMode;

@@ -7,7 +7,7 @@ export default class Level extends PhysicalGameObject {
   numberOfSides: number = 0;
   numberOfPoints: number = 0;
   levelId: number = 0;
-  colors: Array<string> = ["blue", "orange", "cyan", "red", "yellow", "black", "black", "black"];
+  colors: Array<string> = ["blue", "red", "yellow", "cyan", "black", "lime", "lime", "black"];
   constructor(levelId: number, options: PhysicalObjectInitialConfig, game: MyGame) {
     const nonLopped = [8, 9, 10, 13];
     super(`obj/level${((levelId - 1) % 16) + 1}.obj`, options);
@@ -50,7 +50,13 @@ export default class Level extends PhysicalGameObject {
       currSide--;
     }
 
-    this.setLineColor(currSide + this.numberOfPoints, "yellow");
-    this.setLineColor(((currSide + 1) % this.numberOfPoints) + this.numberOfPoints, "yellow");
+    this.setLineColor(
+      currSide + this.numberOfPoints,
+      this.game.player.colors[Math.floor((this.game.currentLevel - 1) / 16)]
+    );
+    this.setLineColor(
+      ((currSide + 1) % this.numberOfPoints) + this.numberOfPoints,
+      this.game.player.colors[Math.floor((this.game.currentLevel - 1) / 16)]
+    );
   }
 }

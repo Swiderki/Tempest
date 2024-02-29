@@ -17,6 +17,7 @@ export default class Fipper extends PhysicalGameObject {
   lastTimeMoved = Date.now();
   canBeCollided = true;
   killedPlayer = false;
+  colors: Array<string> = ["red", "#A020F0", "lime", "lime", "red", "yeelow", "yellow", "black"];
   constructor(options: PhysicalObjectInitialConfig, game: MyGame, closestVertexId?: number) {
     super(`obj/flipper.obj`, options);
     this.game = game;
@@ -28,7 +29,7 @@ export default class Fipper extends PhysicalGameObject {
     }
     this.loadMesh().then(() => {
       for (let i = 0; i < this.getMesh().length; i++) {
-        this.setLineColor(i, "red");
+        this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
       }
       if (this.position.z == 0) this.depth = 80;
       else this.depth = this.position.z;

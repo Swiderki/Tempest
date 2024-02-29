@@ -7,6 +7,7 @@ const blasterExplosionSound = new Audio("sounds/blasterExplosion.mp3");
 export default class Player extends PhysicalGameObject {
   private sound: HTMLAudioElement | null = null;
   game: MyGame;
+  colors: Array<string> = ["yellow", "lime", "blue", "blue", "yellow", "red", "red", "red"];
   constructor(options: PhysicalObjectInitialConfig, game: MyGame) {
     super("obj/player.obj", options);
     this.game = game;
@@ -17,7 +18,7 @@ export default class Player extends PhysicalGameObject {
   }
   override Start(): void {
     for (let i = 0; i < this.getMesh().length; i++) {
-      this.setLineColor(i, "yellow");
+      this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
     }
     this.showBoxcollider = debugMode;
     this.setPlayerPosition();
@@ -108,5 +109,10 @@ export default class Player extends PhysicalGameObject {
     this.vertecies[5].z = this.position.z;
     this.generateBoxCollider();
     this.game.level.updateColorOnPlayer();
+  }
+  updateColor() {
+    for (let i = 0; i < this.getMesh().length; i++) {
+      this.setLineColor(i, this.colors[Math.floor((this.game.currentLevel - 1) / 16)]);
+    }
   }
 }

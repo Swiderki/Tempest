@@ -29,7 +29,7 @@ export default class Fuseball extends PhysicalGameObject {
       if (i < 5) {
         this.setLineColor(i, "red");
       } else if (i < 10) {
-        this.setLineColor(i, "green");
+        this.setLineColor(i, "lime");
       } else if (i < 15) {
         this.setLineColor(i, "blue");
       } else if (i < 20) {
