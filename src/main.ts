@@ -304,6 +304,8 @@ export class MyGame extends Engine {
     this.enemiesSpawnControll();
 
     if ((this.player.position.z >= 80 && this.enemiesInGame <= 0 && this.flippers.length == 0) || (this.safeController() && this.currentScene == this.mainScene)) {
+      this.lastSafeCheck = Date.now();
+
       this.player.setPosition(0, 0, 0);
       this.player.setPlayerPosition();
       this.nextLevel();
